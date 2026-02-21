@@ -250,7 +250,7 @@ function App() {
       </section>
 
       {/* Sip the Summer Section */}
-      <section className="w-full py-12 sm:py-16 md:py-28 bg-white">
+      <section id="shop" className="w-full py-12 sm:py-16 md:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
           {/* Section Title */}
           <h2
@@ -481,7 +481,7 @@ function App() {
         </div>
       </section>
 
-      <section className="h-[80vh] py-12 w-full">
+      <section id="events" className="h-[80vh] py-12 w-full">
         <h2
           className="text-center text-[26px] md:text-[32px] font-bold mb-16 uppercase tracking-wide"
           style={{ color: "#0a36af" }}
@@ -491,7 +491,7 @@ function App() {
       </section>
       {/* Contact Form Section */}
       <section
-        id="waitlist"
+        id="contact"
         className="w-full px-4 py-12 md:px-6 md:py-20 lg:py-32"
         style={{ backgroundColor: "#f8f9fa" }}
       >

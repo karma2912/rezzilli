@@ -1,4 +1,4 @@
-import { X, ChevronRight } from "lucide-react";
+import { X } from "lucide-react";
 import Carousel from "./Carousel";
 import { useState } from "react";
 
@@ -250,7 +250,7 @@ function App() {
       </section>
 
       {/* Sip the Summer Section */}
-      <section className="w-full py-12 sm:py-16 md:py-20 bg-white">
+      <section className="w-full py-12 sm:py-16 md:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
           {/* Section Title */}
           <h2
@@ -385,7 +385,7 @@ function App() {
 
       <section
         id="why-us"
-        className="w-full py-16 md:py-24"
+        className="w-full py-16 md:py-28"
         style={{ backgroundColor: "#ffffff" }}
       >
         <div className="max-w-6xl mx-auto px-4 md:px-8">

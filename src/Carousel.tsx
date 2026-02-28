@@ -50,8 +50,8 @@ export default function Carousel({ images, autoPlayInterval = 6000 }: CarouselPr
   };
 
   return (
-    <div className="relative w-full group">
-      <div className="relative overflow-hidden w-screen aspect-[16/9] md:aspect-[16/9]">
+    <div className="relative w-full h-full group">
+      <div className="relative overflow-hidden w-full h-full">
         {images.map((image, index) => (
           <div
             key={index}
@@ -64,7 +64,7 @@ export default function Carousel({ images, autoPlayInterval = 6000 }: CarouselPr
             <img
               src={image}
               alt={`Slide ${index + 1}`}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover object-top" 
               loading={index === 0 ? 'eager' : 'lazy'}
               decoding="async"
             />

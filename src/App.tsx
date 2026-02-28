@@ -167,35 +167,35 @@ function App() {
             <nav className="flex items-center justify-center gap-6 md:gap-15 lg:gap-16 nav-links">
               <button
                 onClick={() => scrollToSection("origins")}
-                className="py-2 text-base md:text-lg font-semibold hover:opacity-80 transition-opacity origins-btn whitespace-nowrap"
+                className="py-2 text-[15px] font-semibold hover:opacity-80 transition-opacity origins-btn whitespace-nowrap"
                 style={{ color: "#ffc85b" }}
               >
                 Origins
               </button>
               <button
                 onClick={() => scrollToSection("why-us")}
-                className="py-2 text-base md:text-lg font-semibold hover:opacity-80 transition-opacity origins-btn whitespace-nowrap"
+                className="py-2 text-[15px] font-semibold hover:opacity-80 transition-opacity origins-btn whitespace-nowrap"
                 style={{ color: "#ffc85b" }}
               >
                 Why Us
               </button>
               <button
                 onClick={() => scrollToSection("shop")}
-                className="py-2 text-base md:text-lg font-semibold hover:opacity-80 transition-opacity origins-btn whitespace-nowrap"
+                className="py-2 text-[15px] font-semibold hover:opacity-80 transition-opacity origins-btn whitespace-nowrap"
                 style={{ color: "#ffc85b" }}
               >
                 Shop
               </button>
               <button
                 onClick={() => scrollToSection("events")}
-                className="py-2 text-base md:text-lg font-semibold hover:opacity-80 transition-opacity origins-btn whitespace-nowrap"
+                className="py-2 text-[15px] font-semibold hover:opacity-80 transition-opacity origins-btn whitespace-nowrap"
                 style={{ color: "#ffc85b" }}
               >
                 Events & Updates
               </button>
               <button
                 onClick={() => scrollToSection("contact")}
-                className="py-2 text-base md:text-lg font-semibold hover:opacity-80 transition-opacity origins-btn whitespace-nowrap"
+                className="py-2 text-[15px] font-semibold hover:opacity-80 transition-opacity origins-btn whitespace-nowrap"
                 style={{ color: "#ffc85b" }}
               >
                 Contact Us
@@ -245,108 +245,14 @@ function App() {
         </div>
       </header>
 
-      <section className="w-full">
+      <section className="w-full h-[50vh] sm:h-[60vh] md:h-[calc(100vh-85px)] pb-12 md:pb-15">
         <Carousel images={carouselImages} />
-      </section>
-
-      {/* Sip the Summer Section */}
-      <section id="shop" className="w-full py-12 sm:py-16 md:py-28 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-          {/* Section Title */}
-          <h2
-            className="text-center text-[28px] sm:text-3xl md:text-[40px] font-bold mb-10 sm:mb-14 tracking-wide uppercase"
-            style={{ color: "#0a36af" }}
-          >
-            Sip The Summer
-          </h2>
-
-          {/* 3-Column Product Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-6 lg:gap-14 xl:gap-20">
-            {/* Product 1: Senza */}
-            <div className="flex flex-col items-center w-full max-w-[300px] md:max-w-full lg:max-w-[340px] mx-auto">
-              <div className="h-[280px] sm:h-[320px] md:h-[280px] lg:h-[380px] w-full flex items-center justify-center mb-5 md:mb-6">
-                {/* UPDATE THIS SRC WITH YOUR SENZA BOTTLE IMAGE */}
-                <img
-                  src="/image6.png"
-                  alt="Senza Italian Spritz"
-                  className="h-full w-auto object-contain"
-                />
-              </div>
-
-              <button
-                className="w-full py-3 md:py-2.5 lg:py-4 border-[2px] border-black font-bold text-[18px] md:text-[16px] lg:text-[23px] hover:opacity-90 transition-opacity"
-                style={{ backgroundColor: "#0a36af", color: "#ffc85b" }}
-              >
-                Coming soon
-              </button>
-
-              <p
-                className="w-full text-left mt-3 lg:mt-4 text-[13px] md:text-[12px] lg:text-[14px] font-semibold leading-snug tracking-wide"
-                style={{ color: "#0a36af" }}
-              >
-                NON-ALCOHOL ORANGE ITALIAN SPRITZ 275ml x 24 BOTTLES
-              </p>
-            </div>
-
-            {/* Product 2: Limoncini */}
-            <div className="flex flex-col items-center w-full max-w-[300px] md:max-w-full lg:max-w-[340px] mx-auto">
-              <div className="h-[280px] sm:h-[320px] md:h-[280px] lg:h-[380px] w-full flex items-center justify-center mb-5 md:mb-6">
-                {/* UPDATE THIS SRC WITH YOUR LIMONCINI BOTTLE IMAGE */}
-                <img
-                  src="/image4.png"
-                  alt="Limoncini Lemon Spritz"
-                  className="h-full w-auto object-contain"
-                />
-              </div>
-
-              <button
-                className="w-full py-3 md:py-2.5 lg:py-4 border-[2px] border-black font-bold text-[18px] md:text-[16px] lg:text-[23px] uppercase hover:opacity-90 transition-opacity"
-                style={{ backgroundColor: "#0a36af", color: "#ffc85b" }}
-              >
-                ADD TO CART
-              </button>
-
-              <p
-                className="w-full text-left mt-3 lg:mt-4 text-[13px] md:text-[12px] lg:text-[14px] font-semibold leading-snug tracking-wide uppercase"
-                style={{ color: "#0a36af" }}
-              >
-                LEMON ITALIAN SPRITZ 275ml x 24 BOTTLES
-              </p>
-            </div>
-
-            {/* Product 3: Arancini */}
-            <div className="flex flex-col items-center w-full max-w-[300px] md:max-w-full lg:max-w-[340px] mx-auto">
-              <div className="h-[280px] sm:h-[320px] md:h-[280px] lg:h-[380px] w-full flex items-center justify-center mb-5 md:mb-6">
-                {/* UPDATE THIS SRC WITH YOUR ARANCINI BOTTLE IMAGE */}
-                <img
-                  src="/image5.png"
-                  alt="Arancini Orange Spritz"
-                  className="h-full w-auto object-contain"
-                />
-              </div>
-
-              <button
-                className="w-full py-3 md:py-2.5 lg:py-4 border-[2px] border-black font-bold text-[18px] md:text-[16px] lg:text-[23px] hover:opacity-90 transition-opacity"
-                style={{ backgroundColor: "#0a36af", color: "#ffc85b" }}
-              >
-                Coming soon
-              </button>
-
-              <p
-                className="w-full text-left mt-3 lg:mt-4 text-[13px] md:text-[12px] lg:text-[14px] font-semibold leading-snug tracking-wide uppercase"
-                style={{ color: "#0a36af" }}
-              >
-                ORANGE ITALIAN SPRITZ 275ml x 24 BOTTLES
-              </p>
-            </div>
-          </div>
-        </div>
       </section>
 
       {/* From Mama's Kitchen Section */}
       <section
         id="origins"
-        className="w-full px-4 py-12 md:px-6 md:py-20"
+        className="w-full px-4 md:px-6 py-12 md:py-16"
         style={{ backgroundColor: "#ffffff" }}
       >
         <div className="max-w-7xl mx-auto">
@@ -360,17 +266,17 @@ function App() {
             </div>
             <div className="flex flex-col justify-center">
               <h2
-                className="text-[30px] font-bold mb-4 md:mb-8"
+                className="text-[30px] uppercase font-bold mb-4 md:mb-8"
                 style={{ color: "#0a36af" }}
               >
                 From Mamma's Kitchen
               </h2>
               <p
-                className="text-base md:text-lg leading-relaxed text-justify"
+                className="text-[15px] leading-relaxed text-justify"
                 style={{ color: "#000000" }}
               >
                 Rezzilli was born from a cherished memory - the homemade
-                tradition that many an Italian Nonna had in their kitchen in
+                tradition that many an Italian Mamma had in their kitchen in
                 Italy making homemade Limoncello. Inspired by those authentic
                 flavours, we have taken the family recipe and created our unique
                 drinks that honours that heritage but speaks to today's
@@ -385,13 +291,13 @@ function App() {
 
       <section
         id="why-us"
-        className="w-full py-16 md:py-28"
+        className="w-full py-12 md:py-16"
         style={{ backgroundColor: "#ffffff" }}
       >
         <div className="max-w-6xl mx-auto px-4 md:px-8">
           {/* Section Title */}
           <h2
-            className="text-center text-[26px] md:text-[32px] font-bold mb-16 uppercase tracking-wide"
+            className="text-center text-[26px] md:text-[32px] font-bold mb-8 uppercase tracking-wide"
             style={{ color: "#0a36af" }}
           >
             Why Rezzilli?
@@ -410,13 +316,13 @@ function App() {
                 />
               </div>
               <h3
-                className="text-[18px] md:text-[20px] font-semibold mb-4"
+                className="text-[20px] font-semibold mb-4"
                 style={{ color: "#ffc85b" }}
               >
                 Real Sicilian Lemon
               </h3>
               <p
-                className="text-[15px] md:text-[16px] leading-relaxed"
+                className="text-[15px] leading-relaxed"
                 style={{ color: "#0a36af" }}
               >
                 Made with sun-ripened Sicilian lemon, with no artificial
@@ -437,13 +343,13 @@ function App() {
                 />
               </div>
               <h3
-                className="text-[18px] md:text-[20px] font-semibold mb-4"
+                className="text-[20px] font-semibold mb-4"
                 style={{ color: "#ffc85b" }}
               >
                 No Added Sugar
               </h3>
               <p
-                className="text-[15px] md:text-[16px] leading-relaxed"
+                className="text-[15px]  leading-relaxed"
                 style={{ color: "#0a36af" }}
               >
                 There are no added sugars or artificial sweeteners in our range,
@@ -469,7 +375,7 @@ function App() {
                 Bottles and Packaging
               </h3>
               <p
-                className="text-[15px] md:text-[16px] leading-relaxed"
+                className="text-[15px] leading-relaxed"
                 style={{ color: "#0a36af" }}
               >
                 Our bottles and packaging are designed with the planet in mind,
@@ -481,31 +387,145 @@ function App() {
         </div>
       </section>
 
-      <section id="events" className="h-[80vh] py-12 w-full">
-        <h2
-          className="text-center text-[26px] md:text-[32px] font-bold mb-16 uppercase tracking-wide"
-          style={{ color: "#0a36af" }}
-        >
-          Events & Updates
-        </h2>
+      <section
+        id="events"
+        className="w-full py-12 md:py-16 bg-white"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 mb-12">
+          <h2
+            className="text-center text-[30px] font-bold uppercase tracking-wide"
+            style={{ color: "#0a36af" }} 
+          >
+            Events & Updates
+          </h2>
+        </div>
+
+        <div className="flex flex-col md:flex-row w-full items-stretch">
+          <div className="w-full md:w-1/2 flex flex-col items-center justify-center p-8 md:p-12">
+            <div className="w-[250px] h-[250px] md:w-[300px] md:h-[300px] bg-white border-2 border-gray-200 flex items-center justify-center shadow-lg">
+              <span className="text-black text-[15px] font-medium">Image</span>
+            </div>
+            <p className="mt-4 text-[13px] md:text-[14px] text-gray-700">
+              Ref:{" "}
+              <a
+                href="https://www.fullersbrewery.co.uk/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:underline font-medium"
+                style={{ color: "#0a36af" }}
+              >
+                https://www.fullersbrewery.co.uk/
+              </a>
+            </p>
+          </div>
+
+         <div className="w-full md:w-1/2 flex items-center justify-start p-4 md:pl-8 lg:pl-12">
+            <div
+              className="w-full md:w-[70%] p-8 md:p-12 flex flex-col justify-center text-center min-h-[400px] md:min-h-[450px] shadow-2xl"
+              style={{ backgroundColor: "#0a36af" }}
+            >
+              <h3
+                className="text-[22px] md:text-[26px] font-bold mb-6 uppercase"
+                style={{ color: "#ffc85b" }}
+              >
+                Official Launch Night
+              </h3>
+
+              <p
+                className="text-[16px] md:text-[18px] font-bold mb-4"
+                style={{ color: "#ffc85b" }}
+              >
+                Venue: Isabel’s Restaurant & Bar, Burton-upon-Trent
+              </p>
+
+              <p
+                className="text-[16px] md:text-[18px] font-bold mb-8"
+                style={{ color: "#ffc85b" }}
+              >
+                Date: April 2026
+              </p>
+
+              <p
+                className="text-[15px] leading-relaxed mx-auto max-w-lg"
+                style={{ color: "#ffffff" }}
+              >
+                Join us for the official Rezzilli launch night at Isabel’s. An
+                evening of tastings, pizza, cocktails and DJ sets with guests
+                from the drinks trade, cocktail bar owners and influencers.
+                Anyone and everyone is invited.
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 mt-16 md:mt-24">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
+            <div className="flex flex-col shadow-xl border border-gray-200">
+              <div className="w-full h-[300px] md:h-[400px] bg-gray-50 flex items-center justify-center">
+                <span className="text-gray-500 text-[15px] font-medium">Image</span>
+              </div>
+              <div className="w-full py-4 px-2 flex items-center justify-center min-h-[70px]" style={{ backgroundColor: "#0a36af" }}>
+                <h4 className="font-bold uppercase text-[15px] md:text-[16px] text-center leading-snug" style={{ color: "#ffc85b" }}>
+                  Official Launch Night
+                </h4>
+              </div>
+              <div className="w-full py-4 bg-white flex items-center justify-center border-t border-gray-100">
+                <button className="text-[15px] hover:opacity-80 transition-opacity" style={{ color: "#0a36af" }}>
+                  Read more...
+                </button>
+              </div>
+            </div>
+            <div className="flex flex-col shadow-xl border border-gray-200">
+              <div className="w-full h-[300px] md:h-[400px] bg-gray-50 flex items-center justify-center">
+                <span className="text-gray-500 text-[15px] font-medium">Image</span>
+              </div>
+              <div className="w-full py-4 px-2 flex items-center justify-center min-h-[70px]" style={{ backgroundColor: "#0a36af" }}>
+                <h4 className="font-bold uppercase text-[15px] md:text-[16px] text-center leading-snug" style={{ color: "#ffc85b" }}>
+                  Foodies Festival
+                </h4>
+              </div>
+              <div className="w-full py-4 bg-white flex items-center justify-center border-t border-gray-100">
+                <button className="text-[15px] hover:opacity-80 transition-opacity" style={{ color: "#0a36af" }}>
+                  Read more...
+                </button>
+              </div>
+            </div>
+            <div className="flex flex-col shadow-xl border border-gray-200">
+              <div className="w-full h-[300px] md:h-[400px] bg-gray-50 flex items-center justify-center">
+                <span className="text-gray-500 text-[15px] font-medium">Image</span>
+              </div>
+              <div className="w-full py-4 px-2 flex items-center justify-center min-h-[70px]" style={{ backgroundColor: "#0a36af" }}>
+                <h4 className="font-bold uppercase text-[15px] md:text-[16px] text-center leading-snug" style={{ color: "#ffc85b" }}>
+                  Great British Food Festival
+                </h4>
+              </div>
+              <div className="w-full py-4 bg-white flex items-center justify-center border-t border-gray-100">
+                <button className="text-[15px] hover:opacity-80 transition-opacity" style={{ color: "#0a36af" }}>
+                  Read more...
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
       </section>
-      {/* Contact Form Section */}
       <section
         id="contact"
-        className="w-full px-4 py-12 md:px-6 md:py-20 lg:py-32"
+        className="w-full px-4 md:px-6 py-12 md:py-16"
         style={{ backgroundColor: "#f8f9fa" }}
       >
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-start">
             <div className="flex flex-col justify-start">
               <h2
-                className="text-3xl md:text-5xl font-bold mb-4 md:mb-8"
+                className="text-[30px] font-bold mb-4 md:mb-8"
                 style={{ color: "#0a36af" }}
               >
                 CONTACT US
               </h2>
               <p
-                className="text-base md:text-lg leading-relaxed"
+                className="text-[15px] leading-relaxed"
                 style={{ color: "#000000", textAlign: "justify" }}
               >
                 Have a question, special request, or want to stock our drinks?
@@ -514,7 +534,7 @@ function App() {
               </p>
               <br />
               <p
-                className="text-base md:text-lg leading-relaxed"
+                className="text-[15px] leading-relaxed"
                 style={{ color: "#000000", textAlign: "justify" }}
               >
                 Whether you’re a customer, partner, or retailer, we’d love to
@@ -539,7 +559,7 @@ function App() {
                   <div>
                     <label
                       htmlFor="whoAreYou"
-                      className="block text-base md:text-lg font-medium mb-2"
+                      className="block text-[15px] font-medium mb-2"
                       style={{ color: "#000000" }}
                     >
                       Who are you? <span style={{ color: "#ef4444" }}>*</span>
@@ -551,7 +571,7 @@ function App() {
                         setFormData({ ...formData, whoAreYou: e.target.value })
                       }
                       required
-                      className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base md:text-lg"
+                      className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-[15px]"
                       style={{
                         backgroundColor: "#ffffff",
                         fontSize: formData.whoAreYou === "" ? "14px" : "16px",
@@ -575,7 +595,7 @@ function App() {
                     <div>
                       <label
                         htmlFor="firstName"
-                        className="block text-base md:text-lg font-medium mb-2"
+                        className="block text-[15px] font-medium mb-2"
                         style={{ color: "#000000" }}
                       >
                         First Name <span style={{ color: "#ef4444" }}>*</span>
@@ -591,14 +611,14 @@ function App() {
                           })
                         }
                         required
-                        className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base md:text-lg"
+                        className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-[15px]"
                         style={{ backgroundColor: "#ffffff" }}
                       />
                     </div>
                     <div>
                       <label
                         htmlFor="lastName"
-                        className="block text-base md:text-lg font-medium mb-2"
+                        className="block text-[15px] font-medium mb-2"
                         style={{ color: "#000000" }}
                       >
                         Last Name <span style={{ color: "#ef4444" }}>*</span>
@@ -611,7 +631,7 @@ function App() {
                           setFormData({ ...formData, lastName: e.target.value })
                         }
                         required
-                        className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base md:text-lg"
+                        className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-[15px]"
                         style={{ backgroundColor: "#ffffff" }}
                       />
                     </div>
@@ -620,7 +640,7 @@ function App() {
                   <div>
                     <label
                       htmlFor="email"
-                      className="block text-base md:text-lg font-medium mb-2"
+                      className="block text-[15px] font-medium mb-2"
                       style={{ color: "#000000" }}
                     >
                       Email <span style={{ color: "#ef4444" }}>*</span>
@@ -633,7 +653,7 @@ function App() {
                         setFormData({ ...formData, email: e.target.value })
                       }
                       required
-                      className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:ring-transparent text-base md:text-lg"
+                      className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:ring-transparent text-[15px]"
                       style={{ backgroundColor: "#ffffff" }}
                     />
                   </div>
@@ -641,7 +661,7 @@ function App() {
                   <div>
                     <label
                       htmlFor="message"
-                      className="block text-base md:text-lg font-medium mb-2"
+                      className="block text-[15px] font-medium mb-2"
                       style={{ color: "#000000" }}
                     >
                       Message <span style={{ color: "#ef4444" }}>*</span>
@@ -654,7 +674,7 @@ function App() {
                       }
                       required
                       rows={4}
-                      className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base md:text-lg resize-vertical"
+                      className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-[15px] resize-vertical"
                       style={{ backgroundColor: "#ffffff" }}
                       placeholder="Tell us more about your interest..."
                     />
@@ -663,7 +683,7 @@ function App() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full px-6 py-3 md:px-8 md:py-4 rounded-lg font-semibold text-base md:text-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full px-6 md:px-8 py-[10px] rounded-lg font-semibold text-[15px] transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed uppercase"
                     style={{ backgroundColor: "#0a36af", color: "#ffffff" }}
                   >
                     {isSubmitting ? "Submitting..." : "Submit"}
@@ -690,10 +710,10 @@ function App() {
           <img
             src="/rezzilli_draft_logo.webp"
             alt="REZZILLI"
-            className="h-12 md:h-16 mx-auto"
+            className="h-8 md:h-12 mx-auto"
           />
           <a
-            href="https://instagram.com"
+            href="https://www.instagram.com/rezzillidrinks/"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-block hover:opacity-80 transition-opacity"
@@ -715,7 +735,7 @@ function App() {
               <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
             </svg>
           </a>
-          <p className="text-sm md:text-base" style={{ color: "#ffffff" }}>
+          <p className="text-[15px]" style={{ color: "#ffffff" }}>
             Email:{" "}
             <a
               href="mailto:hello@rezzillidrinks.com"
@@ -724,27 +744,27 @@ function App() {
               hello@rezzillidrinks.com
             </a>
           </p>
-          <p className="text-sm md:text-base" style={{ color: "#ffffff" }}>
+          <p className="text-[15px]" style={{ color: "#ffffff" }}>
             Contact no. +447832198470
           </p>
-          <p className="text-sm md:text-base" style={{ color: "#ffffff" }}>
+          <p className="text-[15px]" style={{ color: "#ffffff" }}>
             Address: 31, West Street, Burton upon Trent, DE11 9DN
           </p>
           <div className="flex items-center justify-center gap-4 md:gap-6 flex-wrap">
             <button
               onClick={() => setShowPrivacyPolicy(true)}
-              className="text-white underline font-medium transition-opacity hover:opacity-80 text-xs md:text-sm"
+              className="text-white underline font-medium transition-opacity hover:opacity-80 text-[15px]"
             >
               Privacy Policy
             </button>
             <button
               onClick={() => setShowAlcoholPolicy(true)}
-              className="text-white underline font-medium transition-opacity hover:opacity-80 text-xs md:text-sm"
+              className="text-white underline font-medium transition-opacity hover:opacity-80 text-[15px]"
             >
               Alcohol and Safe Use
             </button>
           </div>
-          <p className="text-xs md:text-sm" style={{ color: "#ffffff" }}>
+          <p className="text-[15px]" style={{ color: "#ffffff" }}>
             &copy; 2025 REZZILLI. All rights reserved
           </p>
         </div>
@@ -773,7 +793,7 @@ function App() {
               </button>
             </div>
             <div className="px-4 py-4 md:px-6 md:py-6 space-y-4 md:space-y-6 text-gray-800">
-              <p className="text-sm md:text-base leading-relaxed">
+              <p className="text-[15px] leading-relaxed">
                 This Privacy Policy is a general template for a UK based drinks
                 brand website, Rezzilli Drinks, reflecting common UK GDPR
                 requirements for such a business.
@@ -786,7 +806,7 @@ function App() {
                 >
                   Introduction
                 </h3>
-                <p className="text-sm md:text-base leading-relaxed">
+                <p className="text-[15px] leading-relaxed">
                   By using the Rezzilli Drinks website and related online
                   services ("Services"), you agree to the practices described in
                   this Privacy Policy. If you do not agree with any part of this
@@ -808,7 +828,7 @@ function App() {
                 >
                   Information we collect
                 </h3>
-                <p className="text-sm md:text-base leading-relaxed">
+                <p className="text-[15px] leading-relaxed">
                   We collect personal information that you voluntarily provide
                   to us when you contact us, request information about our
                   products or Services, or otherwise interact with us.

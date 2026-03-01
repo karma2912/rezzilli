@@ -380,7 +380,7 @@ function App() {
 
       <section
         id="events"
-        className="w-full py-12 md:py-16 bg-white mt-24 md:mt-32"
+        className="w-full py-12 md:py-16 bg-white "
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 mb-12">
           <h2

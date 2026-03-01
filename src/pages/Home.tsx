@@ -159,11 +159,11 @@ function App() {
       }
     }
   `}</style>
-        <div className="max-w-7xl mx-auto flex flex-col items-center gap-2 md:gap-3 relative">
+        <div className="max-w-7xl mx-auto flex flex-col items-center relative">
           <img
-            src="/rezzilli_draft_logo.webp"
+            src="/rezzilli.png"
             alt="Rezzilli Logo"
-            className="h-8 md:h-12 header-logo"
+            className="h-14 md:h-20 header-logo"
           />
           <div className="w-full flex items-center justify-center header-nav-row mt-1 md:mt-2">
             <nav className="flex items-center justify-center gap-6 md:gap-15 lg:gap-16 nav-links">
@@ -734,9 +734,9 @@ function App() {
       >
         <div className="max-w-7xl mx-auto text-center space-y-3 md:space-y-4">
           <img
-            src="/rezzilli_draft_logo.webp"
+            src="/rezzilli.png"
             alt="REZZILLI"
-            className="h-8 md:h-12 mx-auto"
+            className="h-14 md:h-12 mx-auto"
           />
           <a
             href="https://www.instagram.com/rezzillidrinks/"

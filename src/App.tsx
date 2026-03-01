@@ -15,6 +15,7 @@ function App() {
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [showAlcoholPolicy, setShowAlcoholPolicy] = useState(false);
+  const [showEventModal, setShowEventModal] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -377,21 +378,21 @@ function App() {
         </div>
       </section>
 
-     <section
+      <section
         id="events"
         className="w-full py-12 md:py-16 bg-white mt-24 md:mt-32"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 mb-12">
           <h2
             className="text-center text-[30px] font-bold uppercase tracking-wide"
-            style={{ color: "#0a36af" }} 
+            style={{ color: "#0a36af" }}
           >
             Events & Updates
           </h2>
         </div>
         <div className="flex flex-col md:flex-row w-full items-stretch min-h-[500px] md:min-h-[800px]">
           <div className="w-full md:w-1/2 flex flex-col items-center justify-center p-8 md:p-12 bg-gray-100">
-           Image
+            Image
           </div>
           <div
             className="w-full md:w-1/2 p-10 md:p-16 lg:px-24 flex flex-col items-center justify-center text-center"
@@ -399,7 +400,7 @@ function App() {
           >
             <h3
               className="text-[28px] md:text-[34px] font-bold mb-6 uppercase text-center"
-              style={{ color: "#ffc85b" }} 
+              style={{ color: "#ffc85b" }}
             >
               OFFICIAL LAUNCH NIGHT
             </h3>
@@ -418,13 +419,11 @@ function App() {
               Date: April 2026
             </p>
 
-            <p
-              className="text-[15px] leading-relaxed mx-auto max-w-lg text-center text-white"
-            >
+            <p className="text-[15px] leading-relaxed mx-auto max-w-lg text-center text-white">
               Join us for the official Rezzilli launch night at Isabel’s. An
-              evening of tastings, pizza, cocktails and DJ sets with guests
-              from the drinks trade, cocktail bar owners and influencers.
-              Anyone and everyone is invited.
+              evening of tastings, pizza, cocktails and DJ sets with guests from
+              the drinks trade, cocktail bar owners and influencers. Anyone and
+              everyone is invited.
             </p>
           </div>
         </div>
@@ -433,45 +432,79 @@ function App() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
             <div className="flex flex-col shadow-xl border border-gray-200">
               <div className="w-full h-[300px] md:h-[400px] bg-gray-50 flex items-center justify-center">
-                <span className="text-gray-500 text-[15px] font-medium">Image</span>
+                <span className="text-gray-500 text-[15px] font-medium">
+                  Image
+                </span>
               </div>
-              <div className="w-full py-4 px-2 flex items-center justify-center min-h-[70px]" style={{ backgroundColor: "#0a36af" }}>
-                <h4 className="font-bold uppercase text-[15px] md:text-[16px] text-center leading-snug" style={{ color: "#ffc85b" }}>
+              <div
+                className="w-full py-4 px-2 flex items-center justify-center min-h-[70px]"
+                style={{ backgroundColor: "#0a36af" }}
+              >
+                <h4
+                  className="font-bold uppercase text-[15px] md:text-[16px] text-center leading-snug"
+                  style={{ color: "#ffc85b" }}
+                >
                   Official Launch Night
                 </h4>
               </div>
               <div className="w-full py-4 bg-white flex items-center justify-center border-t border-gray-100">
-                <button className="text-[15px] hover:opacity-80 transition-opacity" style={{ color: "#0a36af" }}>
+                <button
+                  className="text-[15px] hover:opacity-80 transition-opacity"
+                  style={{ color: "#0a36af" }}
+                >
                   Read more...
                 </button>
               </div>
             </div>
             <div className="flex flex-col shadow-xl border border-gray-200">
               <div className="w-full h-[300px] md:h-[400px] bg-gray-50 flex items-center justify-center">
-                <span className="text-gray-500 text-[15px] font-medium">Image</span>
+                <span className="text-gray-500 text-[15px] font-medium">
+                  Image
+                </span>
               </div>
-              <div className="w-full py-4 px-2 flex items-center justify-center min-h-[70px]" style={{ backgroundColor: "#0a36af" }}>
-                <h4 className="font-bold uppercase text-[15px] md:text-[16px] text-center leading-snug" style={{ color: "#ffc85b" }}>
+              <div
+                className="w-full py-4 px-2 flex items-center justify-center min-h-[70px]"
+                style={{ backgroundColor: "#0a36af" }}
+              >
+                <h4
+                  className="font-bold uppercase text-[15px] md:text-[16px] text-center leading-snug"
+                  style={{ color: "#ffc85b" }}
+                >
                   Foodies Festival
                 </h4>
               </div>
               <div className="w-full py-4 bg-white flex items-center justify-center border-t border-gray-100">
-                <button className="text-[15px] hover:opacity-80 transition-opacity" style={{ color: "#0a36af" }}>
+                <button
+                  onClick={() => setShowEventModal(true)}
+                  className="text-[15px] hover:opacity-80 transition-opacity"
+                  style={{ color: "#0a36af" }}
+                >
                   Read more...
                 </button>
               </div>
             </div>
             <div className="flex flex-col shadow-xl border border-gray-200">
               <div className="w-full h-[300px] md:h-[400px] bg-gray-50 flex items-center justify-center">
-                <span className="text-gray-500 text-[15px] font-medium">Image</span>
+                <span className="text-gray-500 text-[15px] font-medium">
+                  Image
+                </span>
               </div>
-              <div className="w-full py-4 px-2 flex items-center justify-center min-h-[70px]" style={{ backgroundColor: "#0a36af" }}>
-                <h4 className="font-bold uppercase text-[15px] md:text-[16px] text-center leading-snug" style={{ color: "#ffc85b" }}>
+              <div
+                className="w-full py-4 px-2 flex items-center justify-center min-h-[70px]"
+                style={{ backgroundColor: "#0a36af" }}
+              >
+                <h4
+                  className="font-bold uppercase text-[15px] md:text-[16px] text-center leading-snug"
+                  style={{ color: "#ffc85b" }}
+                >
                   Great British Food Festival
                 </h4>
               </div>
               <div className="w-full py-4 bg-white flex items-center justify-center border-t border-gray-100">
-                <button className="text-[15px] hover:opacity-80 transition-opacity" style={{ color: "#0a36af" }}>
+                <button
+                  className="text-[15px] hover:opacity-80 transition-opacity"
+                  style={{ color: "#0a36af" }}
+                >
                   Read more...
                 </button>
               </div>
@@ -1233,6 +1266,58 @@ function App() {
               >
                 Close
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showEventModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-60">
+          <div className=" bg-white border-b border-gray-200 border-[1px] max-w-4xl w-full max-h-[90vh] overflow-y-auto flex flex-col relative shadow-2xl">
+            {/* Header */}
+            <div className="sticky top-0 bg-white border-b-[1px] border-black py-4 px-6 flex items-center justify-center z-10">
+              <h2
+                className="text-[18px] md:text-[20px] font-bold uppercase tracking-wide"
+                style={{ color: "#0a36af" }}
+              >
+                FOODIES FESTIVAL 2026
+              </h2>
+              <button
+                onClick={() => setShowEventModal(false)}
+                className="absolute right-4 p-2 hover:bg-gray-100 rounded-full transition-colors"
+                aria-label="Close modal"
+              >
+                <X size={24} style={{ color: "#0a36af" }} />
+              </button>
+            </div>
+
+            {/* Image Section */}
+            <div className="w-full h-[250px] md:h-[400px] bg-white border-b-[1px] border-black flex items-center justify-center relative">
+              <span className="text-black text-[16px]">Image</span>
+              {/* Replace the span above with your actual image tag: */}
+              {/* <img src="/your-image.jpg" alt="Event" className="absolute inset-0 w-full h-full object-cover" /> */}
+            </div>
+
+            {/* Text Content Section */}
+            <div className="p-6 md:p-8 space-y-6 text-black text-[15px] md:text-[16px] leading-relaxed">
+              <p>
+                We’ll be at the Rezzilli stand with tastings, chats and bottle
+                sales.
+              </p>
+
+              <div>
+                <p className="font-bold mb-3">Locations and Dates:</p>
+                <ul className="space-y-3">
+                  <li>&bull; Brighton &ndash; Preston Park, May 2026</li>
+                  <li>&bull; Syon Park &ndash; London, May 2026</li>
+                  <li>&bull; Tatton Park | Summer 2026</li>
+                  <li>&bull; Edinburgh | Summer 2026</li>
+                </ul>
+              </div>
+
+              <p className="pt-2">
+                Also planned: Glasgow, Oxford and Bath (dates TBC). Our team
+                will be in full Rezzilli merchandise, so you can’t miss us.
+              </p>
             </div>
           </div>
         </div>

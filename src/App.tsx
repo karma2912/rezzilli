@@ -249,7 +249,6 @@ function App() {
         <Carousel images={carouselImages} />
       </section>
 
-      {/* From Mama's Kitchen Section */}
       <section
         id="origins"
         className="w-full px-4 md:px-6 py-12 md:py-16"
@@ -295,7 +294,6 @@ function App() {
         style={{ backgroundColor: "#ffffff" }}
       >
         <div className="max-w-6xl mx-auto px-4 md:px-8">
-          {/* Section Title */}
           <h2
             className="text-center text-[26px] md:text-[32px] font-bold mb-8 uppercase tracking-wide"
             style={{ color: "#0a36af" }}
@@ -303,11 +301,8 @@ function App() {
             Why Rezzilli?
           </h2>
 
-          {/* 3-Column Features Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16 lg:gap-20">
-            {/* Feature 1: Real Sicilian Lemon */}
             <div className="flex flex-col items-center text-center">
-              {/* NOTE: Update src with your lemon icon image */}
               <div className="h-40 md:h-48 flex items-center justify-center mb-6">
                 <img
                   src="/image10.png"
@@ -332,9 +327,7 @@ function App() {
               </p>
             </div>
 
-            {/* Feature 2: No Added Sugar */}
             <div className="flex flex-col items-center text-center">
-              {/* NOTE: Update src with your no sugar icon image */}
               <div className="h-40 md:h-48 flex items-center justify-center mb-6">
                 <img
                   src="/image8.png"
@@ -357,10 +350,7 @@ function App() {
                 our ingredients shine through in every drop.
               </p>
             </div>
-
-            {/* Feature 3: Bottles and Packaging */}
             <div className="flex flex-col items-center text-center">
-              {/* NOTE: Update src with your recycle icon image */}
               <div className="h-40 md:h-48 flex items-center justify-center mb-6">
                 <img
                   src="/image9.png"
@@ -387,9 +377,9 @@ function App() {
         </div>
       </section>
 
-      <section
+     <section
         id="events"
-        className="w-full py-12 md:py-16 bg-white"
+        className="w-full py-12 md:py-16 bg-white mt-24 md:mt-32"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 mb-12">
           <h2
@@ -399,63 +389,43 @@ function App() {
             Events & Updates
           </h2>
         </div>
-
-        <div className="flex flex-col md:flex-row w-full items-stretch">
-          <div className="w-full md:w-1/2 flex flex-col items-center justify-center p-8 md:p-12">
-            <div className="w-[250px] h-[250px] md:w-[300px] md:h-[300px] bg-white border-2 border-gray-200 flex items-center justify-center shadow-lg">
-              <span className="text-black text-[15px] font-medium">Image</span>
-            </div>
-            <p className="mt-4 text-[13px] md:text-[14px] text-gray-700">
-              Ref:{" "}
-              <a
-                href="https://www.fullersbrewery.co.uk/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:underline font-medium"
-                style={{ color: "#0a36af" }}
-              >
-                https://www.fullersbrewery.co.uk/
-              </a>
-            </p>
+        <div className="flex flex-col md:flex-row w-full items-stretch min-h-[500px] md:min-h-[800px]">
+          <div className="w-full md:w-1/2 flex flex-col items-center justify-center p-8 md:p-12 bg-gray-100">
+           Image
           </div>
-
-         <div className="w-full md:w-1/2 flex items-center justify-start p-4 md:pl-8 lg:pl-12">
-            <div
-              className="w-full md:w-[70%] p-8 md:p-12 flex flex-col justify-center text-center min-h-[400px] md:min-h-[450px] shadow-2xl"
-              style={{ backgroundColor: "#0a36af" }}
+          <div
+            className="w-full md:w-1/2 p-10 md:p-16 lg:px-24 flex flex-col items-center justify-center text-center"
+            style={{ backgroundColor: "#0a36af" }}
+          >
+            <h3
+              className="text-[28px] md:text-[34px] font-bold mb-6 uppercase text-center"
+              style={{ color: "#ffc85b" }} 
             >
-              <h3
-                className="text-[22px] md:text-[26px] font-bold mb-6 uppercase"
-                style={{ color: "#ffc85b" }}
-              >
-                Official Launch Night
-              </h3>
+              OFFICIAL LAUNCH NIGHT
+            </h3>
 
-              <p
-                className="text-[16px] md:text-[18px] font-bold mb-4"
-                style={{ color: "#ffc85b" }}
-              >
-                Venue: Isabel’s Restaurant & Bar, Burton-upon-Trent
-              </p>
+            <p
+              className="text-[16px] md:text-[18px] font-medium mb-4 uppercase text-center"
+              style={{ color: "#ffc85b" }}
+            >
+              Venue: Isabel’s Restaurant & Bar, Burton-upon-Trent
+            </p>
 
-              <p
-                className="text-[16px] md:text-[18px] font-bold mb-8"
-                style={{ color: "#ffc85b" }}
-              >
-                Date: April 2026
-              </p>
+            <p
+              className="text-[16px] md:text-[18px] font-medium mb-8 uppercase text-center"
+              style={{ color: "#ffc85b" }}
+            >
+              Date: April 2026
+            </p>
 
-              <p
-                className="text-[15px] leading-relaxed mx-auto max-w-lg"
-                style={{ color: "#ffffff" }}
-              >
-                Join us for the official Rezzilli launch night at Isabel’s. An
-                evening of tastings, pizza, cocktails and DJ sets with guests
-                from the drinks trade, cocktail bar owners and influencers.
-                Anyone and everyone is invited.
-              </p>
-            </div>
-
+            <p
+              className="text-[15px] leading-relaxed mx-auto max-w-lg text-center text-white"
+            >
+              Join us for the official Rezzilli launch night at Isabel’s. An
+              evening of tastings, pizza, cocktails and DJ sets with guests
+              from the drinks trade, cocktail bar owners and influencers.
+              Anyone and everyone is invited.
+            </p>
           </div>
         </div>
 
@@ -506,7 +476,6 @@ function App() {
                 </button>
               </div>
             </div>
-
           </div>
         </div>
       </section>
@@ -1156,7 +1125,6 @@ function App() {
         </div>
       )}
 
-      {/* Alcohol and Safe Use Modal */}
       {showAlcoholPolicy && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-2 md:p-4 bg-black bg-opacity-50">
           <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">

@@ -248,7 +248,8 @@ function App() {
                   />
                 </svg>
               </button>
-              <button
+              <Link
+              to="/cart"
                 className="relative hover:opacity-80 transition-opacity mt-0.5"
                 aria-label="Shopping Cart"
               >
@@ -267,7 +268,7 @@ function App() {
                 >
                   1
                 </span>
-              </button>
+              </Link>
             </div>
           </div>
         </div>

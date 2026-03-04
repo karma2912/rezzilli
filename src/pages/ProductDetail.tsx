@@ -1,144 +1,29 @@
 import { useState } from "react";
-import { ChevronDown, Minus, Plus, Trash2, X } from "lucide-react";
 import { Link } from "react-router-dom";
+import { ChevronDown, Minus, Plus, Trash2, X } from "lucide-react";
 
-function Spritz() {
-  const [isSortOpen, setIsSortOpen] = useState(false);
-  const [selectedSort, setSelectedSort] = useState("Date, new to old");
-
-  const sortOptions = [
-    "Price, low to high",
-    "Price, high to low",
-    "Alphabetically, A to Z",
-    "Alphabetically, Z to A",
-    "Date, new to old",
-    "Date, old to new",
-  ];
-
-  // Using an array makes it incredibly easy to add more products later!
-  // It will automatically form a 3x3 grid.
-  const products = [
-    {
-      id: 1,
-      name: "NON-ALCOHOL ORANGE ITALIAN SPRITZ",
-      image: "/image6.png", // Update with your actual Senza bottle image
-      buttonText: "Coming soon",
-      price: "£24",
-      oldPrice: "£30",
-    },
-    {
-      id: 2,
-      name: "LEMON ITALIAN SPRITZ",
-      image: "/image4.png", // Update with your actual Limoncini bottle image
-      buttonText: "ADD TO CART",
-      price: "£24",
-      oldPrice: "£30",
-    },
-    {
-      id: 3,
-      name: "ORANGE ITALIAN SPRITZ 275ml x 24 BOTTLES",
-      image: "/image5.png", // Update with your actual Arancini bottle image
-      buttonText: "Coming soon",
-      price: "£24",
-      oldPrice: "£30",
-    },
-  ];
-
-  const [formData, setFormData] = useState({
-    whoAreYou: "",
-    firstName: "",
-    lastName: "",
-    email: "",
-    message: "",
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitMessage, setSubmitMessage] = useState("");
-  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+function ProductDetail() {
+  const [quantity, setQuantity] = useState(1);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [showAlcoholPolicy, setShowAlcoholPolicy] = useState(false);
-
-  // State to control the cart drawer visibility
-  const [isCartOpen, setIsCartOpen] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setSubmitMessage("");
-
-    if (
-      !formData.whoAreYou ||
-      !formData.firstName ||
-      !formData.lastName ||
-      !formData.email ||
-      !formData.message
-    ) {
-      setSubmitMessage("Please fill all required fields.");
-      setIsSubmitting(false);
-      return;
-    }
-
-    const API_URL = "/api/contact";
-
-    try {
-      const payload = {
-        whoAreYou: formData.whoAreYou.trim(),
-        firstName: formData.firstName.trim(),
-        lastName: formData.lastName.trim(),
-        email: formData.email.trim(),
-        message: formData.message.trim(),
-      };
-
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        if (data.errors) {
-          const errorMessages = Object.values(data.errors).flat().join(", ");
-          throw new Error(errorMessages);
-        }
-        throw new Error(data.message || "Submission failed");
-      }
-
-      setSubmitMessage(
-        data.message || "Thank you! Your message has been sent.",
-      );
-      setIsFormSubmitted(true);
-
-      setFormData({
-        whoAreYou: "",
-        firstName: "",
-        lastName: "",
-        email: "",
-        message: "",
-      });
-    } catch (error: any) {
-      console.error("Submission Error:", error);
-      setSubmitMessage(
-        error.message || "Something went wrong. Please try again.",
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleAddToCart = (buttonText: string) => {
-    if (buttonText === "ADD TO CART") {
-      setIsCartOpen(true);
-    }
-  };
-
   const isLoggedIn = false;
+  const handleAddToCart = () => {
+    setIsCartOpen(true);
+  };
+  // Dummy product data based on the client's Limoncini mockup
+  const product = {
+    name: "Limoncini",
+    tagline: "Sparkling Sicilian Lemon Italian Spritz",
+    price: "£32.99",
+    abv: "3.4%",
+    size: "275ML",
+    image: "/image4.png",
+    variant: "24 Bottles",
+  };
+
   return (
-    <div className="min-h-screen w-full bg-white flex flex-col font-['Libre_Baskerville',_serif]">
-      {/* Insert your Navbar here */}
+    <div className="min-h-screen w-full flex flex-col font-['Libre_Baskerville',_serif] bg-white">
       <header
         className="w-full py-3 px-6 md:py-4 md:px-6 sticky top-0 z-50 header-container"
         style={{ backgroundColor: "#0a36af" }}
@@ -332,121 +217,299 @@ function Spritz() {
         </div>
       </header>
 
-      <main className="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-12 md:py-20">
-        {/* Title */}
-        <div className="flex justify-center mb-12 md:mb-16">
-          <h1
-            className="text-[28px] font-bold uppercase tracking-wide border-b-4 pb-2"
-            style={{ color: "#0a36af", borderColor: "#0a36af" }}
-          >
-            Sip The Summer
-          </h1>
+      {/* Breadcrumbs */}
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-6">
+        <div className="text-[13px] text-gray-500 font-semibold tracking-wide uppercase">
+          <Link to="/" className="hover:text-[#0a36af] transition-colors">
+            Home
+          </Link>
+          <span className="mx-2">/</span>
+          <Link to="/spritz" className="hover:text-[#0a36af] transition-colors">
+            Shop
+          </Link>
+          <span className="mx-2">/</span>
+          <span className="text-[#0a36af]">{product.name}</span>
         </div>
+      </div>
 
-        {/* Filter and Product Count Row */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
-          <div className="relative w-full md:w-64">
-            <label className="absolute -top-2.5 left-3 bg-white px-1 text-[12px] font-bold text-[#0a36af] z-10">
-              Sort by
-            </label>
-            <button
-              onClick={() => setIsSortOpen(!isSortOpen)}
-              className="w-full flex items-center justify-between px-4 py-3 border-2 bg-white transition-colors"
-              style={{ borderColor: "#0a36af", color: "#0a36af" }}
+      <main className="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 pb-20">
+        {/* --- TOP SECTION: Image & Buy Box --- */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 items-start mb-20">
+          {/* Left: Product Image */}
+          <div className="w-full bg-white rounded-2xl flex items-center justify-center p-10 lg:p-20 border border-gray-100">
+            <img
+              src={product.image}
+              alt={product.name}
+              className="w-full max-w-[300px] lg:max-w-[400px] object-contain hover:scale-105 transition-transform duration-500"
+            />
+          </div>
+
+          {/* Right: Product Details & Buy Box */}
+          <div className="w-full flex flex-col pt-4 lg:pt-8">
+            <h1
+              className="text-3xl font-extrabold uppercase tracking-tighter mb-2"
+              style={{ color: "#0a36af" }}
             >
-              <span className="text-[14px] font-semibold">{selectedSort}</span>
-              <ChevronDown
-                size={18}
-                className={`transition-transform duration-200 ${
-                  isSortOpen ? "rotate-180" : ""
-                }`}
-              />
-            </button>
+              {product.name}
+            </h1>
+            <p className="text-[15px] text-gray-600 font-medium mb-6">
+              {product.tagline}
+            </p>
 
-            {isSortOpen && (
+            {/* Meta Info */}
+            <div className="flex items-center gap-4 text-[13px] font-bold uppercase tracking-widest text-gray-800 mb-8 border-b border-gray-200 pb-6">
+              <span>ABV {product.abv}</span>
+              <span className="text-gray-300">|</span>
+              <span>SIZE {product.size}</span>
+            </div>
+
+            {/* Price & Variant */}
+            <div className="flex flex-col gap-2 mb-8">
+              <span className="text-2xl font-extrabold text-black">
+                {product.price}
+              </span>
+              <span className="text-[13px] text-gray-500 font-medium">
+                {product.variant}
+                {quantity > 1 && (
+                  <span className="ml-1.5 font-bold text-[#0a36af]">
+                    x{quantity}
+                  </span>
+                )}
+              </span>
+            </div>
+            <div className="flex flex-col sm:flex-row items-center gap-4 mb-10">
+              {/* Quantity Selector */}
               <div
-                className="absolute top-full left-0 w-full bg-white border-2 border-t-0 shadow-xl z-20"
-                style={{ borderColor: "#0a36af" }}
+                className="flex items-center justify-between w-full sm:w-32 h-14 border-2 rounded-xl px-4"
+                style={{ borderColor: "rgba(10, 54, 175, 0.2)" }}
               >
-                {sortOptions.map((option, index) => (
-                  <button
-                    key={index}
-                    onClick={() => {
-                      setSelectedSort(option);
-                      setIsSortOpen(false);
-                    }}
-                    className="w-full text-left px-4 py-2.5 text-[14px] hover:bg-blue-50 transition-colors"
-                    style={{ color: "#0a36af" }}
-                  >
-                    {option}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <div
-            className="px-6 py-3 border-2 font-semibold text-[15px]"
-            style={{ borderColor: "#e5e7eb", color: "#0a36af" }}
-          >
-            {products.length} products
-          </div>
-        </div>
-
-        {/* Products Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
-          {products.map((product) => (
-            <div key={product.id} className="flex flex-col items-center w-full">
-              <Link
-                to={`/product/${product.id}`}
-                className="block h-[300px] md:h-[380px] w-full mb-6 group cursor-pointer"
-              >
-                <div className="w-full h-full flex items-center justify-center">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="h-full w-auto object-contain drop-shadow-xl group-hover:scale-105 transition-transform duration-500"
-                  />
-                </div>
-              </Link>
-
-              <button
-                onClick={() => handleAddToCart(product.buttonText)}
-                className={`w-full py-3 border-[2px] border-black font-bold text-[18px] md:text-[20px] uppercase transition-opacity shadow-sm ${
-                  product.buttonText === "ADD TO CART"
-                    ? "hover:opacity-90 cursor-pointer"
-                    : "opacity-70 cursor-not-allowed"
-                }`}
-                style={{ backgroundColor: "#0a36af", color: "#ffc85b" }}
-                disabled={product.buttonText !== "ADD TO CART"}
-              >
-                {product.buttonText}
-              </button>
-
-              <div className="mt-5 w-full flex flex-col items-center text-center">
-                <p
-                  className="text-[13px] md:text-[14px] font-semibold uppercase leading-snug px-2 min-h-[40px]"
+                <button
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  className="text-gray-500 hover:text-[#0a36af] transition-colors"
+                >
+                  <Minus size={20} strokeWidth={2.5} />
+                </button>
+                <span
+                  className="text-[15px] font-extrabold"
                   style={{ color: "#0a36af" }}
                 >
-                  {product.name}
-                </p>
-                <div className="mt-3 flex items-center justify-center gap-3">
-                  <span
-                    className="text-[16px] font-bold"
-                    style={{ color: "#0a36af" }}
-                  >
-                    {product.price}
-                  </span>
-                  <span className="text-[15px] text-gray-500 line-through decoration-gray-500">
-                    {product.oldPrice}
-                  </span>
-                </div>
+                  {quantity}
+                </span>
+                <button
+                  onClick={() => setQuantity(quantity + 1)}
+                  className="text-gray-500 hover:text-[#0a36af] transition-colors"
+                >
+                  <Plus size={20} strokeWidth={2.5} />
+                </button>
+              </div>
+              <button
+                onClick={() => handleAddToCart()}
+                className="w-full h-14 rounded-xl font-extrabold text-[15px] uppercase tracking-widest transition-opacity hover:opacity-90 shadow-md"
+                style={{ backgroundColor: "#0a36af", color: "#ffc85b" }}
+              >
+                Add To Cart
+              </button>
+            </div>
+
+            {/* Delivery Highlight */}
+            <div className="flex items-center gap-3 p-4 rounded-xl bg-[#faf9f6] border border-gray-100">
+              <span className="text-xl">📦</span>
+              <p className="text-[14px] font-medium text-gray-700">
+                Free Standard UK Delivery on orders over £50
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* --- BOTTOM SECTION: Expanded Information (Scrollable) --- */}
+        <div className="w-full max-w-5xl mx-auto flex flex-col gap-16 pt-16 border-t border-gray-200">
+          {/* 1. Description */}
+          <div>
+            <h2
+              className="font-extrabold text-[22px] md:text-[28px] uppercase tracking-wide mb-6"
+              style={{ color: "#0a36af" }}
+            >
+              Product Description
+            </h2>
+            <div className="text-[15px] leading-relaxed text-gray-700 space-y-4">
+              <p>
+                Limoncini - Sparkling Alcoholic Sicilian Lemon alcoholic drink
+                with natural flavours and 3.4% alcohol volume.
+              </p>
+              <p>
+                <strong className="text-black">Ingredients:</strong> Carbonated
+                water, distilled non grain spirit, beet sugar, 10% Sicilian
+                lemon juice from concentrate, natural flavours, antioxidant
+                (ascorbic acid).
+              </p>
+              <p>
+                <strong className="text-black">Tasting note:</strong> Rezzilli
+                is a premium sparkling Sicilian Lemon alcoholic drink made with
+                natural flavourings and white Vermouth. Suitable for Vegans and
+                Vegetarians. Gluten Free. 3.4% Alc Vol. Best served chilled over
+                lots of ice, garnish with a sprig of rosemary, lavender or fresh
+                garden mint in a Spritz glass. Not suitable for persons under 18
+                years old.
+              </p>
+            </div>
+          </div>
+
+          {/* 2. Delivery */}
+          <div>
+            <h2
+              className="font-extrabold text-[22px] md:text-[28px] uppercase tracking-wide mb-6"
+              style={{ color: "#0a36af" }}
+            >
+              Delivery Information
+            </h2>
+            <div className="text-[15px] leading-relaxed text-gray-700 grid grid-cols-1 md:grid-cols-2 gap-8 bg-[#faf9f6] p-8 rounded-xl border border-gray-100">
+              <div>
+                <h4 className="font-bold text-black mb-3 text-[16px] underline underline-offset-4 decoration-[#ffc85b]">
+                  Standard UK Delivery:
+                </h4>
+                <ul className="space-y-3">
+                  <li className="flex items-center gap-2">
+                    <span className="text-[#0a36af]">&bull;</span> Orders under
+                    £50 - £5
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="text-[#0a36af]">&bull;</span> Orders over
+                    £50 - Free
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-bold text-black mb-3 text-[16px] underline underline-offset-4 decoration-[#ffc85b]">
+                  Next Day Delivery:
+                </h4>
+                <ul className="space-y-3">
+                  <li className="flex items-center gap-2">
+                    <span className="text-[#0a36af]">&bull;</span> Orders under
+                    £50 - £7.95
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="text-[#0a36af]">&bull;</span> Orders over
+                    £50 - £2.95
+                  </li>
+                </ul>
               </div>
             </div>
-          ))}
+          </div>
+
+          {/* 3. Nutritional Info */}
+          <div>
+            <h2
+              className="font-extrabold text-[22px] md:text-[28px] uppercase tracking-wide mb-6"
+              style={{ color: "#0a36af" }}
+            >
+              Nutritional Information
+            </h2>
+            <div className="text-[15px] leading-relaxed text-gray-700">
+              <p className="font-bold text-black mb-4">
+                Typical values (average per 100 ml)
+              </p>
+
+              {/* Styled Table */}
+              <div className="overflow-hidden border border-gray-200 rounded-lg max-w-2xl">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="bg-[#faf9f6]">
+                      <th className="p-4 border-b border-r border-gray-200 font-bold text-black w-1/3">
+                        Nutrient
+                      </th>
+                      <th className="p-4 border-b border-gray-200 font-bold text-black">
+                        Amount per 100 ml
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="border-b border-gray-200">
+                      <td className="p-4 border-r border-gray-200 font-medium text-black">
+                        Energy
+                      </td>
+                      <td className="p-4">
+                        166 kJ / 40 kcal (108 kcal per 275 ml)
+                      </td>
+                    </tr>
+                    <tr className="border-b border-gray-200">
+                      <td className="p-4 border-r border-gray-200 font-medium text-black">
+                        Fat
+                      </td>
+                      <td className="p-4">0 g</td>
+                    </tr>
+                    <tr className="border-b border-gray-200">
+                      <td className="p-4 border-r border-gray-200 font-medium text-black">
+                        Saturated fat
+                      </td>
+                      <td className="p-4">0 g</td>
+                    </tr>
+                    <tr className="border-b border-gray-200">
+                      <td className="p-4 border-r border-gray-200 font-medium text-black">
+                        Carbohydrate
+                      </td>
+                      <td className="p-4">3.8 g</td>
+                    </tr>
+                    <tr className="border-b border-gray-200">
+                      <td className="p-4 border-r border-gray-200 font-medium text-black">
+                        Sugar (Carbs)
+                      </td>
+                      <td className="p-4">3.7 g</td>
+                    </tr>
+                    <tr className="border-b border-gray-200">
+                      <td className="p-4 border-r border-gray-200 font-medium text-black">
+                        Fiber
+                      </td>
+                      <td className="p-4">0 g</td>
+                    </tr>
+                    <tr className="border-b border-gray-200">
+                      <td className="p-4 border-r border-gray-200 font-medium text-black">
+                        Protein
+                      </td>
+                      <td className="p-4">0 g</td>
+                    </tr>
+                    <tr>
+                      <td className="p-4 border-r border-gray-200 font-medium text-black">
+                        Salt
+                      </td>
+                      <td className="p-4">0.01 g</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Additional Info */}
+              <div className="mt-8 bg-[#faf9f6] p-6 md:p-8 rounded-xl border border-gray-100">
+                <p className="font-bold text-black mb-4 text-[16px] uppercase tracking-wide">
+                  Additional information
+                </p>
+                <ul className="space-y-3 text-gray-700">
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#ffc85b] mt-1">&bull;</span> Suitable
+                    for vegans and vegetarians.
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#ffc85b] mt-1">&bull;</span> No
+                    sweeteners, no preservatives, no artificial flavours.
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#ffc85b] mt-1">&bull;</span> Not
+                    recommended for individuals under 18 years of age.
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#ffc85b] mt-1">&bull;</span> The
+                    mineral quantities of the water used have been included in
+                    the sodium calculation for the salt value.
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#ffc85b] mt-1">&bull;</span> Gluten
+                    free
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
       </main>
-      {/* --- CART DRAWER START --- */}
 
       {/* Background Overlay */}
       {isCartOpen && (
@@ -596,196 +659,6 @@ function Spritz() {
           </div>
         </div>
       </div>
-      <section
-        id="contact"
-        className="w-full px-4 md:px-6 py-12 md:py-16"
-        style={{ backgroundColor: "#f8f9fa" }}
-      >
-        <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-start">
-            <div className="flex flex-col justify-start">
-              <h2
-                className="text-[30px] font-bold mb-4 md:mb-8"
-                style={{ color: "#0a36af" }}
-              >
-                CONTACT US
-              </h2>
-              <p
-                className="text-[15px] leading-relaxed"
-                style={{ color: "#000000", textAlign: "justify" }}
-              >
-                Have a question, special request, or want to stock our drinks?
-                Fill out the form and our team will get back to you as soon as
-                possible.
-              </p>
-              <br />
-              <p
-                className="text-[15px] leading-relaxed"
-                style={{ color: "#000000", textAlign: "justify" }}
-              >
-                Whether you’re a customer, partner, or retailer, we’d love to
-                hear from you and help with anything you need.
-              </p>
-            </div>
-            <div className="flex flex-col justify-start">
-              {isFormSubmitted ? (
-                <div className="flex items-center justify-center p-8 md:p-12">
-                  <p
-                    className="font-medium text-center leading-relaxed text-base md:text-lg"
-                    style={{ color: "#000000" }}
-                  >
-                    {submitMessage}
-                  </p>
-                </div>
-              ) : (
-                <form
-                  onSubmit={handleSubmit}
-                  className="space-y-4 md:space-y-6"
-                >
-                  <div>
-                    <label
-                      htmlFor="whoAreYou"
-                      className="block text-[15px] font-medium mb-2"
-                      style={{ color: "#000000" }}
-                    >
-                      Who are you? <span style={{ color: "#ef4444" }}>*</span>
-                    </label>
-                    <select
-                      id="whoAreYou"
-                      value={formData.whoAreYou}
-                      onChange={(e) =>
-                        setFormData({ ...formData, whoAreYou: e.target.value })
-                      }
-                      required
-                      className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-[15px]"
-                      style={{
-                        backgroundColor: "#ffffff",
-                        fontSize: formData.whoAreYou === "" ? "14px" : "16px",
-                        color:
-                          formData.whoAreYou === "" ? "#9ca3af" : "#000000",
-                      }}
-                    >
-                      <option value="" style={{ fontSize: "14px" }}>
-                        Select an option
-                      </option>
-                      <option value="Consumer">Consumer</option>
-                      <option value="Distributor">Distributor</option>
-                      <option value="Bar/Restaurant Owner">
-                        Bar/Restaurant Owner
-                      </option>
-                      <option value="Other">Other</option>
-                    </select>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label
-                        htmlFor="firstName"
-                        className="block text-[15px] font-medium mb-2"
-                        style={{ color: "#000000" }}
-                      >
-                        First Name <span style={{ color: "#ef4444" }}>*</span>
-                      </label>
-                      <input
-                        type="text"
-                        id="firstName"
-                        value={formData.firstName}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            firstName: e.target.value,
-                          })
-                        }
-                        required
-                        className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-[15px]"
-                        style={{ backgroundColor: "#ffffff" }}
-                      />
-                    </div>
-                    <div>
-                      <label
-                        htmlFor="lastName"
-                        className="block text-[15px] font-medium mb-2"
-                        style={{ color: "#000000" }}
-                      >
-                        Last Name <span style={{ color: "#ef4444" }}>*</span>
-                      </label>
-                      <input
-                        type="text"
-                        id="lastName"
-                        value={formData.lastName}
-                        onChange={(e) =>
-                          setFormData({ ...formData, lastName: e.target.value })
-                        }
-                        required
-                        className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-[15px]"
-                        style={{ backgroundColor: "#ffffff" }}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="email"
-                      className="block text-[15px] font-medium mb-2"
-                      style={{ color: "#000000" }}
-                    >
-                      Email <span style={{ color: "#ef4444" }}>*</span>
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      value={formData.email}
-                      onChange={(e) =>
-                        setFormData({ ...formData, email: e.target.value })
-                      }
-                      required
-                      className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:ring-transparent text-[15px]"
-                      style={{ backgroundColor: "#ffffff" }}
-                    />
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="message"
-                      className="block text-[15px] font-medium mb-2"
-                      style={{ color: "#000000" }}
-                    >
-                      Message <span style={{ color: "#ef4444" }}>*</span>
-                    </label>
-                    <textarea
-                      id="message"
-                      value={formData.message}
-                      onChange={(e) =>
-                        setFormData({ ...formData, message: e.target.value })
-                      }
-                      required
-                      rows={4}
-                      className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-[15px] resize-vertical"
-                      style={{ backgroundColor: "#ffffff" }}
-                      placeholder="Tell us more about your interest..."
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full px-6 md:px-8 py-[10px] rounded-lg font-semibold text-[15px] transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed uppercase"
-                    style={{ backgroundColor: "#0a36af", color: "#ffffff" }}
-                  >
-                    {isSubmitting ? "Submitting..." : "Submit"}
-                  </button>
-
-                  {submitMessage && !isFormSubmitted && (
-                    <p className="text-center font-medium text-sm md:text-base text-red-600">
-                      {submitMessage}
-                    </p>
-                  )}
-                </form>
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
       <footer
         className="w-full px-4 py-8 md:px-6 md:py-12"
         style={{ backgroundColor: "#0a36af" }}
@@ -853,6 +726,8 @@ function Spritz() {
           </p>
         </div>
       </footer>
+
+      {/* Privacy Policy Modal */}
       {showPrivacyPolicy && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-2 md:p-4 bg-black bg-opacity-50">
           <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
@@ -1354,4 +1229,4 @@ function Spritz() {
   );
 }
 
-export default Spritz;
+export default ProductDetail;

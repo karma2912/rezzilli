@@ -23,6 +23,7 @@ function Cart() {
     },
   ];
 
+  const isLoggedIn = false 
   return (
     <div className="min-h-screen w-full bg-white flex flex-col font-['Libre_Baskerville',_serif]">
       <header
@@ -112,7 +113,7 @@ function Cart() {
                       Spritz
                     </Link>
                     <Link
-                      to="merchandise"
+                      to="/merchandise"
                       className="px-5 py-2.5 text-start text-[15px] font-semibold hover:bg-white/10 transition-colors whitespace-nowrap"
                       style={{ color: "#ffc85b" }}
                     >
@@ -136,25 +137,62 @@ function Cart() {
                 Contact Us
               </Link>
             </nav>
-            <div className="absolute right-0 flex items-center gap-5 px-3 py-1.5 md:px-4 md:py-2 right-actions">
-              <button
-                className="hover:opacity-80 transition-opacity"
-                aria-label="User Profile"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="w-5 h-5 md:w-6 md:h-6"
-                  style={{ color: "#ffffff" }}
+           <div className="absolute right-0 flex items-center gap-5 px-3 py-1.5 md:px-4 md:py-2 right-actions">
+              <div className="relative group flex items-center h-full">
+                <button
+                  className="hover:opacity-80 transition-opacity flex items-center py-2"
+                  aria-label="User Profile"
                 >
-                  <path
-                    fillRule="evenodd"
-                    d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </button>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="w-5 h-5 md:w-6 md:h-6"
+                    style={{ color: "#ffffff" }}
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </button>
+
+                {/* Dropdown Menu */}
+                <div className="absolute right-0 md:right-1/2 md:translate-x-1/2 top-full pt-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 min-w-[140px]">
+                  <div
+                    className="flex flex-col py-2 shadow-2xl"
+                    style={{ backgroundColor: "#0a36af" }}
+                  >
+                    {!isLoggedIn ? (
+                      <Link
+                        to="/login"
+                        className="block px-5 py-2.5 text-center text-[15px] font-semibold hover:bg-white/10 transition-colors whitespace-nowrap"
+                        style={{ color: "#ffc85b" }}
+                      >
+                        Login
+                      </Link>
+                    ) : (
+                      <>
+                        <Link
+                          to="/profile"
+                          className="block px-5 py-2.5 text-center text-[15px] font-semibold hover:bg-white/10 transition-colors whitespace-nowrap"
+                          style={{ color: "#ffc85b" }}
+                        >
+                          Profile
+                        </Link>
+                        <button
+                          onClick={() => console.log("Sign out clicked")}
+                          className="block w-full px-5 py-2.5 text-center text-[15px] font-semibold hover:bg-white/10 transition-colors whitespace-nowrap"
+                          style={{ color: "#ffc85b" }}
+                        >
+                          Sign Out
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
               <Link
               to="/cart"
                 className="relative hover:opacity-80 transition-opacity mt-0.5"

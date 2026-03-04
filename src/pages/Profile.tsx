@@ -1,185 +1,66 @@
-import { useState } from "react";
-import { ChevronDown, Minus, Plus, Trash2, X } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Pencil, Plus, ChevronDown, X } from "lucide-react";
+import { useState } from "react";
 
-function Spritz() {
-  const [isSortOpen, setIsSortOpen] = useState(false);
-  const [selectedSort, setSelectedSort] = useState("Date, new to old");
-
-  const sortOptions = [
-    "Price, low to high",
-    "Price, high to low",
-    "Alphabetically, A to Z",
-    "Alphabetically, Z to A",
-    "Date, new to old",
-    "Date, old to new",
-  ];
-
-  // Using an array makes it incredibly easy to add more products later!
-  // It will automatically form a 3x3 grid.
-  const products = [
-    {
-      id: 1,
-      name: "NON-ALCOHOL ORANGE ITALIAN SPRITZ",
-      image: "/image6.png", // Update with your actual Senza bottle image
-      buttonText: "Coming soon",
-      price: "£24",
-      oldPrice: "£30",
+function Profile() {
+  const user = {
+    name: "Rusi Karanjia",
+    email: "karanjia.rusi@gmail.com",
+    address: {
+      company: "XXX",
+      line1: "xwincwin ninin",
+      line2: "nisncisncis",
+      city: "Mumbai",
+      region: "Maharashtra",
+      zip: "401303",
+      country: "India",
+      phone: "+919920312153",
     },
-    {
-      id: 2,
-      name: "LEMON ITALIAN SPRITZ",
-      image: "/image4.png", // Update with your actual Limoncini bottle image
-      buttonText: "ADD TO CART",
-      price: "£24",
-      oldPrice: "£30",
-    },
-    {
-      id: 3,
-      name: "ORANGE ITALIAN SPRITZ 275ml x 24 BOTTLES",
-      image: "/image5.png", // Update with your actual Arancini bottle image
-      buttonText: "Coming soon",
-      price: "£24",
-      oldPrice: "£30",
-    },
-  ];
+  };
 
-  const [formData, setFormData] = useState({
-    whoAreYou: "",
-    firstName: "",
-    lastName: "",
-    email: "",
-    message: "",
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitMessage, setSubmitMessage] = useState("");
-  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+  // Dummy order data
+  const dummyOrder = {
+    id: "ORD-9823-XYZ",
+    date: "March 1, 2026",
+    status: "Processing",
+    total: "£48.00",
+    items: [
+      {
+        name: "LEMON ITALIAN SPRITZ 275ml x 24 BOTTLES",
+        quantity: 2,
+        image: "/image4.png",
+      },
+    ],
+  };
+
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [showAlcoholPolicy, setShowAlcoholPolicy] = useState(false);
+  const [activeTab, setActiveTab] = useState("profile"); // State to manage view
 
-  // State to control the cart drawer visibility
-  const [isCartOpen, setIsCartOpen] = useState(false);
+  const isLoggedIn = true;
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setSubmitMessage("");
-
-    if (
-      !formData.whoAreYou ||
-      !formData.firstName ||
-      !formData.lastName ||
-      !formData.email ||
-      !formData.message
-    ) {
-      setSubmitMessage("Please fill all required fields.");
-      setIsSubmitting(false);
-      return;
-    }
-
-    const API_URL = "/api/contact";
-
-    try {
-      const payload = {
-        whoAreYou: formData.whoAreYou.trim(),
-        firstName: formData.firstName.trim(),
-        lastName: formData.lastName.trim(),
-        email: formData.email.trim(),
-        message: formData.message.trim(),
-      };
-
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        if (data.errors) {
-          const errorMessages = Object.values(data.errors).flat().join(", ");
-          throw new Error(errorMessages);
-        }
-        throw new Error(data.message || "Submission failed");
-      }
-
-      setSubmitMessage(
-        data.message || "Thank you! Your message has been sent.",
-      );
-      setIsFormSubmitted(true);
-
-      setFormData({
-        whoAreYou: "",
-        firstName: "",
-        lastName: "",
-        email: "",
-        message: "",
-      });
-    } catch (error: any) {
-      console.error("Submission Error:", error);
-      setSubmitMessage(
-        error.message || "Something went wrong. Please try again.",
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleAddToCart = (buttonText: string) => {
-    if (buttonText === "ADD TO CART") {
-      setIsCartOpen(true);
-    }
-  };
-
-  const isLoggedIn = false;
   return (
-    <div className="min-h-screen w-full bg-white flex flex-col font-['Libre_Baskerville',_serif]">
-      {/* Insert your Navbar here */}
+    <div className="min-h-screen w-full flex flex-col font-['Libre_Baskerville',_serif] bg-white">
+      {/* Header */}
       <header
         className="w-full py-3 px-6 md:py-4 md:px-6 sticky top-0 z-50 header-container"
         style={{ backgroundColor: "#0a36af" }}
       >
         <style>{`
-    @media screen and (max-width: 700px) {
-      .header-container {
-        padding-left: 16px !important;
-        padding-right: 16px !important;
-      }
-    }
-
-    @media screen and (max-width: 560px) {
-      .header-nav-row {
-        flex-direction: column !important;
-        gap: 12px !important;
-      }
-      .right-actions {
-        position: static !important;
-        margin-top: 8px;
-      }
-      .nav-links {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 16px !important;
-      }
-    }
-
-    @media screen and (max-width: 320px) {
-      .header-container {
-        padding-left: 12px !important;
-        padding-right: 12px !important;
-      }
-      .header-logo {
-        height: 28px !important;
-      }
-      .origins-btn {
-        font-size: 11px !important;
-      }
-    }
-  `}</style>
+          @media screen and (max-width: 700px) {
+            .header-container { padding-left: 16px !important; padding-right: 16px !important; }
+          }
+          @media screen and (max-width: 560px) {
+            .header-nav-row { flex-direction: column !important; gap: 12px !important; }
+            .right-actions { position: static !important; margin-top: 8px; }
+            .nav-links { flex-wrap: wrap; justify-content: center; gap: 16px !important; }
+          }
+          @media screen and (max-width: 320px) {
+            .header-container { padding-left: 12px !important; padding-right: 12px !important; }
+            .header-logo { height: 28px !important; }
+            .origins-btn { font-size: 11px !important; }
+          }
+        `}</style>
         <div className="max-w-7xl mx-auto flex flex-col items-center relative">
           <img
             src="/rezzilli.png"
@@ -207,7 +88,7 @@ function Spritz() {
                   className="flex items-center gap-1 py-2 text-[15px] font-semibold hover:opacity-80 transition-opacity origins-btn whitespace-nowrap"
                   style={{ color: "#ffc85b" }}
                 >
-                  Shop
+                  Shop{" "}
                   <ChevronDown
                     size={16}
                     className="mt-[2px] transition-transform duration-200 group-hover:rotate-180"
@@ -270,8 +151,6 @@ function Spritz() {
                     />
                   </svg>
                 </button>
-
-                {/* Dropdown Menu */}
                 <div className="absolute right-0 md:right-1/2 md:translate-x-1/2 top-full pt-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 min-w-[140px]">
                   <div
                     className="flex flex-col py-2 shadow-2xl"
@@ -287,20 +166,21 @@ function Spritz() {
                       </Link>
                     ) : (
                       <>
-                        <Link
-                          to="/profile"
-                          className="block px-5 py-2.5 text-center text-[15px] font-semibold hover:bg-white/10 transition-colors whitespace-nowrap"
+                        <button
+                          onClick={() => setActiveTab("profile")}
+                          className="block w-full text-left px-5 py-2.5 text-[15px] font-semibold hover:bg-white/10 transition-colors whitespace-nowrap"
                           style={{ color: "#ffc85b" }}
                         >
                           Profile
-                        </Link>
-                        <button
+                        </button>
+                        <Link
+                        to="/"
                           onClick={() => console.log("Sign out clicked")}
-                          className="block w-full px-5 py-2.5 text-center text-[15px] font-semibold hover:bg-white/10 transition-colors whitespace-nowrap"
+                          className="block w-full text-left px-5 py-2.5 text-[15px] font-semibold hover:bg-white/10 transition-colors whitespace-nowrap"
                           style={{ color: "#ffc85b" }}
                         >
                           Sign Out
-                        </button>
+                        </Link>
                       </>
                     )}
                   </div>
@@ -332,460 +212,198 @@ function Spritz() {
         </div>
       </header>
 
-      <main className="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-12 md:py-20">
-        {/* Title */}
-        <div className="flex justify-center mb-12 md:mb-16">
-          <h1
-            className="text-[28px] font-bold uppercase tracking-wide border-b-4 pb-2"
-            style={{ color: "#0a36af", borderColor: "#0a36af" }}
-          >
-            Sip The Summer
-          </h1>
-        </div>
-
-        {/* Filter and Product Count Row */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
-          <div className="relative w-full md:w-64">
-            <label className="absolute -top-2.5 left-3 bg-white px-1 text-[12px] font-bold text-[#0a36af] z-10">
-              Sort by
-            </label>
-            <button
-              onClick={() => setIsSortOpen(!isSortOpen)}
-              className="w-full flex items-center justify-between px-4 py-3 border-2 bg-white transition-colors"
-              style={{ borderColor: "#0a36af", color: "#0a36af" }}
-            >
-              <span className="text-[14px] font-semibold">{selectedSort}</span>
-              <ChevronDown
-                size={18}
-                className={`transition-transform duration-200 ${
-                  isSortOpen ? "rotate-180" : ""
-                }`}
-              />
-            </button>
-
-            {isSortOpen && (
-              <div
-                className="absolute top-full left-0 w-full bg-white border-2 border-t-0 shadow-xl z-20"
-                style={{ borderColor: "#0a36af" }}
-              >
-                {sortOptions.map((option, index) => (
-                  <button
-                    key={index}
-                    onClick={() => {
-                      setSelectedSort(option);
-                      setIsSortOpen(false);
-                    }}
-                    className="w-full text-left px-4 py-2.5 text-[14px] hover:bg-blue-50 transition-colors"
-                    style={{ color: "#0a36af" }}
-                  >
-                    {option}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <div
-            className="px-6 py-3 border-2 font-semibold text-[15px]"
-            style={{ borderColor: "#e5e7eb", color: "#0a36af" }}
-          >
-            {products.length} products
-          </div>
-        </div>
-
-        {/* Products Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
-          {products.map((product) => (
-            <div key={product.id} className="flex flex-col items-center w-full">
-              <Link
-                to={`/product/${product.id}`}
-                className="block h-[300px] md:h-[380px] w-full mb-6 group cursor-pointer"
-              >
-                <div className="w-full h-full flex items-center justify-center">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="h-full w-auto object-contain drop-shadow-xl group-hover:scale-105 transition-transform duration-500"
-                  />
-                </div>
-              </Link>
-
-              <button
-                onClick={() => handleAddToCart(product.buttonText)}
-                className={`w-full py-3 border-[2px] border-black font-bold text-[18px] md:text-[20px] uppercase transition-opacity shadow-sm ${
-                  product.buttonText === "ADD TO CART"
-                    ? "hover:opacity-90 cursor-pointer"
-                    : "opacity-70 cursor-not-allowed"
-                }`}
-                style={{ backgroundColor: "#0a36af", color: "#ffc85b" }}
-                disabled={product.buttonText !== "ADD TO CART"}
-              >
-                {product.buttonText}
-              </button>
-
-              <div className="mt-5 w-full flex flex-col items-center text-center">
-                <p
-                  className="text-[13px] md:text-[14px] font-semibold uppercase leading-snug px-2 min-h-[40px]"
-                  style={{ color: "#0a36af" }}
-                >
-                  {product.name}
-                </p>
-                <div className="mt-3 flex items-center justify-center gap-3">
-                  <span
-                    className="text-[16px] font-bold"
-                    style={{ color: "#0a36af" }}
-                  >
-                    {product.price}
-                  </span>
-                  <span className="text-[15px] text-gray-500 line-through decoration-gray-500">
-                    {product.oldPrice}
-                  </span>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </main>
-      {/* --- CART DRAWER START --- */}
-
-      {/* Background Overlay */}
-      {isCartOpen && (
-        <div
-          className="fixed inset-0 bg-black/60 z-[90] transition-opacity"
-          onClick={() => setIsCartOpen(false)}
-        />
-      )}
-
-      {/* Slide-out Panel */}
-      <div
-        className={`fixed top-0 right-0 h-full w-full max-w-[420px] bg-white z-[100] shadow-2xl flex flex-col transition-transform duration-300 ease-in-out transform ${
-          isCartOpen ? "translate-x-0" : "translate-x-full"
-        }`}
-      >
-        {/* Header */}
-        <div className="flex items-center justify-between p-5 pb-4">
-          <h2 className="text-2xl font-extrabold uppercase tracking-tighter text-black">
-            Cart
-          </h2>
+      {/* Main Content Area */}
+      <main className="flex-grow w-full max-w-5xl mx-auto px-6 py-10 md:py-16 flex flex-col">
+        {/* Top Navigation Tabs */}
+        <div className="flex gap-8 border-b border-gray-200 mb-12">
           <button
-            onClick={() => setIsCartOpen(false)}
-            className="p-1 hover:bg-gray-100 rounded transition-colors"
-            aria-label="Close cart"
+            onClick={() => setActiveTab("orders")}
+            className={`font-bold text-[15px] pb-4 transition-colors ${activeTab === "orders" ? "border-b-[3px] -mb-[2px]" : "text-gray-500 hover:text-[#0a36af]"}`}
+            style={{
+              borderColor: activeTab === "orders" ? "#0a36af" : "transparent",
+              color: activeTab === "orders" ? "#0a36af" : undefined,
+            }}
           >
-            <X size={26} color="#000000" strokeWidth={1.5} />
+            Orders
+          </button>
+          <button
+            onClick={() => setActiveTab("profile")}
+            className={`font-bold text-[15px] pb-4 transition-colors ${activeTab === "profile" ? "border-b-[3px] -mb-[2px]" : "text-gray-500 hover:text-[#0a36af]"}`}
+            style={{
+              borderColor: activeTab === "profile" ? "#0a36af" : "transparent",
+              color: activeTab === "profile" ? "#0a36af" : undefined,
+            }}
+          >
+            Profile
           </button>
         </div>
 
-        {/* Promotional Banners */}
-        <div className="px-5 pb-5 space-y-3">
-          {/* Success Banner */}
-          <div className="bg-[#d1fae5] py-3 px-4 flex items-center gap-3 font-bold text-[#065f46] text-[14px] rounded-sm">
-            <span className="text-xl leading-none">👍</span> Good news! You've
-            got free delivery
-          </div>
-          {/* Info Banner */}
-          <div
-            className="py-3 px-4 flex items-center gap-3 font-bold text-black text-[14px] rounded-sm"
-            style={{ backgroundColor: "#ffc85b" }}
-          >
-            <span className="text-xl leading-none">🎁</span> Free Delivery over
-            £50
-          </div>
-        </div>
+        {/* Page Title */}
+        <h1
+          className="text-3xl font-extrabold uppercase tracking-tight mb-12"
+          style={{ color: "#0a36af" }}
+        >
+          {activeTab === "profile" ? "Profile" : "Order History"}
+        </h1>
 
-        {/* Cart Items Area (Scrollable) */}
-        <div className="flex-1 overflow-y-auto px-5">
-          {/* Cart Item */}
-          <div className="flex gap-5 py-5 border-b border-gray-200">
-            {/* Thumbnail */}
-            <div className="w-24 h-24 flex-shrink-0 bg-gray-50 rounded-md flex items-center justify-center p-2 border border-gray-100">
-              <img
-                src="/image4.png"
-                alt="Limoncini"
-                className="w-full h-full object-contain drop-shadow-md"
-              />
+        {/* Conditional Rendering based on activeTab */}
+        {activeTab === "profile" ? (
+          /* PROFILE VIEW */
+          <div className="w-full max-w-2xl flex flex-col gap-12">
+            <div className="flex flex-col gap-8">
+              <div>
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="text-gray-500 text-[12px] font-bold uppercase tracking-wide">
+                    Name
+                  </span>
+                  <button
+                    className="text-gray-400 hover:text-[#0a36af] transition-colors"
+                    aria-label="Edit Name"
+                  >
+                    <Pencil size={14} strokeWidth={2.5} />
+                  </button>
+                </div>
+                <p className="text-[16px] text-black font-medium">
+                  {user.name}
+                </p>
+              </div>
+              <div>
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="text-gray-500 text-[12px] font-bold uppercase tracking-wide">
+                    Email
+                  </span>
+                </div>
+                <p className="text-[16px] text-black font-medium">
+                  {user.email}
+                </p>
+              </div>
             </div>
 
-            {/* Details */}
-            <div className="flex-1 flex flex-col">
-              <div className="flex items-start justify-between gap-2">
-                <h3
-                  className="font-extrabold text-[16px] uppercase leading-tight"
+            <hr className="border-gray-200" />
+
+            <div>
+              <div className="flex items-center gap-6 mb-8">
+                <h2 className="text-xl font-bold text-black uppercase tracking-wide">
+                  Addresses
+                </h2>
+                <button
+                  className="flex items-center gap-1 font-bold text-[12px] uppercase tracking-wide transition-opacity hover:opacity-70"
                   style={{ color: "#0a36af" }}
                 >
-                  LEMON ITALIAN SPRITZ
-                </h3>
-              </div>
-
-              <div className="font-bold text-[14px] text-black mt-1">
-                £24.00
-              </div>
-
-              <p className="text-[12px] text-gray-700 mt-1 font-medium">
-                24 Bottles
-              </p>
-
-              {/* Quantity Controls */}
-              <div className="flex items-center gap-5 mt-4">
-                <div className="flex items-center gap-4">
-                  <button
-                    className="w-8 h-8 rounded-full flex items-center justify-center text-white transition-opacity hover:opacity-80 shadow-sm"
-                    style={{ backgroundColor: "#0a36af" }}
-                  >
-                    <Minus size={18} strokeWidth={3} />
-                  </button>
-
-                  <span className="text-[16px] font-extrabold w-4 text-center">
-                    1
-                  </span>
-
-                  <button
-                    className="w-8 h-8 rounded-full flex items-center justify-center text-white transition-opacity hover:opacity-80 shadow-sm"
-                    style={{ backgroundColor: "#0a36af" }}
-                  >
-                    <Plus size={18} strokeWidth={3} />
-                  </button>
-                </div>
-
-                <button
-                  className="text-gray-500 hover:text-red-500 transition-colors"
-                  aria-label="Remove item"
-                >
-                  <Trash2 size={22} />
+                  <Plus size={16} strokeWidth={3} /> Add
                 </button>
               </div>
-            </div>
-          </div>
-        </div>
 
-        {/* Footer / Checkout Area */}
-        <div className="border-t border-gray-200 p-6 bg-white">
-          <div className="flex flex-col gap-3 mb-6">
-            <div className="flex justify-between text-[14px]">
-              <span className="font-medium text-gray-700">Subtotal</span>
-              <span className="font-medium text-gray-900">£24.00</span>
-            </div>
-            <div className="flex justify-between text-[14px]">
-              <span className="font-medium text-gray-700">Delivery</span>
-              <span className="font-medium text-gray-900">
-                Calculated at Checkout
-              </span>
-            </div>
-            <div className="flex justify-between text-[18px] mt-3 pt-3 border-t border-gray-200">
-              <span className="font-extrabold text-black">Total</span>
-              <span className="font-extrabold text-black">£24.00</span>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-3">
-            <Link
-              to="/cart"
-              className="block w-full py-4 text-center rounded-full text-white font-extrabold text-[14px] transition-opacity hover:opacity-90 shadow-md"
-              style={{ backgroundColor: "#0a36af" }}
-            >
-              View Cart & Checkout
-            </Link>
-
-            <button
-              onClick={() => setIsCartOpen(false)}
-              className="w-full py-4 rounded-full bg-white border-2 font-extrabold text-[14px] transition-colors hover:bg-gray-50"
-              style={{ borderColor: "#0a36af", color: "#0a36af" }}
-            >
-              Continue Shopping
-            </button>
-          </div>
-        </div>
-      </div>
-      <section
-        id="contact"
-        className="w-full px-4 md:px-6 py-12 md:py-16"
-        style={{ backgroundColor: "#f8f9fa" }}
-      >
-        <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-start">
-            <div className="flex flex-col justify-start">
-              <h2
-                className="text-[30px] font-bold mb-4 md:mb-8"
-                style={{ color: "#0a36af" }}
-              >
-                CONTACT US
-              </h2>
-              <p
-                className="text-[15px] leading-relaxed"
-                style={{ color: "#000000", textAlign: "justify" }}
-              >
-                Have a question, special request, or want to stock our drinks?
-                Fill out the form and our team will get back to you as soon as
-                possible.
-              </p>
-              <br />
-              <p
-                className="text-[15px] leading-relaxed"
-                style={{ color: "#000000", textAlign: "justify" }}
-              >
-                Whether you’re a customer, partner, or retailer, we’d love to
-                hear from you and help with anything you need.
-              </p>
-            </div>
-            <div className="flex flex-col justify-start">
-              {isFormSubmitted ? (
-                <div className="flex items-center justify-center p-8 md:p-12">
-                  <p
-                    className="font-medium text-center leading-relaxed text-base md:text-lg"
-                    style={{ color: "#000000" }}
-                  >
-                    {submitMessage}
-                  </p>
-                </div>
-              ) : (
-                <form
-                  onSubmit={handleSubmit}
-                  className="space-y-4 md:space-y-6"
-                >
-                  <div>
-                    <label
-                      htmlFor="whoAreYou"
-                      className="block text-[15px] font-medium mb-2"
-                      style={{ color: "#000000" }}
-                    >
-                      Who are you? <span style={{ color: "#ef4444" }}>*</span>
-                    </label>
-                    <select
-                      id="whoAreYou"
-                      value={formData.whoAreYou}
-                      onChange={(e) =>
-                        setFormData({ ...formData, whoAreYou: e.target.value })
-                      }
-                      required
-                      className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-[15px]"
-                      style={{
-                        backgroundColor: "#ffffff",
-                        fontSize: formData.whoAreYou === "" ? "14px" : "16px",
-                        color:
-                          formData.whoAreYou === "" ? "#9ca3af" : "#000000",
-                      }}
-                    >
-                      <option value="" style={{ fontSize: "14px" }}>
-                        Select an option
-                      </option>
-                      <option value="Consumer">Consumer</option>
-                      <option value="Distributor">Distributor</option>
-                      <option value="Bar/Restaurant Owner">
-                        Bar/Restaurant Owner
-                      </option>
-                      <option value="Other">Other</option>
-                    </select>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label
-                        htmlFor="firstName"
-                        className="block text-[15px] font-medium mb-2"
-                        style={{ color: "#000000" }}
-                      >
-                        First Name <span style={{ color: "#ef4444" }}>*</span>
-                      </label>
-                      <input
-                        type="text"
-                        id="firstName"
-                        value={formData.firstName}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            firstName: e.target.value,
-                          })
-                        }
-                        required
-                        className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-[15px]"
-                        style={{ backgroundColor: "#ffffff" }}
-                      />
-                    </div>
-                    <div>
-                      <label
-                        htmlFor="lastName"
-                        className="block text-[15px] font-medium mb-2"
-                        style={{ color: "#000000" }}
-                      >
-                        Last Name <span style={{ color: "#ef4444" }}>*</span>
-                      </label>
-                      <input
-                        type="text"
-                        id="lastName"
-                        value={formData.lastName}
-                        onChange={(e) =>
-                          setFormData({ ...formData, lastName: e.target.value })
-                        }
-                        required
-                        className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-[15px]"
-                        style={{ backgroundColor: "#ffffff" }}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="email"
-                      className="block text-[15px] font-medium mb-2"
-                      style={{ color: "#000000" }}
-                    >
-                      Email <span style={{ color: "#ef4444" }}>*</span>
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      value={formData.email}
-                      onChange={(e) =>
-                        setFormData({ ...formData, email: e.target.value })
-                      }
-                      required
-                      className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:ring-transparent text-[15px]"
-                      style={{ backgroundColor: "#ffffff" }}
-                    />
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="message"
-                      className="block text-[15px] font-medium mb-2"
-                      style={{ color: "#000000" }}
-                    >
-                      Message <span style={{ color: "#ef4444" }}>*</span>
-                    </label>
-                    <textarea
-                      id="message"
-                      value={formData.message}
-                      onChange={(e) =>
-                        setFormData({ ...formData, message: e.target.value })
-                      }
-                      required
-                      rows={4}
-                      className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-[15px] resize-vertical"
-                      style={{ backgroundColor: "#ffffff" }}
-                      placeholder="Tell us more about your interest..."
-                    />
-                  </div>
-
+              <div className="bg-[#faf9f6] border border-gray-200 rounded-xl p-6 md:p-8 relative transition-all hover:shadow-md">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-gray-500 text-[12px] font-bold uppercase tracking-wide">
+                    Default address
+                  </span>
                   <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full px-6 md:px-8 py-[10px] rounded-lg font-semibold text-[15px] transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed uppercase"
-                    style={{ backgroundColor: "#0a36af", color: "#ffffff" }}
+                    className="text-gray-400 hover:text-[#0a36af] transition-colors"
+                    aria-label="Edit Address"
                   >
-                    {isSubmitting ? "Submitting..." : "Submit"}
+                    <Pencil size={16} strokeWidth={2.5} />
                   </button>
+                </div>
 
-                  {submitMessage && !isFormSubmitted && (
-                    <p className="text-center font-medium text-sm md:text-base text-red-600">
-                      {submitMessage}
-                    </p>
-                  )}
-                </form>
-              )}
+                <div className="text-black text-[15px] leading-loose">
+                  <p className="font-bold text-[16px] mb-1">{user.name}</p>
+                  <p>{user.address.company}</p>
+                  <p>{user.address.line1}</p>
+                  <p>{user.address.line2}</p>
+                  <p>
+                    {user.address.zip} {user.address.city} {user.address.region}
+                  </p>
+                  <p>{user.address.country}</p>
+                  <p className="mt-2 text-gray-600">{user.address.phone}</p>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        ) : (
+          /* ORDERS VIEW */
+          <div className="w-full flex flex-col gap-6">
+            <div className="border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+              {/* Order Header */}
+              <div className="bg-gray-50 p-4 md:p-6 border-b border-gray-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="flex flex-col gap-1">
+                  <span className="text-[12px] text-gray-500 font-bold uppercase tracking-wide">
+                    Order Placed
+                  </span>
+                  <span className="text-[15px] font-semibold text-black">
+                    {dummyOrder.date}
+                  </span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <span className="text-[12px] text-gray-500 font-bold uppercase tracking-wide">
+                    Total
+                  </span>
+                  <span className="text-[15px] font-semibold text-black">
+                    {dummyOrder.total}
+                  </span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <span className="text-[12px] text-gray-500 font-bold uppercase tracking-wide">
+                    Order ID
+                  </span>
+                  <span className="text-[15px] font-semibold text-black">
+                    {dummyOrder.id}
+                  </span>
+                </div>
+                <div className="mt-2 md:mt-0 text-right">
+                  <span className="inline-block px-3 py-1 bg-blue-100 text-[#0a36af] text-[12px] font-bold uppercase rounded-full">
+                    {dummyOrder.status}
+                  </span>
+                </div>
+              </div>
+
+              {/* Order Items */}
+              <div className="p-4 md:p-6 bg-white">
+                {dummyOrder.items.map((item, idx) => (
+                  <div key={idx} className="flex items-center gap-6">
+                    <div className="w-20 h-24 bg-gray-50 rounded-lg border border-gray-200 flex items-center justify-center p-2 flex-shrink-0">
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="w-full h-full object-contain"
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <h3
+                        className="text-[15px] font-bold text-black uppercase leading-snug"
+                        style={{ color: "#0a36af" }}
+                      >
+                        {item.name}
+                      </h3>
+                      <p className="text-[14px] text-gray-600 mt-2">
+                        Quantity:{" "}
+                        <span className="font-semibold text-black">
+                          {item.quantity}
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+                ))}
+
+                <div className="mt-6 flex gap-4">
+                  <button
+                    className="px-5 py-2 border-2 rounded-lg font-bold text-[14px] transition-colors"
+                    style={{ borderColor: "#0a36af", color: "#0a36af" }}
+                  >
+                    Track Package
+                  </button>
+                  <button className="px-5 py-2 bg-gray-100 text-gray-700 rounded-lg font-bold text-[14px] hover:bg-gray-200 transition-colors">
+                    View Invoice
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </main>
+
+      {/* Footer */}
       <footer
         className="w-full px-4 py-8 md:px-6 md:py-12"
         style={{ backgroundColor: "#0a36af" }}
@@ -853,6 +471,8 @@ function Spritz() {
           </p>
         </div>
       </footer>
+
+      {/* Privacy Policy Modal */}
       {showPrivacyPolicy && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-2 md:p-4 bg-black bg-opacity-50">
           <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
@@ -1354,4 +974,4 @@ function Spritz() {
   );
 }
 
-export default Spritz;
+export default Profile;

@@ -196,13 +196,14 @@ function Register() {
 
             {/* Action Buttons (CREATE + RETURN TO STORE) */}
             <div className="flex flex-row items-center gap-8 mt-2">
-              <button 
+              <Link
+              to="/profile" 
                 type="submit"
                 className="px-10 py-3.5 rounded-xl font-bold text-[15px] uppercase tracking-widest hover:opacity-90 transition-opacity shadow-sm"
                 style={{ backgroundColor: "#0a36af", color: "#ffc85b" }} 
               >
                 Create
-              </button>
+              </Link>
 
               <Link 
                 to="/"

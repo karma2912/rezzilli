@@ -1,8 +1,15 @@
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Link } from 'react-router-dom'; // 1. Added Link import
+
+// 2. Updated the Interface to accept objects with an optional link
+export interface CarouselItem {
+  src: string;
+  link?: string | null;
+}
 
 interface CarouselProps {
-  images: string[];
+  images: CarouselItem[]; // Updated to use the new object type
   autoPlayInterval?: number;
 }
 
@@ -11,11 +18,12 @@ export default function Carousel({ images, autoPlayInterval = 6000 }: CarouselPr
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
-    images.forEach((src) => {
+    // 3. Updated preloader to use item.src
+    images.forEach((item) => {
       const img = new Image();
-      img.src = src;
+      img.src = item.src;
     });
-  }, []);
+  }, [images]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -52,7 +60,7 @@ export default function Carousel({ images, autoPlayInterval = 6000 }: CarouselPr
   return (
     <div className="relative w-full h-full group">
       <div className="relative overflow-hidden w-full h-full">
-        {images.map((image, index) => (
+        {images.map((item, index) => (
           <div
             key={index}
             className={`absolute inset-0 transition-opacity duration-1000 ease-out ${
@@ -61,13 +69,26 @@ export default function Carousel({ images, autoPlayInterval = 6000 }: CarouselPr
                 : 'opacity-0 z-0'
             }`}
           >
-            <img
-              src={image}
-              alt={`Slide ${index + 1}`}
-              className="w-full h-full object-cover object-top" 
-              loading={index === 0 ? 'eager' : 'lazy'}
-              decoding="async"
-            />
+            {/* 4. The Conditional Check for Links */}
+            {item.link ? (
+              <Link to={item.link} className="block w-full h-full cursor-pointer">
+                <img
+                  src={item.src}
+                  alt={`Slide ${index + 1}`}
+                  className="w-full h-full object-cover object-top" 
+                  loading={index === 0 ? 'eager' : 'lazy'}
+                  decoding="async"
+                />
+              </Link>
+            ) : (
+              <img
+                src={item.src}
+                alt={`Slide ${index + 1}`}
+                className="w-full h-full object-cover object-top" 
+                loading={index === 0 ? 'eager' : 'lazy'}
+                decoding="async"
+              />
+            )}
           </div>
         ))}
 

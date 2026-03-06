@@ -7,6 +7,8 @@ import Footer from "../components/Footer";
 function ProductDetail() {
   const [quantity, setQuantity] = useState(1);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const FREE_DELIVERY_THRESHOLD = 50; 
+  const cartTotal = 24.00 * quantity;
   const handleAddToCart = () => {
     setIsCartOpen(true);
   };
@@ -303,7 +305,7 @@ function ProductDetail() {
       >
         {/* Header */}
         <div className="flex items-center justify-between p-5 pb-4">
-          <h2 className="text-2xl font-extrabold uppercase tracking-tighter text-black">
+          <h2 className="text-2xl font-extrabold uppercase tracking-tighter" style={{ color: "#0a36af" }}>
             Cart
           </h2>
           <button
@@ -317,19 +319,20 @@ function ProductDetail() {
 
         {/* Promotional Banners */}
         <div className="px-5 pb-5 space-y-3">
-          {/* Success Banner */}
-          <div className="bg-[#d1fae5] py-3 px-4 flex items-center gap-3 font-bold text-[#065f46] text-[14px] rounded-sm">
-            <span className="text-xl leading-none">👍</span> Good news! You've
-            got free delivery
-          </div>
-          {/* Info Banner */}
-          <div
-            className="py-3 px-4 flex items-center gap-3 font-bold text-black text-[14px] rounded-sm"
-            style={{ backgroundColor: "#ffc85b" }}
-          >
-            <span className="text-xl leading-none">🎁</span> Free Delivery over
-            £50
-          </div>
+          {cartTotal >= FREE_DELIVERY_THRESHOLD ? (
+            <div className="bg-[#d1fae5] py-3 px-4 flex items-center gap-3 font-bold text-[#065f46] text-[14px] rounded-sm">
+              <span className="text-xl leading-none">👍</span> Good news! You've
+              got free delivery
+            </div>
+          ) : (
+            <div
+              className="py-3 px-4 flex items-center gap-3 font-bold text-black text-[14px] rounded-sm"
+              style={{ backgroundColor: "#ffc85b" }}
+            >
+              <span className="text-xl leading-none">🎁</span> Free Delivery over
+              £{FREE_DELIVERY_THRESHOLD}
+            </div>
+          )}
         </div>
 
         {/* Cart Items Area (Scrollable) */}
@@ -337,23 +340,25 @@ function ProductDetail() {
           {/* Cart Item */}
           <div className="flex gap-5 py-5 border-b border-gray-200">
             {/* Thumbnail */}
-            <div className="w-24 h-24 flex-shrink-0 bg-gray-50 rounded-md flex items-center justify-center p-2 border border-gray-100">
+            <Link to="/product/2" className="w-24 h-24 flex-shrink-0 bg-gray-50 rounded-md flex items-center justify-center p-2 border border-gray-100 hover:opacity-80 transition-opacity cursor-pointer">
               <img
                 src="/image4.png"
                 alt="Limoncini"
                 className="w-full h-full object-contain drop-shadow-md"
               />
-            </div>
+            </Link>
 
             {/* Details */}
             <div className="flex-1 flex flex-col">
-              <div className="flex items-start justify-between gap-2">
-                <h3
-                  className="font-extrabold text-[16px] uppercase leading-tight"
-                  style={{ color: "#0a36af" }}
-                >
-                  LEMON ITALIAN SPRITZ
-                </h3>
+             <div className="flex items-start justify-between gap-2">
+                <Link to="/product/2" className="hover:opacity-80 transition-opacity">
+                  <h3
+                    className="font-extrabold text-[16px] uppercase leading-tight"
+                    style={{ color: "#0a36af" }}
+                  >
+                    LEMON ITALIAN SPRITZ
+                  </h3>
+                </Link>
               </div>
 
               <div className="font-bold text-[14px] text-black mt-1">
@@ -368,18 +373,20 @@ function ProductDetail() {
               <div className="flex items-center gap-5 mt-4">
                 <div className="flex items-center gap-4">
                   <button
-                    className="w-8 h-8 rounded-full flex items-center justify-center text-white transition-opacity hover:opacity-80 shadow-sm"
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    className="w-8 h-8 rounded-full flex items-center justify-center text-white transition-opacity hover:opacity-80 shadow-sm cursor-pointer"
                     style={{ backgroundColor: "#0a36af" }}
                   >
                     <Minus size={18} strokeWidth={3} />
                   </button>
 
                   <span className="text-[16px] font-extrabold w-4 text-center">
-                    1
+                    {quantity}
                   </span>
 
                   <button
-                    className="w-8 h-8 rounded-full flex items-center justify-center text-white transition-opacity hover:opacity-80 shadow-sm"
+                    onClick={() => setQuantity(quantity < 10 ? quantity + 1 : 10)}
+                    className="w-8 h-8 rounded-full flex items-center justify-center text-white transition-opacity hover:opacity-80 shadow-sm cursor-pointer"
                     style={{ backgroundColor: "#0a36af" }}
                   >
                     <Plus size={18} strokeWidth={3} />
@@ -401,18 +408,18 @@ function ProductDetail() {
         <div className="border-t border-gray-200 p-6 bg-white">
           <div className="flex flex-col gap-3 mb-6">
             <div className="flex justify-between text-[14px]">
-              <span className="font-medium text-gray-700">Subtotal</span>
-              <span className="font-medium text-gray-900">£24.00</span>
+              <span className="font-bold" style={{ color: "#0a36af" }}>Subtotal</span>
+              <span className="font-bold" style={{ color: "#0a36af" }}>£{cartTotal.toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-[14px]">
-              <span className="font-medium text-gray-700">Delivery</span>
-              <span className="font-medium text-gray-900">
+              <span className="font-bold" style={{ color: "#0a36af" }}>Delivery</span>
+              <span className="font-bold" style={{ color: "#0a36af" }}>
                 Calculated at Checkout
               </span>
             </div>
             <div className="flex justify-between text-[18px] mt-3 pt-3 border-t border-gray-200">
-              <span className="font-extrabold text-black">Total</span>
-              <span className="font-extrabold text-black">£24.00</span>
+              <span className="font-extrabold" style={{ color: "#0a36af" }}>Total</span>
+              <span className="font-extrabold" style={{ color: "#0a36af" }}>£{cartTotal.toFixed(2)}</span>
             </div>
           </div>
 

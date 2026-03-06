@@ -1,8 +1,17 @@
 import { Minus, Plus, Trash2, Lock } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 
 function Cart() {
+  const navigate = useNavigate(); 
+  const isLoggedIn = true;
+  const handleCheckout = () => {
+    if (!isLoggedIn) {
+      navigate('/login'); 
+    } else {
+      navigate('/checkout'); 
+    }
+  };
   const cartItems = [
     {
       id: 1,
@@ -28,7 +37,10 @@ function Cart() {
     <div className="min-h-screen w-full bg-white flex flex-col font-['Libre_Baskerville',_serif]">
       <Navbar/>
       <div className="w-full pt-10 pb-6 text-center">
-        <h1 className="text-4xl font-extrabold uppercase tracking-tighter text-black mb-2">
+        <h1 
+          className="text-[30px] font-extrabold uppercase tracking-tighter mb-2"
+          style={{ color: "#0a36af" }}
+        >
           CART
         </h1>
         <p className="text-gray-600 font-medium">3 Items</p>
@@ -102,7 +114,8 @@ function Cart() {
                           </div>
                         )}
                         <div
-                          className={`font-bold text-[16px] md:text-[18px] ${item.originalPrice ? "text-red-600" : "text-black"}`}
+                          className="font-bold text-[16px] md:text-[18px]"
+                          style={{ color: item.originalPrice ? "#0a36af" : "#000000" }}
                         >
                           {item.price}
                         </div>
@@ -122,19 +135,21 @@ function Cart() {
           </div>
           <div className="lg:col-span-5">
             <div className="flex flex-col gap-4">
+              
+              {/* AMEND ii & iii: Subtotal, Delivery (15px) and Total (20px) all in blue */}
               <div className="flex justify-between text-[15px]">
-                <span className="font-medium text-gray-700">Subtotal</span>
-                <span className="font-medium text-gray-900">£62.00</span>
+                <span className="font-medium" style={{ color: "#0a36af" }}>Subtotal</span>
+                <span className="font-medium" style={{ color: "#0a36af" }}>£62.00</span>
               </div>
               <div className="flex justify-between text-[15px]">
-                <span className="font-medium text-gray-700">Delivery</span>
-                <span className="font-medium text-gray-900">
+                <span className="font-medium" style={{ color: "#0a36af" }}>Delivery</span>
+                <span className="font-medium" style={{ color: "#0a36af" }}>
                   Calculated at Checkout
                 </span>
               </div>
-              <div className="flex justify-between text-[21px] mt-2 pt-4 border-t border-gray-200">
-                <span className="font-extrabold text-black">Total</span>
-                <span className="font-extrabold text-black">£62.00</span>
+              <div className="flex justify-between text-[20px] mt-2 pt-4 border-t border-gray-200">
+                <span className="font-extrabold" style={{ color: "#0a36af" }}>Total</span>
+                <span className="font-extrabold" style={{ color: "#0a36af" }}>£62.00</span>
               </div>
 
               <div className="bg-[#f0f4f8] p-6 rounded-lg mt-4 border border-gray-200 text-center">
@@ -150,27 +165,29 @@ function Cart() {
                     placeholder="Enter discount code"
                     className="w-full px-4 py-3 border border-gray-300 rounded text-[15px] focus:outline-none focus:border-[#0a36af]"
                   />
+                  {/* AMEND v: Apply button to blue background with gold text */}
                   <button
-                    className="w-full py-3 rounded text-white font-bold uppercase tracking-wider text-[14px] transition-opacity hover:opacity-90"
-                    style={{ backgroundColor: "#000000" }}
+                    className="w-full py-3 rounded font-bold uppercase tracking-wider text-[14px] transition-opacity hover:opacity-90"
+                    style={{ backgroundColor: "#0a36af", color: "#ffc85b" }}
                   >
                     Apply
                   </button>
                 </div>
               </div>
+              
               <div className="mt-4 space-y-3">
-                <button className="w-full py-4 rounded-full bg-white border-2 border-black text-black font-extrabold text-[15px] transition-colors hover:bg-gray-50">
-                  Add a gift message
-                </button>
+                {/* AMEND vi: The 'add a gift' box was completely removed from here */}
 
-                <Link
-                  to="/checkout"
+                {/* AMEND viii: Changed Link to button with click handler for login check */}
+                <button
+                  onClick={handleCheckout}
                   className="w-full py-4 rounded-full text-white font-extrabold text-[16px] uppercase tracking-wide transition-opacity hover:opacity-90 flex items-center justify-center gap-2 shadow-lg"
                   style={{ backgroundColor: "#0a36af" }}
                 >
                   <Lock size={18} strokeWidth={2.5} /> Checkout
-                </Link>
+                </button>
               </div>
+
               <div className="mt-6 text-center">
                 <p className="text-[12px] font-bold text-gray-500 uppercase tracking-wide mb-3">
                   Accepted payment methods

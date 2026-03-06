@@ -1,7 +1,5 @@
 import { Link } from "react-router-dom";
 import {
-  Gift,
-  Plus,
   Search,
   HelpCircle,
   Lock,
@@ -9,7 +7,6 @@ import {
 } from "lucide-react";
 
 function Checkout() {
-  // Dummy data for the checkout summary
   const checkoutItems = [
     {
       id: 1,
@@ -30,39 +27,37 @@ function Checkout() {
   ];
 
   return (
-    <div className="min-h-screen w-full flex flex-col lg:flex-row font-['Libre_Baskerville',_serif] text-[14px]">
+    <div className="min-h-screen w-full flex flex-col lg:flex-row font-['Libre_Baskerville',_serif] text-[15px]">
       <div className="w-full lg:w-[55%] xl:w-[55%] bg-white pt-8 pb-20 px-6 lg:px-12 xl:px-24 flex justify-end lg:min-h-screen">
         <div className="w-full max-w-2xl flex flex-col">
           <Link to="/" className="mb-8 block">
             <img src="/rezzilli.png" alt="Rezzilli" className="h-10 md:h-20" />
           </Link>
-          <Link
-            to="/cart"
-            className="flex items-center gap-1 text-[#0a36af] hover:opacity-70 font-semibold mb-8 w-fit transition-opacity"
-          >
-            <ChevronLeft size={18} strokeWidth={2.5} />
-            Return to cart
-          </Link>
+          <div className="flex items-center justify-between mb-8">
+            <Link
+              to="/cart"
+              className="flex items-center gap-1 text-[#0a36af] hover:opacity-70 font-semibold transition-opacity"
+            >
+              <ChevronLeft size={18} strokeWidth={2.5} />
+              Return to cart
+            </Link>
+          </div>
+
           <section className="mb-10">
-            <h2 className="text-xl font-bold text-black mb-2">
+            <h2 className="text-[20px] font-bold text-black mb-2">
               Purchasing as a gift?
             </h2>
-            <p className="text-gray-600 mb-4 text-[14px]">
+            <p className="text-gray-600 mb-4">
               Write a personalised gift message, select when to send it. We'll
               handle the rest!
             </p>
-            <button className="w-full border border-gray-300 rounded-lg p-4 flex items-center justify-between bg-white hover:bg-gray-50 transition-colors">
-              <div className="flex items-center gap-3 text-gray-700 font-medium">
-                <Gift size={20} className="text-gray-500" /> Add a gift message
-              </div>
-              <Plus size={20} className="text-gray-500" />
-            </button>
-            <p className="text-[11px] text-gray-400 mt-2">
-              Delivered by <span className="underline">Giftnote</span>
-            </p>
+            <textarea 
+              placeholder="Enter your gift message here..."
+              className="w-full border border-gray-300 rounded-lg p-4 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] min-h-[100px] resize-y"
+            ></textarea>
           </section>
           <section className="mb-10">
-            <h2 className="text-2xl font-bold text-black mb-4">Delivery</h2>
+            <h2 className="text-[20px] font-bold text-black mb-4">Delivery</h2>
 
             <div className="space-y-3">
               <div className="relative">
@@ -154,7 +149,7 @@ function Checkout() {
             </div>
           </section>
           <section className="mb-10">
-            <h2 className="text-xl font-bold text-black mb-4">
+            <h2 className="text-[20px] font-bold text-black mb-4">
               Shipping method
             </h2>
             <div className="bg-[#f3f4f6] rounded-lg p-5 text-center text-gray-500 text-[14px]">
@@ -162,7 +157,7 @@ function Checkout() {
             </div>
           </section>
           <section className="mb-8">
-            <h2 className="text-2xl font-bold text-black mb-1">Payment</h2>
+            <h2 className="text-[20px] font-bold text-black mb-1">Payment</h2>
             <p className="text-gray-500 text-[13px] mb-4">
               All transactions are secure and encrypted.
             </p>
@@ -287,7 +282,7 @@ function Checkout() {
             <div className="flex gap-3 py-6 border-t border-b border-gray-200 mb-6">
               <input
                 type="text"
-                placeholder="Voucher or gift card"
+                placeholder="Discount code"
                 className="flex-1 border border-gray-300 rounded-md p-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] bg-white"
               />
               <button className="px-5 py-3 bg-gray-200 text-gray-500 font-semibold rounded-md transition-colors hover:bg-gray-300 hover:text-gray-700">

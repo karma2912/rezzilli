@@ -57,21 +57,8 @@ function ProductDetail() {
   return (
     <div className="min-h-screen w-full flex flex-col font-['Libre_Baskerville',_serif] bg-white">
       <Navbar/>
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-6">
-        <div className="text-[13px] text-gray-500 font-semibold tracking-wide uppercase">
-          <Link to="/" className="hover:text-[#0a36af] transition-colors">
-            Home
-          </Link>
-          <span className="mx-2">/</span>
-          <Link to="/spritz" className="hover:text-[#0a36af] transition-colors">
-            Shop
-          </Link>
-          <span className="mx-2">/</span>
-          <span className="text-[#0a36af]">{product.name}</span>
-        </div>
-      </div>
 
-      <main className="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 pb-20">
+      <main className="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 pb-20 py-12">
         {/* --- TOP SECTION: Image & Buy Box --- */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 items-start mb-20">
           {/* Left: Product Image */}
@@ -96,58 +83,78 @@ function ProductDetail() {
             </p>
 
             {/* Meta Info */}
-            <div className="flex items-center gap-4 text-[15px] font-bold uppercase tracking-widest text-gray-800 mb-8 border-b border-gray-200 pb-6">
+            <div 
+              className="flex items-center gap-4 text-[15px] font-bold uppercase tracking-widest mb-8 border-b border-gray-200 pb-6"
+              style={{ color: "#0a36af" }}
+            >
               <span>ABV {product.abv}</span>
               <span className="text-gray-300">|</span>
               <span>SIZE {product.size}</span>
             </div>
 
             {/* Price & Variant */}
-           <div className="flex flex-col gap-2 mb-8">
+            <div className="flex flex-col gap-2 mb-8">
               <div className="flex items-center gap-3">
-                <span className="text-[20px] font-extrabold text-black">
+                <span className="text-[20px] font-extrabold" style={{ color: "#0a36af" }}>
                   {product.price}
                 </span>
                 {product.oldPrice && (
-                  <span className="text-[15px] text-gray-400 line-through font-semibold">
+                  <span 
+                    className="text-[20px] line-through font-semibold" 
+                    style={{ color: "#0a36af" }}
+                  >
                     {product.oldPrice}
                   </span>
                 )}
               </div>
-              <span className="text-[15px] text-gray-500 font-medium">
+              <span className="text-[15px] font-medium" style={{ color: "#0a36af" }}>
                 {product.variant}
                 {quantity > 1 && (
-                  <span className="ml-1.5 font-bold text-[#0a36af]">
+                  <span className="ml-1.5 font-bold">
                     x{quantity}
                   </span>
                 )}
               </span>
             </div>
+            
             <div className="flex flex-col sm:flex-row items-center gap-4 mb-10">
-              {/* Quantity Selector */}
               <div
                 className="flex items-center justify-between w-full sm:w-32 h-14 border-2 rounded-xl px-4"
                 style={{ borderColor: "rgba(10, 54, 175, 0.2)" }}
               >
                 <button
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="text-gray-500 hover:text-[#0a36af] transition-colors"
+                  onClick={() => setQuantity(Math.max(1, Number(quantity) - 1))}
+                  className="text-gray-500 hover:text-[#0a36af] transition-colors cursor-pointer"
                 >
                   <Minus size={20} strokeWidth={2.5} />
                 </button>
-                <span
-                  className="text-[15px] font-extrabold"
+                
+                <input
+                  type="number"
+                  min="1"
+                  max="10"
+                  value={quantity === 0 ? '' : quantity}
+                  onChange={(e) => {
+                    const num = parseInt(e.target.value);
+                    setQuantity(isNaN(num) ? 0 : (num > 10 ? 10 : num));
+                  }}
+                  onBlur={() => {
+                    if (quantity < 1) {
+                      setQuantity(1);
+                    }
+                  }}
+                  className="text-[15px] font-extrabold text-center w-12 bg-transparent focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   style={{ color: "#0a36af" }}
-                >
-                  {quantity}
-                </span>
+                />
+
                 <button
-                  onClick={() => setQuantity(quantity < 10 ? quantity + 1 : 10)}
-                  className="text-gray-500 hover:text-[#0a36af] transition-colors"
+                  onClick={() => setQuantity(Number(quantity) < 10 ? Number(quantity) + 1 : 10)}
+                  className="text-gray-500 hover:text-[#0a36af] transition-colors cursor-pointer"
                 >
                   <Plus size={20} strokeWidth={2.5} />
                 </button>
               </div>
+              
               <button
                 onClick={() => handleAddToCart()}
                 className="w-full h-14 rounded-xl font-extrabold text-[20px] uppercase tracking-widest transition-opacity hover:opacity-90 shadow-md"
@@ -160,7 +167,7 @@ function ProductDetail() {
             {/* Delivery Highlight */}
             <div className="flex items-center gap-3 p-4 rounded-xl bg-[#faf9f6] border border-gray-100">
               <span className="text-xl">📦</span>
-              <p className="text-[15px] font-medium text-gray-700">
+              <p className="text-[15px] font-medium" style={{ color: "#0a36af" }}>
                 Free Standard UK Delivery on orders over £50
               </p>
             </div>
@@ -173,19 +180,18 @@ function ProductDetail() {
           {product.description && (
             <div>
               <h2
-                className="font-extrabold text-[20px] uppercase tracking-wide mb-6"
+                className="font-extrabold text-[30px] uppercase tracking-wide mb-6"
                 style={{ color: "#0a36af" }}
               >
                 Product Description
               </h2>
-              <div className="text-[15px] leading-relaxed text-gray-700 space-y-4">
+              <div className="text-[15px] leading-relaxed space-y-4" style={{ color: "#0a36af" }}>
                 {product.description.map((paragraph, index) => (
                   <p key={index}>
-                    {/* Simple trick to make 'Ingredients:' and 'Tasting note:' bold dynamically */}
                     {paragraph.includes("Ingredients:") ? (
-                      <><strong className="text-black">Ingredients:</strong>{paragraph.split("Ingredients:")[1]}</>
+                      <><strong style={{ color: "#0a36af" }}>Ingredients:</strong>{paragraph.split("Ingredients:")[1]}</>
                     ) : paragraph.includes("Tasting note:") ? (
-                      <><strong className="text-black">Tasting note:</strong>{paragraph.split("Tasting note:")[1]}</>
+                      <><strong style={{ color: "#0a36af" }}>Tasting note:</strong>{paragraph.split("Tasting note:")[1]}</>
                     ) : (
                       paragraph
                     )}
@@ -199,32 +205,35 @@ function ProductDetail() {
           {product.delivery && (
             <div>
               <h2
-                className="font-extrabold text-[20px] uppercase tracking-wide mb-6"
+                className="font-extrabold text-[30px] uppercase tracking-wide mb-6"
                 style={{ color: "#0a36af" }}
               >
                 Delivery Information
               </h2>
-              <div className="text-[15px] leading-relaxed text-gray-700 grid grid-cols-1 md:grid-cols-2 gap-8 bg-[#faf9f6] p-8 rounded-xl border border-gray-100">
+              <div 
+                className="text-[15px] leading-relaxed grid grid-cols-1 md:grid-cols-2 gap-8 bg-[#faf9f6] p-8 rounded-xl border border-gray-100" 
+                style={{ color: "#0a36af" }}
+              >
                 <div>
-                  <h4 className="font-bold text-black mb-3 text-[16px] underline underline-offset-4 decoration-[#ffc85b]">
+                  <h4 className="font-bold mb-3 text-[16px] underline underline-offset-4 decoration-[#ffc85b]">
                     Standard UK Delivery:
                   </h4>
-                  <ul className="space-y-3">
+                  <ul className="list-disc pl-5 space-y-3">
                     {product.delivery.standard.map((item, i) => (
-                      <li key={i} className="flex items-center gap-2">
-                        <span className="text-black">&bull;</span> {item}
+                      <li key={i} className="pl-1">
+                        {item}
                       </li>
                     ))}
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-bold text-black mb-3 text-[16px] underline underline-offset-4 decoration-[#ffc85b]">
+                  <h4 className="font-bold mb-3 text-[16px] underline underline-offset-4 decoration-[#ffc85b]">
                     Next Day Delivery:
                   </h4>
-                  <ul className="space-y-3">
+                  <ul className="list-disc pl-5 space-y-3">
                     {product.delivery.nextDay.map((item, i) => (
-                      <li key={i} className="flex items-center gap-2">
-                        <span className="text-black">&bull;</span> {item}
+                      <li key={i} className="pl-1">
+                        {item}
                       </li>
                     ))}
                   </ul>
@@ -237,29 +246,28 @@ function ProductDetail() {
           {product.nutrition && (
             <div>
               <h2
-                className="font-extrabold text-[20px] uppercase tracking-wide mb-6"
+                className="font-extrabold text-[30px] uppercase tracking-wide mb-6"
                 style={{ color: "#0a36af" }}
               >
                 Nutritional Information
               </h2>
-              <div className="text-[15px] leading-relaxed text-gray-700">
-                <p className="font-bold text-black mb-4">
+              <div className="text-[15px] leading-relaxed" style={{ color: "#0a36af" }}>
+                <p className="font-bold mb-4">
                   {product.nutrition.typicalValues}
                 </p>
 
-                {/* Dynamic Styled Table */}
-                <div className="overflow-hidden border border-gray-200 rounded-lg max-w-2xl">
+                <div className="overflow-hidden border border-[#0a36af]/20 rounded-lg max-w-2xl">
                   <table className="w-full text-left border-collapse">
                     <thead>
                       <tr className="bg-[#faf9f6]">
-                        <th className="p-4 border-b border-r border-gray-200 font-bold text-black w-1/3">Nutrient</th>
-                        <th className="p-4 border-b border-gray-200 font-bold text-black">Amount per 100 ml</th>
+                        <th className="p-4 border-b border-r border-[#0a36af]/20 font-bold w-1/3">Nutrient</th>
+                        <th className="p-4 border-b border-[#0a36af]/20 font-bold">Amount per 100 ml</th>
                       </tr>
                     </thead>
                     <tbody>
                       {product.nutrition.table.map((row, i) => (
-                        <tr key={i} className={i !== product.nutrition.table.length - 1 ? "border-b border-gray-200" : ""}>
-                          <td className="p-4 border-r border-gray-200 font-medium text-black">{row.label}</td>
+                        <tr key={i} className={i !== product.nutrition.table.length - 1 ? "border-b border-[#0a36af]/20" : ""}>
+                          <td className="p-4 border-r border-[#0a36af]/20 font-medium">{row.label}</td>
                           <td className="p-4">{row.value}</td>
                         </tr>
                       ))}
@@ -270,13 +278,13 @@ function ProductDetail() {
                 {/* Dynamic Additional Info */}
                 {product.nutrition.additionalInfo && (
                   <div className="mt-8">
-                    <p className="font-bold text-black mb-4 text-[15px] uppercase tracking-wide">
+                    <p className="font-bold mb-4 text-[15px] uppercase tracking-wide">
                       ADDITIONAL INFORMATION
                     </p>
-                    <ul className="space-y-3 text-gray-700">
+                    <ul className="list-disc pl-5 space-y-3">
                       {product.nutrition.additionalInfo.map((info, i) => (
-                        <li key={i} className="flex items-start gap-3">
-                          <span className="text-black mt-1">&bull;</span> {info}
+                        <li key={i} className="pl-1">
+                          {info}
                         </li>
                       ))}
                     </ul>
@@ -327,7 +335,7 @@ function ProductDetail() {
           ) : (
             <div
               className="py-3 px-4 flex items-center gap-3 font-bold text-black text-[14px] rounded-sm"
-              style={{ backgroundColor: "#ffc85b" }}
+              style={{ color: "#0a36af" }}
             >
               <span className="text-xl leading-none">🎁</span> Free Delivery over
               £{FREE_DELIVERY_THRESHOLD}

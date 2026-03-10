@@ -36,7 +36,7 @@ function Checkout() {
           <div className="flex items-center justify-between mb-8">
             <Link
               to="/cart"
-              className="flex items-center gap-1 text-[#0a36af] hover:opacity-70 font-semibold transition-opacity"
+              className="flex items-center gap-1 text-[#0a36af] hover:opacity-70 font-semibold transition-opacity text-[15px]"
             >
               <ChevronLeft size={18} strokeWidth={2.5} />
               Return to cart
@@ -47,24 +47,24 @@ function Checkout() {
             <h2 className="text-[20px] font-bold text-black mb-2">
               Purchasing as a gift?
             </h2>
-            <p className="text-gray-600 mb-4">
-              Write a personalised gift message, select when to send it. We'll
-              handle the rest!
+            <p className="text-gray-600 mb-4 text-[15px]">
+              Write a personalised gift message and we will handle the rest.
             </p>
             <textarea 
-              placeholder="Enter your gift message here..."
-              className="w-full border border-gray-300 rounded-lg p-4 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] min-h-[100px] resize-y"
+              placeholder="Write a personalised gift message and we will handle the rest."
+              className="w-full border border-gray-300 rounded-lg p-4 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] min-h-[100px] resize-y text-[15px]"
             ></textarea>
           </section>
+          
           <section className="mb-10">
             <h2 className="text-[20px] font-bold text-black mb-4">Delivery</h2>
 
             <div className="space-y-3">
               <div className="relative">
-                <label className="absolute top-1.5 left-3 text-[11px] text-gray-500">
+                <label className="absolute top-1 left-3 text-[15px] text-gray-500 scale-75 origin-top-left">
                   Country/Region
                 </label>
-                <select className="w-full border border-gray-300 rounded-lg pt-6 pb-2 px-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] appearance-none bg-white">
+                <select className="w-full border border-gray-300 rounded-lg pt-7 pb-2 px-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] appearance-none bg-white text-[15px]">
                   <option>United Kingdom</option>
                   <option>United States</option>
                   <option>Europe</option>
@@ -89,26 +89,26 @@ function Checkout() {
                 <input
                   type="text"
                   placeholder="First name"
-                  className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af]"
+                  className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] text-[15px]"
                 />
                 <input
                   type="text"
                   placeholder="Last name"
-                  className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af]"
+                  className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] text-[15px]"
                 />
               </div>
 
               <input
                 type="text"
                 placeholder="Company (optional)"
-                className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af]"
+                className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] text-[15px]"
               />
 
               <div className="relative">
                 <input
                   type="text"
                   placeholder="Address"
-                  className="w-full border border-gray-300 rounded-lg p-3 pr-10 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af]"
+                  className="w-full border border-gray-300 rounded-lg p-3 pr-10 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] text-[15px]"
                 />
                 <Search
                   size={18}
@@ -119,19 +119,19 @@ function Checkout() {
               <input
                 type="text"
                 placeholder="Apartment, suite, etc. (optional)"
-                className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af]"
+                className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] text-[15px]"
               />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <input
                   type="text"
                   placeholder="City"
-                  className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af]"
+                  className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] text-[15px]"
                 />
                 <input
                   type="text"
                   placeholder="Postcode"
-                  className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af]"
+                  className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] text-[15px]"
                 />
               </div>
 
@@ -139,7 +139,7 @@ function Checkout() {
                 <input
                   type="tel"
                   placeholder="Phone"
-                  className="w-full border border-gray-300 rounded-lg p-3 pr-10 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af]"
+                  className="w-full border border-gray-300 rounded-lg p-3 pr-10 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] text-[15px]"
                 />
                 <HelpCircle
                   size={18}
@@ -152,13 +152,13 @@ function Checkout() {
             <h2 className="text-[20px] font-bold text-black mb-4">
               Shipping method
             </h2>
-            <div className="bg-[#f3f4f6] rounded-lg p-5 text-center text-gray-500 text-[14px]">
+            <div className="bg-[#f3f4f6] rounded-lg p-5 text-center text-[15px]" style={{ color: "#0a36af" }}>
               Enter your shipping address to view available shipping methods.
             </div>
           </section>
           <section className="mb-8">
             <h2 className="text-[20px] font-bold text-black mb-1">Payment</h2>
-            <p className="text-gray-500 text-[13px] mb-4">
+            <p className="text-gray-500 text-[15px] mb-4">
               All transactions are secure and encrypted.
             </p>
 
@@ -171,19 +171,19 @@ function Checkout() {
                   <div className="w-4 h-4 rounded-full border-4 border-[#0a36af] bg-white flex items-center justify-center">
                     <div className="w-1.5 h-1.5 bg-[#0a36af] rounded-full"></div>
                   </div>
-                  <span className="font-bold text-black">Credit card</span>
+                  <span className="font-bold text-black text-[15px]">Credit card</span>
                 </div>
                 <div className="flex gap-1">
-                  <div className="w-9 h-6 bg-white border border-gray-200 rounded flex items-center justify-center text-[8px] font-bold text-blue-900">
+                  <div className="w-10 h-7 bg-white border border-gray-200 rounded flex items-center justify-center text-[15px] font-bold text-blue-900 scale-75 origin-right">
                     VISA
                   </div>
-                  <div className="w-9 h-6 bg-white border border-gray-200 rounded flex items-center justify-center">
+                  <div className="w-10 h-7 bg-white border border-gray-200 rounded flex items-center justify-center scale-75 origin-right">
                     <div className="flex">
-                      <div className="w-3 h-3 bg-red-500 rounded-full mix-blend-multiply"></div>
-                      <div className="w-3 h-3 bg-yellow-500 rounded-full -ml-1 mix-blend-multiply"></div>
+                      <div className="w-3.5 h-3.5 bg-red-500 rounded-full mix-blend-multiply"></div>
+                      <div className="w-3.5 h-3.5 bg-yellow-500 rounded-full -ml-1 mix-blend-multiply"></div>
                     </div>
                   </div>
-                  <div className="w-9 h-6 bg-white border border-gray-200 rounded flex items-center justify-center text-[10px] font-bold text-gray-600">
+                  <div className="w-10 h-7 bg-white border border-gray-200 rounded flex items-center justify-center text-[15px] font-bold text-gray-600 scale-75 origin-right">
                     +5
                   </div>
                 </div>
@@ -193,7 +193,7 @@ function Checkout() {
                   <input
                     type="text"
                     placeholder="Card number"
-                    className="w-full border border-gray-300 rounded-md p-3 pr-10 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] bg-white"
+                    className="w-full border border-gray-300 rounded-md p-3 pr-10 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] bg-white text-[15px]"
                   />
                   <Lock
                     size={16}
@@ -204,13 +204,13 @@ function Checkout() {
                   <input
                     type="text"
                     placeholder="Expiration date (MM / YY)"
-                    className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] bg-white"
+                    className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] bg-white text-[15px]"
                   />
                   <div className="relative">
                     <input
                       type="text"
                       placeholder="Security code"
-                      className="w-full border border-gray-300 rounded-md p-3 pr-10 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] bg-white"
+                      className="w-full border border-gray-300 rounded-md p-3 pr-10 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] bg-white text-[15px]"
                     />
                     <HelpCircle
                       size={16}
@@ -221,7 +221,7 @@ function Checkout() {
                 <input
                   type="text"
                   placeholder="Name on card"
-                  className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] bg-white"
+                  className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] bg-white text-[15px]"
                 />
 
                 <div className="pt-2 flex items-center gap-3">
@@ -231,7 +231,7 @@ function Checkout() {
                     className="w-4 h-4 text-[#0a36af] rounded border-gray-300 focus:ring-[#0a36af]"
                     defaultChecked
                   />
-                  <label htmlFor="billing" className="text-sm text-gray-700">
+                  <label htmlFor="billing" className="text-[15px] text-gray-700">
                     Use shipping address as billing address
                   </label>
                 </div>
@@ -239,14 +239,17 @@ function Checkout() {
             </div>
           </section>
           <button
-            className="w-full py-4 mt-4 rounded-lg text-white font-extrabold text-[16px] transition-opacity hover:opacity-90 shadow-md"
+            className="w-full py-4 mt-4 rounded-lg text-white font-extrabold text-[15px] transition-opacity hover:opacity-90 shadow-md"
             style={{ backgroundColor: "#0a36af" }}
           >
             Pay now
           </button>
         </div>
       </div>
-      <div className="w-full lg:w-[45%] xl:w-[45%] bg-[#f9fafb] border-t lg:border-t-0 lg:border-l border-gray-200 lg:min-h-screen">
+      <div 
+        className="w-full lg:w-[45%] xl:w-[45%] bg-[#f9fafb] border-t lg:border-t-0 lg:border-l border-gray-200 lg:min-h-screen"
+        style={{ color: "#0a36af" }}
+      >
         <div className="lg:sticky lg:top-0 w-full pt-8 lg:pt-14 pb-20 px-6 lg:px-12 xl:px-16 flex justify-start">
           <div className="w-full max-w-md flex flex-col">
             <div className="flex flex-col gap-4 mb-6">
@@ -259,21 +262,21 @@ function Checkout() {
                       className="w-full h-full object-contain"
                     />
                     <span
-                      className="absolute -top-2 -right-2 w-5 h-5 rounded-full text-white text-[12px] font-bold flex items-center justify-center z-10"
+                      className="absolute -top-2 -right-2 w-6 h-6 rounded-full text-white text-[15px] font-bold flex items-center justify-center z-10"
                       style={{ backgroundColor: "rgba(113, 113, 122, 0.9)" }}
                     >
                       {item.quantity}
                     </span>
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-bold text-[14px] leading-tight text-black">
+                    <h3 className="font-bold text-[15px] leading-tight">
                       {item.name}
                     </h3>
-                    <p className="text-[12px] text-gray-500 mt-0.5">
+                    <p className="text-[15px] mt-0.5">
                       {item.variant}
                     </p>
                   </div>
-                  <div className="font-medium text-[14px] text-black">
+                  <div className="font-medium text-[15px]">
                     {item.price}
                   </div>
                 </div>
@@ -283,39 +286,44 @@ function Checkout() {
               <input
                 type="text"
                 placeholder="Discount code"
-                className="flex-1 border border-gray-300 rounded-md p-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] bg-white"
+                className="flex-1 border border-gray-300 rounded-md p-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] bg-white text-[15px] text-[#0a36af] placeholder-[#0a36af]"
               />
-              <button className="px-5 py-3 bg-gray-200 text-gray-500 font-semibold rounded-md transition-colors hover:bg-gray-300 hover:text-gray-700">
+              <button 
+                className="px-5 py-3 bg-gray-200 font-semibold rounded-md transition-colors hover:bg-gray-300 text-[15px]"
+                style={{ color: "#0a36af" }}
+              >
                 Apply
               </button>
             </div>
-            <div className="flex flex-col gap-3 text-[14px]">
+            <div className="flex flex-col gap-3 text-[15px]">
               <div className="flex justify-between">
-                <span className="text-gray-600">
+                <span>
                   Subtotal &middot; 14 items
                 </span>
-                <span className="font-medium text-black">£116.86</span>
+                <span className="font-medium">£116.86</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Shipping</span>
-                <span className="text-gray-500 text-[13px]">
+                <span>Shipping</span>
+                <span>
                   Enter shipping address
                 </span>
               </div>
+              
+              <div className="flex justify-between">
+                <span>VAT</span>
+                <span className="font-medium">£19.48</span>
+              </div>
 
               <div className="flex justify-between items-end mt-4 pt-4 border-t border-gray-200">
-                <span className="text-[16px] font-bold text-black">Total</span>
+                <span className="text-[20px] font-bold">Total</span>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-[12px] text-gray-500 font-medium mb-1">
+                  <span className="text-[15px] font-medium mb-1">
                     GBP
                   </span>
-                  <span className="text-[24px] font-extrabold text-black">
+                  <span className="text-[20px] font-extrabold">
                     £116.86
                   </span>
                 </div>
-              </div>
-              <div className="text-right text-[12px] text-gray-500 mt-1">
-                Including £19.48 in taxes
               </div>
             </div>
           </div>

@@ -186,18 +186,16 @@ const location = useLocation();
         {/* 1. Changed max-w-6xl to max-w-7xl and perfectly matched the standard padding */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
           <h2
-            className="text-center text-[26px] md:text-[32px] font-bold mb-10 md:mb-14 uppercase tracking-wide"
+            className="text-center text-[30px]  font-bold uppercase tracking-wide"
             style={{ color: "#0a36af" }}
           >
             Why Rezzilli?
           </h2>
 
-          {/* 2. Adjusted the gap to match the Events section (gap-8 md:gap-10) for perfectly aligned vertical columns */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
             
             {/* Box 1 */}
             <div className="flex flex-col items-center text-center px-2">
-              {/* 3. Increased image container height (h-48 md:h-60) as the client suggested */}
               <div className="h-48 md:h-60 w-full flex items-center justify-center mb-6">
                 <img
                   src="/image10.png"
@@ -327,8 +325,6 @@ const location = useLocation();
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
             
-            {/* AMEND iii: "Feel and Style" Experimentation */}
-            
             {/* Box 1: Official Launch Night */}
             <div className="flex flex-col group bg-white border border-gray-100 shadow-sm rounded-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:border-gray-200">
               <div className="w-full h-[250px] md:h-[300px] bg-gray-50 flex items-center justify-center overflow-hidden">
@@ -338,21 +334,22 @@ const location = useLocation();
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
               </div>
-              <div className="p-6 md:p-8 flex flex-col flex-grow">
-                {/* 1. News-Feed Date Tag */}
-                <span className="text-[12px] font-semibold uppercase mb-2 tracking-widest" style={{ color: "#ffc85b" }}>
+              {/* AMEND ii: Reduced left padding (pl-4 md:pl-5) to give text more room */}
+              <div className="py-6 pr-6 pl-4 md:py-8 md:pr-8 md:pl-5 flex flex-col flex-grow">
+                {/* AMEND i: Date changed to 15px */}
+                <span className="text-[15px] font-semibold uppercase mb-2 tracking-widest" style={{ color: "#ffc85b" }}>
                   April 15, 2026 / Event
                 </span>
-                {/* 2. Enhanced Title Interaction (Gold on Hover) */}
                 <h4 className="font-bold uppercase text-[18px] md:text-[20px] leading-snug mb-3 transition-colors group-hover:color-[#ffc85b]" style={{ color: "#0a36af" }}>
                   Official Launch Night
                 </h4>
-                {/* 3. Restricted Summary Text (Line Clamp) */}
-                <p className="text-[14px] leading-relaxed text-gray-700 mb-6 line-clamp-2 flex-grow">
+                {/* AMEND ii: Subtext changed to blue and 15px */}
+                <p className="text-[15px] leading-relaxed mb-6 line-clamp-2 flex-grow" style={{ color: "#0a36af" }}>
                   Join us for the official Rezzilli launch night at Isabel’s Restaurant & Bar. An evening of tastings, pizza, cocktails and DJ sets. Anyone and everyone is invited.
                 </p>
+                {/* AMEND iii: Read more changed to 13px, removed uppercase (sentence case) */}
                 <button
-                  className="text-[14px] font-bold uppercase tracking-wider pb-1 self-start transition-opacity hover:opacity-70"
+                  className="text-[13px] font-bold tracking-wider pb-1 self-start transition-opacity hover:opacity-70"
                   style={{ color: "#0a36af", borderBottom: "2px solid #ffc85b" }}
                 >
                   Read more
@@ -372,18 +369,18 @@ const location = useLocation();
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
               </div>
-              <div className="p-6 md:p-8 flex flex-col flex-grow">
-                <span className="text-[12px] font-semibold uppercase mb-2 tracking-widest" style={{ color: "#ffc85b" }}>
+              <div className="py-6 pr-6 pl-4 md:py-8 md:pr-8 md:pl-5 flex flex-col flex-grow">
+                <span className="text-[15px] font-semibold uppercase mb-2 tracking-widest" style={{ color: "#ffc85b" }}>
                   May 2026 / Festival
                 </span>
                 <h4 className="font-bold uppercase text-[18px] md:text-[20px] leading-snug mb-3 transition-colors group-hover:color-[#ffc85b]" style={{ color: "#0a36af" }}>
                   Foodies Festival
                 </h4>
-                <p className="text-[14px] leading-relaxed text-gray-700 mb-6 line-clamp-2 flex-grow">
+                <p className="text-[15px] leading-relaxed mb-6 line-clamp-2 flex-grow" style={{ color: "#0a36af" }}>
                   Catch the Rezzilli team across the UK at Foodies Festivals! Visit our stand for tastings, chats and to purchase your bottles.
                 </p>
                 <button
-                  className="text-[14px] font-bold uppercase tracking-wider pb-1 self-start transition-opacity hover:opacity-70"
+                  className="text-[13px] font-bold tracking-wider pb-1 self-start transition-opacity hover:opacity-70"
                   style={{ color: "#0a36af", borderBottom: "2px solid #ffc85b" }}
                 >
                   Read more
@@ -400,18 +397,18 @@ const location = useLocation();
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
               </div>
-              <div className="p-6 md:p-8 flex flex-col flex-grow">
-                <span className="text-[12px] font-semibold uppercase mb-2 tracking-widest" style={{ color: "#ffc85b" }}>
+              <div className="py-6 pr-6 pl-4 md:py-8 md:pr-8 md:pl-5 flex flex-col flex-grow">
+                <span className="text-[15px] font-semibold uppercase mb-2 tracking-widest" style={{ color: "#ffc85b" }}>
                   Summer 2026 / Event
                 </span>
                 <h4 className="font-bold uppercase text-[18px] md:text-[20px] leading-snug mb-3 transition-colors group-hover:color-[#ffc85b]" style={{ color: "#0a36af" }}>
                   Great British Food Festival
                 </h4>
-                <p className="text-[14px] leading-relaxed text-gray-700 mb-6 line-clamp-2 flex-grow">
+                <p className="text-[15px] leading-relaxed mb-6 line-clamp-2 flex-grow" style={{ color: "#0a36af" }}>
                   Our tour continues at the Great British Food Festival. Find us at Tatton Park and Edinburgh for more Mediterranean sunshine and refreshing drinks.
                 </p>
                 <button
-                  className="text-[14px] font-bold uppercase tracking-wider pb-1 self-start transition-opacity hover:opacity-70"
+                  className="text-[13px] font-bold tracking-wider pb-1 self-start transition-opacity hover:opacity-70"
                   style={{ color: "#0a36af", borderBottom: "2px solid #ffc85b" }}
                 >
                   Read more
@@ -436,9 +433,10 @@ const location = useLocation();
               >
                 CONTACT US
               </h2>
+              {/* AMEND i: Text changed to blue (#0a36af) */}
               <p
                 className="text-[15px] leading-relaxed"
-                style={{ color: "#000000", textAlign: "justify" }}
+                style={{ color: "#0a36af", textAlign: "justify" }}
               >
                 Have a question, special request, or want to stock our drinks?
                 Fill out the form and our team will get back to you as soon as
@@ -446,19 +444,29 @@ const location = useLocation();
               </p>
               <br />
               <p
-                className="text-[15px] leading-relaxed"
-                style={{ color: "#000000", textAlign: "justify" }}
+                className="text-[15px] leading-relaxed mb-8"
+                style={{ color: "#0a36af", textAlign: "justify" }}
               >
                 Whether you’re a customer, partner, or retailer, we’d love to
                 hear from you and help with anything you need.
               </p>
+
+              <div className="mt-4 pt-6">
+                <p className="text-[15px] mb-1" style={{ color: "#0a36af" }}>
+                  Email: <a href="mailto:hello@rezzillidrinks.com" className="hover:underline">hello@rezzillidrinks.com</a>
+                </p>
+                <p className="text-[15px]" style={{ color: "#0a36af" }}>
+                  Phone: <a href="tel:+447832198470" className="hover:underline">+447832198470</a>
+                </p>
+              </div>
             </div>
+
             <div className="flex flex-col justify-start">
               {isFormSubmitted ? (
                 <div className="flex items-center justify-center p-8 md:p-12">
                   <p
                     className="font-medium text-center leading-relaxed text-base md:text-lg"
-                    style={{ color: "#000000" }}
+                    style={{ color: "#0a36af" }}
                   >
                     {submitMessage}
                   </p>
@@ -469,10 +477,11 @@ const location = useLocation();
                   className="space-y-4 md:space-y-6"
                 >
                   <div>
+                    {/* AMEND i: Label text changed to blue (#0a36af) */}
                     <label
                       htmlFor="whoAreYou"
                       className="block text-[15px] font-medium mb-2"
-                      style={{ color: "#000000" }}
+                      style={{ color: "#0a36af" }}
                     >
                       Who are you? <span style={{ color: "#ef4444" }}>*</span>
                     </label>
@@ -483,12 +492,12 @@ const location = useLocation();
                         setFormData({ ...formData, whoAreYou: e.target.value })
                       }
                       required
-                      className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-[15px]"
+                      className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0a36af] focus:border-transparent text-[15px]"
                       style={{
                         backgroundColor: "#ffffff",
                         fontSize: formData.whoAreYou === "" ? "14px" : "16px",
-                        color:
-                          formData.whoAreYou === "" ? "#9ca3af" : "#000000",
+                        // Note: The selected text inside inputs remains black/gray as requested, only the labels turn blue!
+                        color: formData.whoAreYou === "" ? "#9ca3af" : "#000000",
                       }}
                     >
                       <option value="" style={{ fontSize: "14px" }}>
@@ -508,7 +517,7 @@ const location = useLocation();
                       <label
                         htmlFor="firstName"
                         className="block text-[15px] font-medium mb-2"
-                        style={{ color: "#000000" }}
+                        style={{ color: "#0a36af" }}
                       >
                         First Name <span style={{ color: "#ef4444" }}>*</span>
                       </label>
@@ -523,7 +532,7 @@ const location = useLocation();
                           })
                         }
                         required
-                        className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-[15px]"
+                        className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0a36af] focus:border-transparent text-[15px]"
                         style={{ backgroundColor: "#ffffff" }}
                       />
                     </div>
@@ -531,7 +540,7 @@ const location = useLocation();
                       <label
                         htmlFor="lastName"
                         className="block text-[15px] font-medium mb-2"
-                        style={{ color: "#000000" }}
+                        style={{ color: "#0a36af" }}
                       >
                         Last Name <span style={{ color: "#ef4444" }}>*</span>
                       </label>
@@ -543,7 +552,7 @@ const location = useLocation();
                           setFormData({ ...formData, lastName: e.target.value })
                         }
                         required
-                        className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-[15px]"
+                        className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0a36af] focus:border-transparent text-[15px]"
                         style={{ backgroundColor: "#ffffff" }}
                       />
                     </div>
@@ -553,7 +562,7 @@ const location = useLocation();
                     <label
                       htmlFor="email"
                       className="block text-[15px] font-medium mb-2"
-                      style={{ color: "#000000" }}
+                      style={{ color: "#0a36af" }}
                     >
                       Email <span style={{ color: "#ef4444" }}>*</span>
                     </label>
@@ -565,7 +574,7 @@ const location = useLocation();
                         setFormData({ ...formData, email: e.target.value })
                       }
                       required
-                      className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:ring-transparent text-[15px]"
+                      className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0a36af] focus:ring-transparent text-[15px]"
                       style={{ backgroundColor: "#ffffff" }}
                     />
                   </div>
@@ -574,7 +583,7 @@ const location = useLocation();
                     <label
                       htmlFor="message"
                       className="block text-[15px] font-medium mb-2"
-                      style={{ color: "#000000" }}
+                      style={{ color: "#0a36af" }}
                     >
                       Message <span style={{ color: "#ef4444" }}>*</span>
                     </label>
@@ -586,16 +595,17 @@ const location = useLocation();
                       }
                       required
                       rows={4}
-                      className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-[15px] resize-vertical"
+                      className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0a36af] focus:border-transparent text-[15px] resize-vertical"
                       style={{ backgroundColor: "#ffffff" }}
                       placeholder="Tell us more about your interest..."
                     />
                   </div>
 
+                  {/* AMEND ii: Padding Y changed to exactly 15px (py-[15px]) */}
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full px-6 md:px-8 py-[10px] rounded-lg font-semibold text-[15px] transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed uppercase"
+                    className="w-full px-6 md:px-8 py-[15px] rounded-lg font-semibold text-[15px] transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed uppercase"
                     style={{ backgroundColor: "#0a36af", color: "#ffc85b" }}
                   >
                     {isSubmitting ? "Submitting..." : "Submit"}
@@ -618,7 +628,11 @@ const location = useLocation();
 
       {showEventModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:px-8 bg-black/60 backdrop-blur-sm">
+          
+          {/* AMEND v: max-w-7xl ensures the pop-up spans the exact width of the 3 event boxes below it */}
           <div className="bg-white max-w-7xl w-full max-h-[90vh] flex flex-col relative shadow-2xl rounded-lg overflow-hidden">
+            
+            {/* Fixed Header */}
             <div className="bg-white border-b border-gray-200 py-4 px-6 flex items-center justify-center z-20 shadow-sm shrink-0">
               <h2
                 className="text-[18px] md:text-[20px] font-bold uppercase tracking-wide"
@@ -631,17 +645,27 @@ const location = useLocation();
                 className="absolute right-4 p-2 hover:bg-gray-100 rounded-full transition-colors"
                 aria-label="Close modal"
               >
+                {/* Note: Ensure <X /> is imported from lucide-react at the top of your file! */}
                 <X size={24} style={{ color: "#0a36af" }} />
               </button>
             </div>
 
+            {/* Scrollable Content Area */}
             <div className="overflow-y-auto flex flex-col w-full">
+              
+              {/* Image Section */}
               <div className="w-full h-[250px] md:h-[400px] bg-gray-50 flex items-center justify-center relative shrink-0">
                 <span className="text-gray-500 text-[16px] font-medium">Image</span>
+                {/* <img src="/image1.webp" alt="Event" className="absolute inset-0 w-full h-full object-cover" /> */}
               </div>
 
+              {/* Text Content Section */}
               <div className="w-full bg-white flex justify-center">
-                <div className="p-6 md:p-10 space-y-6 text-black text-[15px] leading-relaxed w-full max-w-4xl">
+                {/* AMEND iv: Changed text color to blue (#0a36af) */}
+                <div 
+                  className="p-6 md:p-10 space-y-6 text-[15px] leading-relaxed w-full max-w-4xl"
+                  style={{ color: "#0a36af" }}
+                >
                   <p>
                     We’ll be at the Rezzilli stand with tastings, chats and bottle
                     sales.

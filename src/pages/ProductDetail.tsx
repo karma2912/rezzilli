@@ -1,58 +1,78 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
 import { Minus, Plus, Trash2, X } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
 function ProductDetail() {
+  const { id } = useParams<{ id: string }>(); 
+  const [product, setProduct] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+
   const [quantity, setQuantity] = useState(1);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const FREE_DELIVERY_THRESHOLD = 50; 
-  const cartTotal = 24.00 * quantity;
+
+  // --- FETCH SPECIFIC PRODUCT ---
+  useEffect(() => {
+    window.scrollTo(0, 0); // Always start at the top of the page
+    setIsLoading(true);
+
+    fetch(`https://rezzillidrinks.com/api/get-products.php?id=${id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.product) {
+          setProduct(data.product);
+        } else {
+          setError("Product not found.");
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        setError("Network error. Please try again.");
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [id]);
+
   const handleAddToCart = () => {
     setIsCartOpen(true);
   };
 
- const product = {
-    name: "Limoncini",
-    tagline: "Sparkling Sicilian Lemon Italian Spritz",
-    price: "£24.00",
-    oldPrice: "£30.00",
-    variant: "24 Bottles",
-    abv: "3.4%", 
-    size: "275ML",
-    image: "/image4.png",
-    
-    description: [
-      "Limoncini - Sparkling Alcoholic Sicilian Lemon alcoholic drink with natural flavours and 3.4% alcohol volume.",
-      "Ingredients: Carbonated water, distilled non grain spirit, beet sugar, 10% Sicilian lemon juice from concentrate, natural flavours, antioxidant (ascorbic acid).",
-      "Tasting note: Rezzilli is a premium sparkling Sicilian Lemon alcoholic drink made with natural flavourings and white Vermouth. Suitable for Vegans and Vegetarians. Gluten Free. 3.4% Alc Vol. Best served chilled over lots of ice, garnish with a sprig of rosemary, lavender or fresh garden mint in a Spritz glass. Not suitable for persons under 18 years old."
-    ],
-    delivery: {
-      standard: ["Orders under £50 - £5", "Orders over £50 - Free"],
-      nextDay: ["Orders under £50 - £7.95", "Orders over £50 - £2.95"]
-    },
-    nutrition: {
-      typicalValues: "Typical values (average per 100 ml)",
-      table: [
-        { label: "Energy", value: "166 kJ / 40 kcal (108 kcal per 275 ml)" },
-        { label: "Fat", value: "0 g" },
-        { label: "Saturated fat", value: "0 g" },
-        { label: "Carbohydrate", value: "3.8 g" },
-        { label: "Sugar (Carbs)", value: "3.7 g" },
-        { label: "Fiber", value: "0 g" },
-        { label: "Protein", value: "0 g" },
-        { label: "Salt", value: "0.01 g" }
-      ],
-      additionalInfo: [
-        "Suitable for vegans and vegetarians.",
-        "No sweeteners, no preservatives, no artificial flavours.",
-        "Not recommended for individuals under 18 years of age.",
-        "The mineral quantities of the water used have been included in the sodium calculation for the salt value.",
-        "Gluten free"
-      ]
-    }
-  };
+  // Prevent breaking if data is still loading
+  if (isLoading) {
+    return (
+      <div className="min-h-screen w-full flex flex-col font-['Libre_Baskerville',_serif] bg-white">
+        <Navbar/>
+        <main className="flex-grow w-full flex items-center justify-center">
+          <p className="text-[20px] font-bold uppercase tracking-widest animate-pulse" style={{ color: "#0a36af" }}>Loading...</p>
+        </main>
+        <Footer/>
+      </div>
+    );
+  }
+
+  if (error || !product) {
+    return (
+      <div className="min-h-screen w-full flex flex-col font-['Libre_Baskerville',_serif] bg-white">
+        <Navbar/>
+        <main className="flex-grow w-full flex items-center justify-center">
+          <p className="text-[20px] font-bold text-red-500 uppercase tracking-widest">{error || "Product not found"}</p>
+        </main>
+        <Footer/>
+      </div>
+    );
+  }
+
+  // Calculate dynamic Cart Total
+  const priceValue = parseFloat(product.price);
+  const cartTotal = priceValue * quantity;
+
+  // Button Logic based on database 'status'
+  const isAvailable = product.status === "Active";
+  const btnText = isAvailable ? "ADD TO CART" : (product.status || "Coming Soon");
 
   return (
     <div className="min-h-screen w-full flex flex-col font-['Libre_Baskerville',_serif] bg-white">
@@ -78,43 +98,53 @@ function ProductDetail() {
             >
               {product.name}
             </h1>
-            <p className="text-[20px] text-gray-600 font-medium mb-6" style={{ color: "#0a36af" }}> 
-              {product.tagline}
-            </p>
+            
+            {product.tagline && (
+              <p className="text-[20px] text-gray-600 font-medium mb-6" style={{ color: "#0a36af" }}> 
+                {product.tagline}
+              </p>
+            )}
 
-            {/* Meta Info */}
-            <div 
-              className="flex items-center gap-4 text-[15px] font-bold uppercase tracking-widest mb-8 border-b border-gray-200 pb-6"
-              style={{ color: "#0a36af" }}
-            >
-              <span>ABV {product.abv}</span>
-              <span className="text-gray-300">|</span>
-              <span>SIZE {product.size}</span>
-            </div>
+            {/* Meta Info (Only shows if ABV or Size exists in DB) */}
+            {(product.abv || product.size) && (
+              <div 
+                className="flex items-center gap-4 text-[15px] font-bold uppercase tracking-widest mb-8 border-b border-gray-200 pb-6"
+                style={{ color: "#0a36af" }}
+              >
+                {product.abv && <span>ABV {product.abv}</span>}
+                {product.abv && product.size && <span className="text-gray-300">|</span>}
+                {product.size && <span>SIZE {product.size}</span>}
+              </div>
+            )}
 
             {/* Price & Variant */}
             <div className="flex flex-col gap-2 mb-8">
               <div className="flex items-center gap-3">
                 <span className="text-[20px] font-extrabold" style={{ color: "#0a36af" }}>
-                  {product.price}
+                  £{priceValue.toFixed(2)}
                 </span>
-                {product.oldPrice && (
+                
+                {/* Only show old price if it exists and is greater than 0 */}
+                {product.old_price && parseFloat(product.old_price) > 0 && (
                   <span 
                     className="text-[20px] line-through font-semibold" 
                     style={{ color: "#0a36af" }}
                   >
-                    {product.oldPrice}
+                    £{parseFloat(product.old_price).toFixed(2)}
                   </span>
                 )}
               </div>
-              <span className="text-[15px] font-medium" style={{ color: "#0a36af" }}>
-                {product.variant}
-                {quantity > 1 && (
-                  <span className="ml-1.5 font-bold">
-                    x{quantity}
-                  </span>
-                )}
-              </span>
+
+              {product.variant && (
+                <span className="text-[15px] font-medium" style={{ color: "#0a36af" }}>
+                  {product.variant}
+                  {quantity > 1 && (
+                    <span className="ml-1.5 font-bold">
+                      x{quantity}
+                    </span>
+                  )}
+                </span>
+              )}
             </div>
             
             <div className="flex flex-col sm:flex-row items-center gap-4 mb-10">
@@ -155,12 +185,14 @@ function ProductDetail() {
                 </button>
               </div>
               
+              {/* Dynamic Add To Cart Button */}
               <button
-                onClick={() => handleAddToCart()}
-                className="w-full h-14 rounded-xl font-extrabold text-[20px] uppercase tracking-widest transition-opacity hover:opacity-90 shadow-md"
+                onClick={() => isAvailable && handleAddToCart()}
+                disabled={!isAvailable}
+                className={`w-full h-14 rounded-xl font-extrabold text-[20px] uppercase tracking-widest transition-opacity shadow-md ${isAvailable ? 'hover:opacity-90 cursor-pointer' : 'opacity-70 cursor-not-allowed'}`}
                 style={{ backgroundColor: "#0a36af", color: "#ffc85b" }}
               >
-                Add To Cart
+                {btnText}
               </button>
             </div>
 
@@ -168,7 +200,7 @@ function ProductDetail() {
             <div className="flex items-center gap-3 p-4 rounded-xl bg-[#faf9f6] border border-gray-100">
               <span className="text-xl">📦</span>
               <p className="text-[15px] font-medium" style={{ color: "#0a36af" }}>
-                Free Standard UK Delivery on orders over £50
+                Free Standard UK Delivery on orders over £{FREE_DELIVERY_THRESHOLD}
               </p>
             </div>
           </div>
@@ -177,7 +209,7 @@ function ProductDetail() {
         <div className="w-full max-w-5xl mx-auto flex flex-col gap-16 pt-4">
           
           {/* 1. Dynamic Description */}
-          {product.description && (
+          {product.description && product.description.length > 0 && (
             <div>
               <h2
                 className="font-extrabold text-[30px] uppercase tracking-wide mb-6"
@@ -186,7 +218,7 @@ function ProductDetail() {
                 Product Description
               </h2>
               <div className="text-[15px] leading-relaxed space-y-4" style={{ color: "#0a36af" }}>
-                {product.description.map((paragraph, index) => (
+                {product.description.map((paragraph: string, index: number) => (
                   <p key={index}>
                     {paragraph.includes("Ingredients:") ? (
                       <><strong style={{ color: "#0a36af" }}>Ingredients:</strong>{paragraph.split("Ingredients:")[1]}</>
@@ -214,36 +246,40 @@ function ProductDetail() {
                 className="text-[15px] leading-relaxed grid grid-cols-1 md:grid-cols-2 gap-8 bg-[#faf9f6] p-8 rounded-xl border border-gray-100" 
                 style={{ color: "#0a36af" }}
               >
-                <div>
-                  <h4 className="font-bold mb-3 text-[16px] underline underline-offset-4 decoration-[#ffc85b]">
-                    Standard UK Delivery:
-                  </h4>
-                  <ul className="list-disc pl-5 space-y-3">
-                    {product.delivery.standard.map((item, i) => (
-                      <li key={i} className="pl-1">
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div>
-                  <h4 className="font-bold mb-3 text-[16px] underline underline-offset-4 decoration-[#ffc85b]">
-                    Next Day Delivery:
-                  </h4>
-                  <ul className="list-disc pl-5 space-y-3">
-                    {product.delivery.nextDay.map((item, i) => (
-                      <li key={i} className="pl-1">
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                {product.delivery.standard && (
+                  <div>
+                    <h4 className="font-bold mb-3 text-[16px] underline underline-offset-4 decoration-[#ffc85b]">
+                      Standard UK Delivery:
+                    </h4>
+                    <ul className="list-disc pl-5 space-y-3">
+                      {product.delivery.standard.map((item: string, i: number) => (
+                        <li key={i} className="pl-1">
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {product.delivery.nextDay && (
+                  <div>
+                    <h4 className="font-bold mb-3 text-[16px] underline underline-offset-4 decoration-[#ffc85b]">
+                      Next Day Delivery:
+                    </h4>
+                    <ul className="list-disc pl-5 space-y-3">
+                      {product.delivery.nextDay.map((item: string, i: number) => (
+                        <li key={i} className="pl-1">
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
             </div>
           )}
 
-          {/* 3. Dynamic Nutritional Info (Will completely hide for Merchandise!) */}
-          {product.nutrition && (
+          {/* 3. Dynamic Nutritional Info */}
+          {product.nutrition && product.nutrition.table && (
             <div>
               <h2
                 className="font-extrabold text-[30px] uppercase tracking-wide mb-6"
@@ -252,9 +288,11 @@ function ProductDetail() {
                 Nutritional Information
               </h2>
               <div className="text-[15px] leading-relaxed" style={{ color: "#0a36af" }}>
-                <p className="font-bold mb-4">
-                  {product.nutrition.typicalValues}
-                </p>
+                {product.nutrition.typicalValues && (
+                  <p className="font-bold mb-4">
+                    {product.nutrition.typicalValues}
+                  </p>
+                )}
 
                 <div className="overflow-hidden border border-[#0a36af]/20 rounded-lg max-w-2xl">
                   <table className="w-full text-left border-collapse">
@@ -265,7 +303,7 @@ function ProductDetail() {
                       </tr>
                     </thead>
                     <tbody>
-                      {product.nutrition.table.map((row, i) => (
+                      {product.nutrition.table.map((row: any, i: number) => (
                         <tr key={i} className={i !== product.nutrition.table.length - 1 ? "border-b border-[#0a36af]/20" : ""}>
                           <td className="p-4 border-r border-[#0a36af]/20 font-medium">{row.label}</td>
                           <td className="p-4">{row.value}</td>
@@ -276,13 +314,13 @@ function ProductDetail() {
                 </div>
 
                 {/* Dynamic Additional Info */}
-                {product.nutrition.additionalInfo && (
+                {product.nutrition.additionalInfo && product.nutrition.additionalInfo.length > 0 && (
                   <div className="mt-8">
                     <p className="font-bold mb-4 text-[15px] uppercase tracking-wide">
                       ADDITIONAL INFORMATION
                     </p>
                     <ul className="list-disc pl-5 space-y-3">
-                      {product.nutrition.additionalInfo.map((info, i) => (
+                      {product.nutrition.additionalInfo.map((info: string, i: number) => (
                         <li key={i} className="pl-1">
                           {info}
                         </li>
@@ -296,6 +334,9 @@ function ProductDetail() {
 
         </div>
       </main>
+
+      {/* --- CART DRAWER START --- */}
+      {/* Note: Kept visually identical. Mathematical total reflects current product price x quantity */}
 
       {/* Background Overlay */}
       {isCartOpen && (
@@ -345,36 +386,36 @@ function ProductDetail() {
 
         {/* Cart Items Area (Scrollable) */}
         <div className="flex-1 overflow-y-auto px-5">
-          {/* Cart Item */}
+          {/* Cart Item (Currently hardcoded placeholder until Global Cart is built) */}
           <div className="flex gap-5 py-5 border-b border-gray-200">
             {/* Thumbnail */}
-            <Link to="/product/2" className="w-24 h-24 flex-shrink-0 bg-gray-50 rounded-md flex items-center justify-center p-2 border border-gray-100 hover:opacity-80 transition-opacity cursor-pointer">
+            <div className="w-24 h-24 flex-shrink-0 bg-gray-50 rounded-md flex items-center justify-center p-2 border border-gray-100 hover:opacity-80 transition-opacity cursor-pointer">
               <img
-                src="/image4.png"
-                alt="Limoncini"
+                src={product.image}
+                alt={product.name}
                 className="w-full h-full object-contain drop-shadow-md"
               />
-            </Link>
+            </div>
 
             {/* Details */}
             <div className="flex-1 flex flex-col">
-             <div className="flex items-start justify-between gap-2">
-                <Link to="/product/2" className="hover:opacity-80 transition-opacity">
+              <div className="flex items-start justify-between gap-2">
+                <div className="hover:opacity-80 transition-opacity cursor-pointer" onClick={() => setIsCartOpen(false)}>
                   <h3
                     className="font-extrabold text-[16px] uppercase leading-tight"
                     style={{ color: "#0a36af" }}
                   >
-                    LEMON ITALIAN SPRITZ
+                    {product.name}
                   </h3>
-                </Link>
+                </div>
               </div>
 
               <div className="font-bold text-[14px] text-black mt-1">
-                £24.00
+                £{priceValue.toFixed(2)}
               </div>
 
               <p className="text-[12px] text-gray-700 mt-1 font-medium">
-                24 Bottles
+                {product.variant}
               </p>
 
               {/* Quantity Controls */}

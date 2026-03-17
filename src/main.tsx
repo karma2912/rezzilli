@@ -3,10 +3,13 @@ import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
 import AgeVerification from './AgeVerification.tsx';
+import { CartProvider } from './context/CartContext.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
+    <CartProvider>
     <AgeVerification/>
     <App />
+    </CartProvider>
   </StrictMode>
 );

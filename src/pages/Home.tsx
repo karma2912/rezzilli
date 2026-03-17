@@ -144,7 +144,6 @@ const location = useLocation();
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
           <div className="grid md:grid-cols-2 gap-8 md:gap-16 lg:gap-20 items-center">
-            
             <div className="flex justify-center md:justify-start">
               <img
                 src="/gemini_generated_image_yoid3hyoid3hyoidd copy.webp"
@@ -152,7 +151,6 @@ const location = useLocation();
                 className="w-full max-w-[450px] rounded-2xl shadow-2xl"
               />
             </div>
-            
             <div className="flex flex-col justify-center">
               <h2
                 className="text-[30px] uppercase font-bold mb-4 md:mb-8"
@@ -177,13 +175,11 @@ const location = useLocation();
           </div>
         </div>
       </section>
-
       <section
         id="why-us"
         className="w-full py-12 md:py-16"
         style={{ backgroundColor: "#ffffff" }}
       >
-        {/* 1. Changed max-w-6xl to max-w-7xl and perfectly matched the standard padding */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
           <h2
             className="text-center text-[30px]  font-bold uppercase tracking-wide"

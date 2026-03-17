@@ -1,11 +1,19 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
+import { useEffect, useState } from "react";
 
 function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const isLoggedIn = false; 
+ const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("rezzilli_user");
+    if (storedUser) {
+      setIsLoggedIn(true);
+    }
+  }, [location.pathname]); // The dependency array ensures it checks again if the page changes
 
   const scrollToSection = (sectionId: string) => {
     if (location.pathname !== "/") {
@@ -126,7 +134,15 @@ function Navbar() {
                       <Link to="/profile" className="block px-5 py-2.5 text-center text-[15px] font-semibold hover:bg-white/10 transition-colors whitespace-nowrap" style={{ color: "#ffc85b" }}>
                         Profile
                       </Link>
-                      <button onClick={() => console.log("Sign out clicked")} className="block w-full px-5 py-2.5 text-center text-[15px] font-semibold hover:bg-white/10 transition-colors whitespace-nowrap" style={{ color: "#ffc85b" }}>
+                      <button 
+    onClick={() => {
+      localStorage.removeItem("rezzilli_user");
+      setIsLoggedIn(false);
+      navigate("/login");
+    }} 
+    className="block w-full px-5 py-2.5 text-center text-[15px] font-semibold hover:bg-white/10 transition-colors whitespace-nowrap" 
+    style={{ color: "#ffc85b" }}
+  >
                         Sign Out
                       </button>
                     </>

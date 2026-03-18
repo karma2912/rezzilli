@@ -7,7 +7,8 @@ import {
   CalendarDays, 
   Settings, 
   Store,
-  LogOut
+  LogOut,
+  Gift
 } from "lucide-react";
 
 function Sidebar() {
@@ -19,6 +20,7 @@ function Sidebar() {
     { name: "Products", path: "/admin/products", icon: Package },
     { name: "Customers", path: "/admin/customers", icon: Users },
     { name: "Events & Content", path: "/admin/content", icon: CalendarDays },
+    { name: "Promotions", path: "/admin/promotions", icon: Gift },
     { name: "Settings", path: "/admin/settings", icon: Settings },
   ];
 

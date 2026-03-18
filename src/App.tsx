@@ -19,6 +19,7 @@ import Products from "./pages/admin/Products";
 import Customers from "./pages/admin/Customers";
 import Content from "./pages/admin/Content";
 import Settings from "./pages/admin/Settings";
+import Promotions from "./pages/admin/Promotions";
 
 function App() {
   return (
@@ -47,6 +48,7 @@ function App() {
           <Route path="products" element={<Products/>} />
           <Route path="customers" element={<Customers/>} />
           <Route path="content" element={<Content/>} />
+          <Route path="promotions" element={<Promotions/>} />
           <Route path="settings" element={<Settings/>} />
         </Route>
       </Routes>

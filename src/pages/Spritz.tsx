@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
 import { ChevronDown, Minus, Plus, Trash2, X } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { useCart } from "../context/CartContext"; // <-- The Global Brain
+import { useCart } from "../context/CartContext";
 
 function Spritz() {
-  const navigate = useNavigate();
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [selectedSort, setSelectedSort] = useState("Date, new to old");
 
@@ -20,18 +19,15 @@ function Spritz() {
   ];
 
   // --- CONTEXT & STATES ---
-  const { cart, addToCart, removeFromCart, updateQuantity, cartTotal } = useCart();
+  const { cart, addToCart, removeFromCart, updateQuantity, cartTotal } =
+    useCart();
   const [products, setProducts] = useState<any[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const FREE_DELIVERY_THRESHOLD = 50;
   const isFreeDelivery = cartTotal >= FREE_DELIVERY_THRESHOLD;
 
   useEffect(() => {
-    const user = localStorage.getItem("rezzilli_user");
-    setIsLoggedIn(!!user);
-
     fetch("https://rezzillidrinks.com/api/get-products.php")
       .then((res) => res.json())
       .then((data) => {
@@ -43,19 +39,29 @@ function Spritz() {
   }, []);
 
   const sortedProducts = [...products].sort((a, b) => {
-    if (selectedSort === "Price, low to high") return Number(a.price) - Number(b.price);
-    if (selectedSort === "Price, high to low") return Number(b.price) - Number(a.price);
-    if (selectedSort === "Alphabetically, A to Z") return a.name.localeCompare(b.name);
-    if (selectedSort === "Alphabetically, Z to A") return b.name.localeCompare(a.name);
-    if (selectedSort === "Date, new to old") return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-    if (selectedSort === "Date, old to new") return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+    if (selectedSort === "Price, low to high")
+      return Number(a.price) - Number(b.price);
+    if (selectedSort === "Price, high to low")
+      return Number(b.price) - Number(a.price);
+    if (selectedSort === "Alphabetically, A to Z")
+      return a.name.localeCompare(b.name);
+    if (selectedSort === "Alphabetically, Z to A")
+      return b.name.localeCompare(a.name);
+    if (selectedSort === "Date, new to old")
+      return (
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+    if (selectedSort === "Date, old to new")
+      return (
+        new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+      );
     return 0;
   });
 
   const getButtonText = (status: string) => {
-    if (status === 'Active') return "ADD TO CART";
-    if (status === 'Coming Soon') return "Coming soon";
-    if (status === 'Out of Stock') return "Out of stock";
+    if (status === "Active") return "ADD TO CART";
+    if (status === "Coming Soon") return "Coming soon";
+    if (status === "Out of Stock") return "Out of stock";
     return status || "ADD TO CART";
   };
 
@@ -68,24 +74,20 @@ function Spritz() {
         price: parseFloat(product.price),
         originalPrice: product.old_price,
         image: product.image,
-        variant: product.variant || "24 BOTTLES", // Default fallback if variant isn't set in DB
-        quantity: 1
+        variant: product.variant || "24 BOTTLES",
+        quantity: 1,
       });
       setIsCartOpen(true);
     }
   };
 
-  const handleCheckout = () => {
-    if (!isLoggedIn) {
-      navigate('/login'); 
-    } else {
-      navigate('/checkout'); 
-    }
-  };
-
   // --- CONTACT FORM STATE ---
   const [formData, setFormData] = useState({
-    whoAreYou: "", firstName: "", lastName: "", email: "", message: "",
+    whoAreYou: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState("");
@@ -96,12 +98,18 @@ function Spritz() {
     setIsSubmitting(true);
     setSubmitMessage("");
 
-    if (!formData.whoAreYou || !formData.firstName || !formData.lastName || !formData.email || !formData.message) {
+    if (
+      !formData.whoAreYou ||
+      !formData.firstName ||
+      !formData.lastName ||
+      !formData.email ||
+      !formData.message
+    ) {
       setSubmitMessage("Please fill all required fields.");
       setIsSubmitting(false);
       return;
     }
-    // ... API logic remains unchanged ...
+
     setTimeout(() => {
       setSubmitMessage("Thank you! Your message has been sent.");
       setIsFormSubmitted(true);
@@ -111,7 +119,7 @@ function Spritz() {
 
   return (
     <div className="min-h-screen w-full bg-white flex flex-col font-['Libre_Baskerville',_serif]">
-      <Navbar/>
+      <Navbar />
 
       <main className="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-12 md:py-20">
         <div className="flex flex-col items-center justify-center mb-12 md:mb-16">
@@ -121,7 +129,10 @@ function Spritz() {
           >
             Sip The Summer
           </h1>
-          <div className="w-12 h-[2px]" style={{ backgroundColor: "#0a36af" }}></div>
+          <div
+            className="w-12 h-[2px]"
+            style={{ backgroundColor: "#0a36af" }}
+          ></div>
         </div>
 
         {/* Filter and Product Count Row */}
@@ -138,36 +149,34 @@ function Spritz() {
               <span className="text-[15px] font-semibold">{selectedSort}</span>
               <ChevronDown
                 size={18}
-                className={`transition-transform duration-200 ${
-                  isSortOpen ? "rotate-180" : ""
-                }`}
+                className={`transition-transform duration-200 ${isSortOpen ? "rotate-180" : ""}`}
               />
             </button>
 
             {isSortOpen && (
               <>
-              <div 
-                  className="fixed inset-0 z-10" 
-                  onClick={() => setIsSortOpen(false)} 
+                <div
+                  className="fixed inset-0 z-10"
+                  onClick={() => setIsSortOpen(false)}
                 />
-              <div
-                className="absolute top-full left-0 w-full bg-white border-2 border-t-0 shadow-xl z-20"
-                style={{ borderColor: "#e5e7eb" }}
-              >
-                {sortOptions.map((option, index) => (
-                  <button
-                    key={index}
-                    onClick={() => {
-                      setSelectedSort(option);
-                      setIsSortOpen(false);
-                    }}
-                    className="w-full text-left px-4 py-2.5 text-[14px] hover:bg-blue-50 transition-colors"
-                    style={{ color: "#0a36af" }}
-                  >
-                    {option}
-                  </button>
-                ))}
-              </div>
+                <div
+                  className="absolute top-full left-0 w-full bg-white border-2 border-t-0 shadow-xl z-20"
+                  style={{ borderColor: "#e5e7eb" }}
+                >
+                  {sortOptions.map((option, index) => (
+                    <button
+                      key={index}
+                      onClick={() => {
+                        setSelectedSort(option);
+                        setIsSortOpen(false);
+                      }}
+                      className="w-full text-left px-4 py-2.5 text-[14px] hover:bg-blue-50 transition-colors"
+                      style={{ color: "#0a36af" }}
+                    >
+                      {option}
+                    </button>
+                  ))}
+                </div>
               </>
             )}
           </div>
@@ -185,10 +194,16 @@ function Spritz() {
           {sortedProducts.map((product) => {
             const btnText = getButtonText(product.status);
             const priceDisplay = `£${parseFloat(product.price)}`;
-            const oldPriceDisplay = product.old_price && parseFloat(product.old_price) > 0 ? `£${parseFloat(product.old_price)}` : null;
+            const oldPriceDisplay =
+              product.old_price && parseFloat(product.old_price) > 0
+                ? `£${parseFloat(product.old_price)}`
+                : null;
 
             return (
-              <div key={product.id} className="flex flex-col items-center w-full">
+              <div
+                key={product.id}
+                className="flex flex-col items-center w-full"
+              >
                 <Link
                   to={`/product/${product.id}`}
                   className="block h-[300px] md:h-[380px] w-full mb-6 group cursor-pointer"
@@ -241,7 +256,7 @@ function Spritz() {
           })}
         </div>
       </main>
-      
+
       {/* --- CART DRAWER START --- */}
       {isCartOpen && (
         <div
@@ -251,58 +266,77 @@ function Spritz() {
       )}
 
       <div
-        className={`fixed top-0 right-0 h-full w-full max-w-[420px] bg-white z-[100] shadow-2xl flex flex-col transition-transform duration-300 ease-in-out transform ${
-          isCartOpen ? "translate-x-0" : "translate-x-full"
-        }`}
+        className={`fixed top-0 right-0 h-full w-full max-w-[420px] bg-white z-[100] shadow-2xl flex flex-col transition-transform duration-300 ease-in-out transform ${isCartOpen ? "translate-x-0" : "translate-x-full"}`}
       >
-        {/* Header */}
         <div className="flex items-center justify-between p-5 pb-4">
-          <h2 className="text-2xl font-extrabold uppercase tracking-tighter" style={{ color: "#0a36af" }}>
+          <h2
+            className="text-2xl font-extrabold uppercase tracking-tighter"
+            style={{ color: "#0a36af" }}
+          >
             Cart
           </h2>
           <button
             onClick={() => setIsCartOpen(false)}
             className="p-1 hover:bg-gray-100 rounded transition-colors"
-            aria-label="Close cart"
           >
             <X size={26} color="#000000" strokeWidth={1.5} />
           </button>
         </div>
 
-        {/* Promotional Banners */}
         <div className="px-5 pb-5 space-y-3">
           {isFreeDelivery ? (
             <div className="bg-[#d1fae5] py-3 px-4 flex items-center gap-3 font-bold text-[#065f46] text-[14px] rounded-sm">
-              <span className="text-xl leading-none">👍</span> Good news! You've got free delivery
+              <span className="text-xl leading-none">👍</span> Good news! You've
+              got free delivery
             </div>
           ) : (
             <div
               className="py-3 px-4 flex items-center gap-3 font-bold text-black text-[14px] rounded-sm"
-              style={{ backgroundColor: "#ffc85b" }}
+              style={{ backgroundColor: "#ffc85b", color: "#0a36af" }}
             >
-              <span className="text-xl leading-none">🎁</span> Free Delivery over £{FREE_DELIVERY_THRESHOLD}
+              <span className="text-xl leading-none">🎁</span> Free Delivery
+              over £{FREE_DELIVERY_THRESHOLD}
             </div>
           )}
         </div>
 
-        {/* Cart Items Area (Scrollable) */}
         <div className="flex-1 overflow-y-auto px-5">
           {cart.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full text-center opacity-70">
+            <div className="flex flex-col items-center justify-center h-full text-center py-10 opacity-70">
               <span className="text-5xl mb-4">🛒</span>
-              <p className="text-[16px] font-bold" style={{ color: "#0a36af" }}>Your cart is empty</p>
+              <p className="text-[16px] font-bold" style={{ color: "#0a36af" }}>
+                Your cart is empty
+              </p>
             </div>
           ) : (
             cart.map((item) => (
-              <div key={item.id} className="flex gap-5 py-5 border-b border-gray-200">
-                <Link to={`/product/${item.id}`} onClick={() => setIsCartOpen(false)} className="w-24 h-24 flex-shrink-0 bg-gray-50 rounded-md flex items-center justify-center p-2 border border-gray-100 hover:opacity-80 transition-opacity cursor-pointer">
-                  <img src={item.image} alt={item.name} className="w-full h-full object-contain drop-shadow-md" />
+              <div
+                key={item.id}
+                className="flex gap-5 py-5 border-b border-gray-200"
+              >
+                <Link
+                  to={`/product/${item.id}`}
+                  onClick={() => setIsCartOpen(false)}
+                  className="w-24 h-24 flex-shrink-0 bg-gray-50 rounded-md flex items-center justify-center p-2 border border-gray-100 hover:opacity-80 transition-opacity cursor-pointer"
+                >
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="w-full h-full object-contain drop-shadow-md"
+                  />
                 </Link>
 
                 <div className="flex-1 flex flex-col">
                   <div className="flex items-start justify-between gap-2">
-                    <Link to={`/product/${item.id}`} onClick={() => setIsCartOpen(false)} className="hover:opacity-80 transition-opacity">
-                      <h3 className="font-extrabold text-[15px] uppercase leading-tight" style={{ color: "#0a36af" }}>
+                    <Link
+                      to={`/product/${item.id}`}
+                      onClick={() => setIsCartOpen(false)}
+                      className="hover:opacity-80 transition-opacity"
+                    >
+                      <h3
+                        className="font-extrabold text-[16px] uppercase leading-tight"
+                        style={{ color: "#0a36af" }}
+                      >
                         {item.name}
                       </h3>
                     </Link>
@@ -311,30 +345,35 @@ function Spritz() {
                   <div className="font-bold text-[14px] text-black mt-1">
                     £{(item.price * item.quantity).toFixed(2)}
                   </div>
-
                   <p className="text-[12px] text-gray-700 mt-1 font-medium">
                     {item.variant}
                   </p>
 
-                  {/* Quantity Controls */}
                   <div className="flex items-center gap-5 mt-4">
                     <div className="flex items-center gap-4">
                       <button
-                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                        disabled={item.quantity <= 1}
-                        className="w-8 h-8 rounded-full flex items-center justify-center text-white transition-opacity hover:opacity-80 shadow-sm disabled:opacity-50"
+                        onClick={() =>
+                          updateQuantity(
+                            item.id,
+                            Math.max(1, item.quantity - 1),
+                          )
+                        }
+                        className="w-8 h-8 rounded-full flex items-center justify-center text-white transition-opacity hover:opacity-80 shadow-sm cursor-pointer"
                         style={{ backgroundColor: "#0a36af" }}
                       >
                         <Minus size={18} strokeWidth={3} />
                       </button>
-
                       <span className="text-[16px] font-extrabold w-4 text-center">
                         {item.quantity}
                       </span>
-
                       <button
-                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                        className="w-8 h-8 rounded-full flex items-center justify-center text-white transition-opacity hover:opacity-80 shadow-sm"
+                        onClick={() =>
+                          updateQuantity(
+                            item.id,
+                            Math.min(10, item.quantity + 1),
+                          )
+                        }
+                        className="w-8 h-8 rounded-full flex items-center justify-center text-white transition-opacity hover:opacity-80 shadow-sm cursor-pointer"
                         style={{ backgroundColor: "#0a36af" }}
                       >
                         <Plus size={18} strokeWidth={3} />
@@ -344,7 +383,6 @@ function Spritz() {
                     <button
                       onClick={() => removeFromCart(item.id)}
                       className="text-gray-500 hover:text-red-500 transition-colors"
-                      aria-label="Remove item"
                     >
                       <Trash2 size={22} />
                     </button>
@@ -355,28 +393,31 @@ function Spritz() {
           )}
         </div>
 
-        {/* Footer / Checkout Area */}
         {cart.length > 0 && (
           <div className="border-t border-gray-200 p-6 bg-white">
             <div className="flex flex-col gap-3 mb-6">
               <div className="flex justify-between text-[14px]">
                 <span className="font-medium text-gray-700">Subtotal</span>
-                <span className="font-medium text-gray-900">£{cartTotal.toFixed(2)}</span>
+                <span className="font-medium text-gray-900">
+                  £{cartTotal.toFixed(2)}
+                </span>
               </div>
               <div className="flex justify-between text-[14px]">
                 <span className="font-medium text-gray-700">Delivery</span>
                 <span className="font-medium text-gray-900">
-                  {isFreeDelivery ? 'Free' : 'Calculated at Checkout'}
+                  {isFreeDelivery ? "Free" : "Calculated at Checkout"}
                 </span>
               </div>
               <div className="flex justify-between text-[18px] mt-3 pt-3 border-t border-gray-200">
                 <span className="font-extrabold text-black">Total</span>
-                <span className="font-extrabold text-black">£{cartTotal.toFixed(2)}</span>
+                <span className="font-extrabold text-black">
+                  £{cartTotal.toFixed(2)}
+                </span>
               </div>
             </div>
 
             <div className="flex flex-col gap-3">
-             <Link
+              <Link
                 to="/cart"
                 className="block w-full py-4 text-center rounded-full text-white font-extrabold text-[14px] transition-opacity hover:opacity-90 shadow-md"
                 style={{ backgroundColor: "#0a36af" }}
@@ -394,8 +435,7 @@ function Spritz() {
           </div>
         )}
       </div>
-      
-      {/* Contact Section remains unchanged below here */}
+
       <section
         id="contact"
         className="w-full px-4 md:px-6 py-12 md:py-16"
@@ -476,7 +516,6 @@ function Spritz() {
                       <option value="Other">Other</option>
                     </select>
                   </div>
-
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label
@@ -522,7 +561,6 @@ function Spritz() {
                       />
                     </div>
                   </div>
-
                   <div>
                     <label
                       htmlFor="email"
@@ -543,7 +581,6 @@ function Spritz() {
                       style={{ backgroundColor: "#ffffff" }}
                     />
                   </div>
-
                   <div>
                     <label
                       htmlFor="message"
@@ -565,7 +602,6 @@ function Spritz() {
                       placeholder="Tell us more about your interest..."
                     />
                   </div>
-
                   <button
                     type="submit"
                     disabled={isSubmitting}
@@ -574,7 +610,6 @@ function Spritz() {
                   >
                     {isSubmitting ? "Submitting..." : "Submit"}
                   </button>
-
                   {submitMessage && !isFormSubmitted && (
                     <p className="text-center font-medium text-sm md:text-base text-red-600">
                       {submitMessage}
@@ -586,7 +621,7 @@ function Spritz() {
           </div>
         </div>
       </section>
-     <Footer/>
+      <Footer />
     </div>
   );
 }

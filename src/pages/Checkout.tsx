@@ -1,30 +1,112 @@
-import { Link } from "react-router-dom";
-import {
-  Search,
-  HelpCircle,
-  Lock,
-  ChevronLeft,
-} from "lucide-react";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Search, HelpCircle, Lock, ChevronLeft } from "lucide-react";
+import { useCart } from "../context/CartContext";
 
 function Checkout() {
-  const checkoutItems = [
-    {
-      id: 1,
-      name: "LEMON ITALIAN SPRITZ",
-      variant: "4 Bottles",
-      price: "£24.00",
-      quantity: 1,
-      image: "/image4.png",
-    },
-    {
-      id: 2,
-      name: "NON-ALCOHOL ORANGE ITALIAN SPRITZ",
-      variant: "24 BOTTLES",
-      price: "£110.37",
-      quantity: 13,
-      image: "/image6.png",
-    },
-  ];
+  const navigate = useNavigate();
+  const { cart, cartTotal, cartCount, clearCart } = useCart();
+
+  // Redirect to cart if they somehow get here with an empty cart
+  useEffect(() => {
+    if (cart.length === 0) {
+      navigate('/cart');
+    }
+  }, [cart, navigate]);
+
+  // Form State
+  const [formData, setFormData] = useState({
+    country: "United Kingdom",
+    firstName: "",
+    lastName: "",
+    company: "",
+    address: "",
+    apartment: "",
+    city: "",
+    postcode: "",
+    phone: "",
+    giftMessage: ""
+  });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Math for VAT (Assuming UK 20% VAT is already included in the price)
+  const vatAmount = cartTotal - (cartTotal / 1.2);
+  const FREE_DELIVERY_THRESHOLD = 50;
+  const deliveryFee = cartTotal >= FREE_DELIVERY_THRESHOLD ? 0 : 5.00; // Example £5 fee
+  const finalTotal = cartTotal + deliveryFee;
+
+  const handlePayNow = async () => {
+    // 1. Basic Validation
+    if (!formData.firstName || !formData.lastName || !formData.address || !formData.city || !formData.postcode) {
+      setError("Please fill in all required shipping fields.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    setError("");
+
+    // 2. Get User ID
+    const userString = localStorage.getItem("rezzilli_user");
+    if (!userString) {
+      navigate('/login');
+      return;
+    }
+    const user = JSON.parse(userString);
+
+    // 3. Package the payload for our upgraded create-order.php
+    const orderPayload = {
+      user_id: user.id,
+      cartItems: cart,
+      total_amount: finalTotal,
+      shipping_fee: deliveryFee,
+      discount_code: null,
+      discount_amount: 0,
+      gift_message: formData.giftMessage,
+      shipping: {
+        name: `${formData.firstName} ${formData.lastName}`,
+        company: formData.company,
+        line1: formData.address,
+        line2: formData.apartment,
+        city: formData.city,
+        region: formData.city, // API requires region, using city as fallback to preserve your UI
+        zip: formData.postcode,
+        country: formData.country,
+        phone: formData.phone
+      },
+      payment_method: "Credit Card (Mock)",
+      payment_status: "Paid"
+    };
+
+    // 4. Send to Database
+    try {
+      const response = await fetch("https://rezzillidrinks.com/api/create-order.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(orderPayload)
+      });
+      
+      const data = await response.json();
+
+      if (data.success) {
+        clearCart(); // Empty the global cart
+        alert("Order placed successfully! Redirecting to your profile...");
+        navigate('/profile'); // Send them to see their new order!
+      } else {
+        setError(data.message || "Failed to place order.");
+      }
+    } catch (err) {
+      setError("Network error. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="min-h-screen w-full flex flex-col lg:flex-row font-['Libre_Baskerville',_serif] text-[15px]">
@@ -51,6 +133,9 @@ function Checkout() {
               Write a personalised gift message and we will handle the rest.
             </p>
             <textarea 
+              name="giftMessage"
+              value={formData.giftMessage}
+              onChange={handleInputChange}
               placeholder="Write a personalised gift message and we will handle the rest."
               className="w-full border border-gray-300 rounded-lg p-4 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] min-h-[100px] resize-y text-[15px]"
             ></textarea>
@@ -64,23 +149,18 @@ function Checkout() {
                 <label className="absolute top-1 left-3 text-[15px] text-gray-500 scale-75 origin-top-left">
                   Country/Region
                 </label>
-                <select className="w-full border border-gray-300 rounded-lg pt-7 pb-2 px-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] appearance-none bg-white text-[15px]">
+                <select 
+                  name="country"
+                  value={formData.country}
+                  onChange={handleInputChange}
+                  className="w-full border border-gray-300 rounded-lg pt-7 pb-2 px-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] appearance-none bg-white text-[15px]"
+                >
                   <option>United Kingdom</option>
                   <option>United States</option>
                   <option>Europe</option>
                 </select>
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="12"
-                    height="12"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="m6 9 6 6 6-6" />
                   </svg>
                 </div>
@@ -88,11 +168,17 @@ function Checkout() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <input
                   type="text"
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleInputChange}
                   placeholder="First name"
                   className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] text-[15px]"
                 />
                 <input
                   type="text"
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleInputChange}
                   placeholder="Last name"
                   className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] text-[15px]"
                 />
@@ -100,6 +186,9 @@ function Checkout() {
 
               <input
                 type="text"
+                name="company"
+                value={formData.company}
+                onChange={handleInputChange}
                 placeholder="Company (optional)"
                 className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] text-[15px]"
               />
@@ -107,17 +196,20 @@ function Checkout() {
               <div className="relative">
                 <input
                   type="text"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleInputChange}
                   placeholder="Address"
                   className="w-full border border-gray-300 rounded-lg p-3 pr-10 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] text-[15px]"
                 />
-                <Search
-                  size={18}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
-                />
+                <Search size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
               </div>
 
               <input
                 type="text"
+                name="apartment"
+                value={formData.apartment}
+                onChange={handleInputChange}
                 placeholder="Apartment, suite, etc. (optional)"
                 className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] text-[15px]"
               />
@@ -125,11 +217,17 @@ function Checkout() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <input
                   type="text"
+                  name="city"
+                  value={formData.city}
+                  onChange={handleInputChange}
                   placeholder="City"
                   className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] text-[15px]"
                 />
                 <input
                   type="text"
+                  name="postcode"
+                  value={formData.postcode}
+                  onChange={handleInputChange}
                   placeholder="Postcode"
                   className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] text-[15px]"
                 />
@@ -138,34 +236,35 @@ function Checkout() {
               <div className="relative">
                 <input
                   type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
                   placeholder="Phone"
                   className="w-full border border-gray-300 rounded-lg p-3 pr-10 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] text-[15px]"
                 />
-                <HelpCircle
-                  size={18}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer hover:text-gray-600"
-                />
+                <HelpCircle size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer hover:text-gray-600" />
               </div>
             </div>
           </section>
+          
           <section className="mb-10">
             <h2 className="text-[20px] font-bold text-black mb-4">
               Shipping method
             </h2>
             <div className="bg-[#f3f4f6] rounded-lg p-5 text-center text-[15px]" style={{ color: "#0a36af" }}>
-              Enter your shipping address to view available shipping methods.
+              {cartTotal >= FREE_DELIVERY_THRESHOLD 
+                ? "Standard Delivery - Free (Applies to your order!)" 
+                : "Enter your full shipping address to view available shipping methods."}
             </div>
           </section>
+
           <section className="mb-8">
             <h2 className="text-[20px] font-bold text-black mb-1">Payment</h2>
             <p className="text-gray-500 text-[15px] mb-4">
               All transactions are secure and encrypted.
             </p>
 
-            <div
-              className="border-[1.5px] rounded-lg overflow-hidden"
-              style={{ borderColor: "#0a36af" }}
-            >
+            <div className="border-[1.5px] rounded-lg overflow-hidden" style={{ borderColor: "#0a36af" }}>
               <div className="bg-blue-50/30 p-4 border-b border-gray-200 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-4 h-4 rounded-full border-4 border-[#0a36af] bg-white flex items-center justify-center">
@@ -174,78 +273,52 @@ function Checkout() {
                   <span className="font-bold text-black text-[15px]">Credit card</span>
                 </div>
                 <div className="flex gap-1">
-                  <div className="w-10 h-7 bg-white border border-gray-200 rounded flex items-center justify-center text-[15px] font-bold text-blue-900 scale-75 origin-right">
-                    VISA
-                  </div>
+                  <div className="w-10 h-7 bg-white border border-gray-200 rounded flex items-center justify-center text-[15px] font-bold text-blue-900 scale-75 origin-right">VISA</div>
                   <div className="w-10 h-7 bg-white border border-gray-200 rounded flex items-center justify-center scale-75 origin-right">
                     <div className="flex">
                       <div className="w-3.5 h-3.5 bg-red-500 rounded-full mix-blend-multiply"></div>
                       <div className="w-3.5 h-3.5 bg-yellow-500 rounded-full -ml-1 mix-blend-multiply"></div>
                     </div>
                   </div>
-                  <div className="w-10 h-7 bg-white border border-gray-200 rounded flex items-center justify-center text-[15px] font-bold text-gray-600 scale-75 origin-right">
-                    +5
-                  </div>
+                  <div className="w-10 h-7 bg-white border border-gray-200 rounded flex items-center justify-center text-[15px] font-bold text-gray-600 scale-75 origin-right">+5</div>
                 </div>
               </div>
               <div className="bg-gray-50 p-4 space-y-3">
                 <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="Card number"
-                    className="w-full border border-gray-300 rounded-md p-3 pr-10 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] bg-white text-[15px]"
-                  />
-                  <Lock
-                    size={16}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
-                  />
+                  <input type="text" placeholder="Card number" className="w-full border border-gray-300 rounded-md p-3 pr-10 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] bg-white text-[15px]"/>
+                  <Lock size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
-                  <input
-                    type="text"
-                    placeholder="Expiration date (MM / YY)"
-                    className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] bg-white text-[15px]"
-                  />
+                  <input type="text" placeholder="Expiration date (MM / YY)" className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] bg-white text-[15px]" />
                   <div className="relative">
-                    <input
-                      type="text"
-                      placeholder="Security code"
-                      className="w-full border border-gray-300 rounded-md p-3 pr-10 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] bg-white text-[15px]"
-                    />
-                    <HelpCircle
-                      size={16}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer"
-                    />
+                    <input type="text" placeholder="Security code" className="w-full border border-gray-300 rounded-md p-3 pr-10 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] bg-white text-[15px]" />
+                    <HelpCircle size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer" />
                   </div>
                 </div>
-                <input
-                  type="text"
-                  placeholder="Name on card"
-                  className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] bg-white text-[15px]"
-                />
+                <input type="text" placeholder="Name on card" className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] bg-white text-[15px]" />
 
                 <div className="pt-2 flex items-center gap-3">
-                  <input
-                    type="checkbox"
-                    id="billing"
-                    className="w-4 h-4 text-[#0a36af] rounded border-gray-300 focus:ring-[#0a36af]"
-                    defaultChecked
-                  />
-                  <label htmlFor="billing" className="text-[15px] text-gray-700">
-                    Use shipping address as billing address
-                  </label>
+                  <input type="checkbox" id="billing" className="w-4 h-4 text-[#0a36af] rounded border-gray-300 focus:ring-[#0a36af]" defaultChecked />
+                  <label htmlFor="billing" className="text-[15px] text-gray-700">Use shipping address as billing address</label>
                 </div>
               </div>
             </div>
           </section>
+
+          {error && <p className="text-red-500 font-bold mb-3 text-center">{error}</p>}
+          
           <button
-            className="w-full py-4 mt-4 rounded-lg text-white font-extrabold text-[15px] transition-opacity hover:opacity-90 shadow-md"
+            onClick={handlePayNow}
+            disabled={isSubmitting}
+            className="w-full py-4 mt-2 rounded-lg text-white font-extrabold text-[15px] transition-opacity hover:opacity-90 shadow-md disabled:opacity-50 uppercase tracking-wide"
             style={{ backgroundColor: "#0a36af" }}
           >
-            Pay now
+            {isSubmitting ? "Processing Securely..." : "Pay now"}
           </button>
         </div>
       </div>
+      
+      {/* Right Column: Order Summary */}
       <div 
         className="w-full lg:w-[45%] xl:w-[45%] bg-[#f9fafb] border-t lg:border-t-0 lg:border-l border-gray-200 lg:min-h-screen"
         style={{ color: "#0a36af" }}
@@ -253,7 +326,9 @@ function Checkout() {
         <div className="lg:sticky lg:top-0 w-full pt-8 lg:pt-14 pb-20 px-6 lg:px-12 xl:px-16 flex justify-start">
           <div className="w-full max-w-md flex flex-col">
             <div className="flex flex-col gap-4 mb-6">
-              {checkoutItems.map((item) => (
+              
+              {/* DYNAMIC CART ITEMS MAP */}
+              {cart.map((item) => (
                 <div key={item.id} className="flex items-center gap-4">
                   <div className="relative w-16 h-16 flex-shrink-0 bg-white border border-gray-200 rounded-lg flex items-center justify-center p-1">
                     <img
@@ -277,11 +352,12 @@ function Checkout() {
                     </p>
                   </div>
                   <div className="font-medium text-[15px]">
-                    {item.price}
+                    £{(item.price * item.quantity).toFixed(2)}
                   </div>
                 </div>
               ))}
             </div>
+
             <div className="flex gap-3 py-6 border-t border-b border-gray-200 mb-6">
               <input
                 type="text"
@@ -295,23 +371,24 @@ function Checkout() {
                 Apply
               </button>
             </div>
+
             <div className="flex flex-col gap-3 text-[15px]">
               <div className="flex justify-between">
                 <span>
-                  Subtotal &middot; 14 items
+                  Subtotal &middot; {cartCount} {cartCount === 1 ? 'item' : 'items'}
                 </span>
-                <span className="font-medium">£116.86</span>
+                <span className="font-medium">£{cartTotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
                 <span>Shipping</span>
                 <span>
-                  Enter shipping address
+                  {deliveryFee === 0 ? 'Free' : `£${deliveryFee.toFixed(2)}`}
                 </span>
               </div>
               
               <div className="flex justify-between">
-                <span>VAT</span>
-                <span className="font-medium">£19.48</span>
+                <span>VAT (Included)</span>
+                <span className="font-medium">£{vatAmount.toFixed(2)}</span>
               </div>
 
               <div className="flex justify-between items-end mt-4 pt-4 border-t border-gray-200">
@@ -321,7 +398,7 @@ function Checkout() {
                     GBP
                   </span>
                   <span className="text-[20px] font-extrabold">
-                    £116.86
+                    £{finalTotal.toFixed(2)}
                   </span>
                 </div>
               </div>

@@ -31,8 +31,8 @@ try {
 
     $conn = getDBConnection();
 
-    // Fetch the user from the database
-    $stmt = $conn->prepare("SELECT id, name, email, password_hash FROM users WHERE email = :email");
+    // UPGRADED: Now fetches the 'role' column from the database!
+    $stmt = $conn->prepare("SELECT id, name, email, role, password_hash FROM users WHERE email = :email");
     $stmt->execute([':email' => $email]);
     $user = $stmt->fetch();
 
@@ -46,7 +46,7 @@ try {
         echo json_encode([
             'success' => true, 
             'message' => 'Login successful!',
-            'user' => $user // We send the user's name and email back to React
+            'user' => $user // This now automatically includes 'role'!
         ]);
     } else {
         http_response_code(401); // Unauthorized

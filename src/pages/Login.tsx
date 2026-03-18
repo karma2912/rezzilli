@@ -29,11 +29,15 @@ function Login() {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        // Save the user data to localStorage so the app remembers them
+        // Save the user data (which now includes their role!) to localStorage
         localStorage.setItem("rezzilli_user", JSON.stringify(data.user));
         
-        // Redirect to profile
-        navigate("/profile");
+        // Redirect based on the user's role
+        if (data.user.role === 'admin') {
+          navigate("/admin"); // Send the boss to the dashboard!
+        } else {
+          navigate("/profile"); // Send normal customers to their profile
+        }
       } else {
         setError(data.message || "Invalid credentials.");
       }

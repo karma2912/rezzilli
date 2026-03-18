@@ -1,23 +1,34 @@
 import { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { Minus, Plus, Trash2, X } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { useCart } from "../context/CartContext"; // Importing the Global Brain
 
 function ProductDetail() {
   const { id } = useParams<{ id: string }>(); 
+  const navigate = useNavigate();
+  
+  // --- CONTEXT & STATES ---
+  const { cart, addToCart, removeFromCart, updateQuantity, cartTotal } = useCart();
   const [product, setProduct] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
   const [quantity, setQuantity] = useState(1);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  
   const FREE_DELIVERY_THRESHOLD = 50; 
+  const isFreeDelivery = cartTotal >= FREE_DELIVERY_THRESHOLD;
 
   // --- FETCH SPECIFIC PRODUCT ---
   useEffect(() => {
     window.scrollTo(0, 0); // Always start at the top of the page
     setIsLoading(true);
+
+    const user = localStorage.getItem("rezzilli_user");
+    setIsLoggedIn(!!user);
 
     fetch(`https://rezzillidrinks.com/api/get-products.php?id=${id}`)
       .then((res) => res.json())
@@ -37,8 +48,20 @@ function ProductDetail() {
       });
   }, [id]);
 
+  // --- DYNAMIC ADD TO CART ---
   const handleAddToCart = () => {
-    setIsCartOpen(true);
+    if (product && product.status === "Active") {
+      addToCart({
+        id: product.id,
+        name: product.name,
+        price: parseFloat(product.price),
+        originalPrice: product.old_price && parseFloat(product.old_price) > 0 ? `£${parseFloat(product.old_price)}` : null,
+        image: product.image,
+        variant: product.variant || "Standard",
+        quantity: quantity
+      });
+      setIsCartOpen(true);
+    }
   };
 
   // Prevent breaking if data is still loading
@@ -68,7 +91,6 @@ function ProductDetail() {
 
   // Calculate dynamic Cart Total
   const priceValue = parseFloat(product.price);
-  const cartTotal = priceValue * quantity;
 
   // Button Logic based on database 'status'
   const isAvailable = product.status === "Active";
@@ -336,7 +358,6 @@ function ProductDetail() {
       </main>
 
       {/* --- CART DRAWER START --- */}
-      {/* Note: Kept visually identical. Mathematical total reflects current product price x quantity */}
 
       {/* Background Overlay */}
       {isCartOpen && (
@@ -368,7 +389,7 @@ function ProductDetail() {
 
         {/* Promotional Banners */}
         <div className="px-5 pb-5 space-y-3">
-          {cartTotal >= FREE_DELIVERY_THRESHOLD ? (
+          {isFreeDelivery ? (
             <div className="bg-[#d1fae5] py-3 px-4 flex items-center gap-3 font-bold text-[#065f46] text-[14px] rounded-sm">
               <span className="text-xl leading-none">👍</span> Good news! You've
               got free delivery
@@ -376,7 +397,7 @@ function ProductDetail() {
           ) : (
             <div
               className="py-3 px-4 flex items-center gap-3 font-bold text-black text-[14px] rounded-sm"
-              style={{ color: "#0a36af" }}
+              style={{ color: "#0a36af", backgroundColor: "#ffc85b" }}
             >
               <span className="text-xl leading-none">🎁</span> Free Delivery over
               £{FREE_DELIVERY_THRESHOLD}
@@ -386,110 +407,121 @@ function ProductDetail() {
 
         {/* Cart Items Area (Scrollable) */}
         <div className="flex-1 overflow-y-auto px-5">
-          {/* Cart Item (Currently hardcoded placeholder until Global Cart is built) */}
-          <div className="flex gap-5 py-5 border-b border-gray-200">
-            {/* Thumbnail */}
-            <div className="w-24 h-24 flex-shrink-0 bg-gray-50 rounded-md flex items-center justify-center p-2 border border-gray-100 hover:opacity-80 transition-opacity cursor-pointer">
-              <img
-                src={product.image}
-                alt={product.name}
-                className="w-full h-full object-contain drop-shadow-md"
-              />
+          {cart.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-full text-center py-10 opacity-70">
+              <span className="text-5xl mb-4">🛒</span>
+              <p className="text-[16px] font-bold" style={{ color: "#0a36af" }}>Your cart is empty</p>
             </div>
-
-            {/* Details */}
-            <div className="flex-1 flex flex-col">
-              <div className="flex items-start justify-between gap-2">
-                <div className="hover:opacity-80 transition-opacity cursor-pointer" onClick={() => setIsCartOpen(false)}>
-                  <h3
-                    className="font-extrabold text-[16px] uppercase leading-tight"
-                    style={{ color: "#0a36af" }}
-                  >
-                    {product.name}
-                  </h3>
-                </div>
-              </div>
-
-              <div className="font-bold text-[14px] text-black mt-1">
-                £{priceValue.toFixed(2)}
-              </div>
-
-              <p className="text-[12px] text-gray-700 mt-1 font-medium">
-                {product.variant}
-              </p>
-
-              {/* Quantity Controls */}
-              <div className="flex items-center gap-5 mt-4">
-                <div className="flex items-center gap-4">
-                  <button
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="w-8 h-8 rounded-full flex items-center justify-center text-white transition-opacity hover:opacity-80 shadow-sm cursor-pointer"
-                    style={{ backgroundColor: "#0a36af" }}
-                  >
-                    <Minus size={18} strokeWidth={3} />
-                  </button>
-
-                  <span className="text-[16px] font-extrabold w-4 text-center">
-                    {quantity}
-                  </span>
-
-                  <button
-                    onClick={() => setQuantity(quantity < 10 ? quantity + 1 : 10)}
-                    className="w-8 h-8 rounded-full flex items-center justify-center text-white transition-opacity hover:opacity-80 shadow-sm cursor-pointer"
-                    style={{ backgroundColor: "#0a36af" }}
-                  >
-                    <Plus size={18} strokeWidth={3} />
-                  </button>
+          ) : (
+            cart.map((item) => (
+              <div key={item.id} className="flex gap-5 py-5 border-b border-gray-200">
+                {/* Thumbnail */}
+                <div className="w-24 h-24 flex-shrink-0 bg-gray-50 rounded-md flex items-center justify-center p-2 border border-gray-100 hover:opacity-80 transition-opacity cursor-pointer">
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="w-full h-full object-contain drop-shadow-md"
+                  />
                 </div>
 
-                <button
-                  className="text-gray-500 hover:text-red-500 transition-colors"
-                  aria-label="Remove item"
-                >
-                  <Trash2 size={22} />
-                </button>
+                {/* Details */}
+                <div className="flex-1 flex flex-col">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="hover:opacity-80 transition-opacity cursor-pointer" onClick={() => setIsCartOpen(false)}>
+                      <h3
+                        className="font-extrabold text-[16px] uppercase leading-tight"
+                        style={{ color: "#0a36af" }}
+                      >
+                        {item.name}
+                      </h3>
+                    </div>
+                  </div>
+
+                  <div className="font-bold text-[14px] text-black mt-1">
+                    £{(item.price * item.quantity).toFixed(2)}
+                  </div>
+
+                  <p className="text-[12px] text-gray-700 mt-1 font-medium">
+                    {item.variant}
+                  </p>
+
+                  {/* Quantity Controls */}
+                  <div className="flex items-center gap-5 mt-4">
+                    <div className="flex items-center gap-4">
+                      <button
+                        onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
+                        className="w-8 h-8 rounded-full flex items-center justify-center text-white transition-opacity hover:opacity-80 shadow-sm cursor-pointer"
+                        style={{ backgroundColor: "#0a36af" }}
+                      >
+                        <Minus size={18} strokeWidth={3} />
+                      </button>
+
+                      <span className="text-[16px] font-extrabold w-4 text-center">
+                        {item.quantity}
+                      </span>
+
+                      <button
+                        onClick={() => updateQuantity(item.id, Math.min(10, item.quantity + 1))}
+                        className="w-8 h-8 rounded-full flex items-center justify-center text-white transition-opacity hover:opacity-80 shadow-sm cursor-pointer"
+                        style={{ backgroundColor: "#0a36af" }}
+                      >
+                        <Plus size={18} strokeWidth={3} />
+                      </button>
+                    </div>
+
+                    <button
+                      onClick={() => removeFromCart(item.id)}
+                      className="text-gray-500 hover:text-red-500 transition-colors"
+                      aria-label="Remove item"
+                    >
+                      <Trash2 size={22} />
+                    </button>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            ))
+          )}
         </div>
 
         {/* Footer / Checkout Area */}
-        <div className="border-t border-gray-200 p-6 bg-white">
-          <div className="flex flex-col gap-3 mb-6">
-            <div className="flex justify-between text-[14px]">
-              <span className="font-bold" style={{ color: "#0a36af" }}>Subtotal</span>
-              <span className="font-bold" style={{ color: "#0a36af" }}>£{cartTotal.toFixed(2)}</span>
+        {cart.length > 0 && (
+          <div className="border-t border-gray-200 p-6 bg-white">
+            <div className="flex flex-col gap-3 mb-6">
+              <div className="flex justify-between text-[14px]">
+                <span className="font-bold" style={{ color: "#0a36af" }}>Subtotal</span>
+                <span className="font-bold" style={{ color: "#0a36af" }}>£{cartTotal.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between text-[14px]">
+                <span className="font-bold" style={{ color: "#0a36af" }}>Delivery</span>
+                <span className="font-bold" style={{ color: "#0a36af" }}>
+                  {isFreeDelivery ? 'Free' : 'Calculated at Checkout'}
+                </span>
+              </div>
+              <div className="flex justify-between text-[18px] mt-3 pt-3 border-t border-gray-200">
+                <span className="font-extrabold" style={{ color: "#0a36af" }}>Total</span>
+                <span className="font-extrabold" style={{ color: "#0a36af" }}>£{cartTotal.toFixed(2)}</span>
+              </div>
             </div>
-            <div className="flex justify-between text-[14px]">
-              <span className="font-bold" style={{ color: "#0a36af" }}>Delivery</span>
-              <span className="font-bold" style={{ color: "#0a36af" }}>
-                Calculated at Checkout
-              </span>
-            </div>
-            <div className="flex justify-between text-[18px] mt-3 pt-3 border-t border-gray-200">
-              <span className="font-extrabold" style={{ color: "#0a36af" }}>Total</span>
-              <span className="font-extrabold" style={{ color: "#0a36af" }}>£{cartTotal.toFixed(2)}</span>
+
+            <div className="flex flex-col gap-3">
+              <Link
+                to="/cart"
+                className="block w-full py-4 text-center rounded-full text-white font-extrabold text-[14px] transition-opacity hover:opacity-90 shadow-md"
+                style={{ backgroundColor: "#0a36af" }}
+              >
+                View Cart & Checkout
+              </Link>
+
+              <button
+                onClick={() => setIsCartOpen(false)}
+                className="w-full py-4 rounded-full bg-white border-2 font-extrabold text-[14px] transition-colors hover:bg-gray-50"
+                style={{ borderColor: "#0a36af", color: "#0a36af" }}
+              >
+                Continue Shopping
+              </button>
             </div>
           </div>
-
-          <div className="flex flex-col gap-3">
-            <Link
-              to="/cart"
-              className="block w-full py-4 text-center rounded-full text-white font-extrabold text-[14px] transition-opacity hover:opacity-90 shadow-md"
-              style={{ backgroundColor: "#0a36af" }}
-            >
-              View Cart & Checkout
-            </Link>
-
-            <button
-              onClick={() => setIsCartOpen(false)}
-              className="w-full py-4 rounded-full bg-white border-2 font-extrabold text-[14px] transition-colors hover:bg-gray-50"
-              style={{ borderColor: "#0a36af", color: "#0a36af" }}
-            >
-              Continue Shopping
-            </button>
-          </div>
-        </div>
+        )}
       </div>
       <Footer/>
     </div>

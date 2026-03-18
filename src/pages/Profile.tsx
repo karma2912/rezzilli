@@ -8,54 +8,42 @@ function Profile() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("profile");
 
-  // --- DYNAMIC DATA STATES ---
   const [user, setUser] = useState({ id: "", name: "Loading...", email: "Loading..." });
-  const [addresses, setAddresses] = useState<any[]>([{
-      company: "XXX", line1: "xwincwin ninin", line2: "nisncisncis", city: "Mumbai",
-      region: "Maharashtra", zip: "401303", country: "India", phone: "+919920312153", is_default: true
-  }]);
-  const [orders, setOrders] = useState([{
-      id: "ORD-9823-XYZ", date: "March 1, 2026", status: "Processing", total: "£48.00",
-      items: [{ name: "LEMON ITALIAN SPRITZ 275ml x 24 BOTTLES", quantity: 2, image: "/image4.png" }],
-  }]);
-
-  // --- EDIT NAME STATES ---
+  const [addresses, setAddresses] = useState<any[]>([]);
+  const [orders, setOrders] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [isEditingName, setIsEditingName] = useState(false);
   const [newName, setNewName] = useState("");
   const [isSavingName, setIsSavingName] = useState(false);
-
-  // --- ADD ADDRESS MODAL STATES ---
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [isSubmittingAddress, setIsSubmittingAddress] = useState(false);
   const [addressForm, setAddressForm] = useState({
     company: "", line1: "", line2: "", city: "", region: "", zip: "", phone: ""
   });
 
-  // --- LOAD DATA ON PAGE LOAD ---
   useEffect(() => {
     const storedUser = localStorage.getItem("rezzilli_user");
     if (storedUser) {
       const parsedUser = JSON.parse(storedUser);
       setUser(parsedUser);
-      setNewName(parsedUser.name); // Pre-fill the edit name input
+      setNewName(parsedUser.name); 
 
-      // Fetch real addresses from the database
       fetch(`https://rezzillidrinks.com/api/get-profile.php?user_id=${parsedUser.id}`)
         .then(res => res.json())
         .then(data => {
-          if (data.success && data.addresses) {
-            setAddresses(data.addresses);
-          } else {
-            setAddresses([]); // Clear dummy data if they have no addresses
+          if (data.success) {
+            setAddresses(data.addresses || []);
+            setOrders(data.orders || []); 
           }
         })
-        .catch(err => console.error("Error fetching addresses:", err));
+        .catch(err => console.error("Error fetching profile data:", err))
+        .finally(() => setIsLoading(false));
+
     } else {
       navigate("/login");
     }
   }, [navigate]);
 
-  // --- SUBMIT NEW ADDRESS ---
   const handleAddressSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmittingAddress(true);
@@ -69,7 +57,7 @@ function Profile() {
       if (data.success) {
         setShowAddressModal(false);
         setAddressForm({ company: "", line1: "", line2: "", city: "", region: "", zip: "", phone: "" });
-        window.location.reload(); // Reload to fetch the new address instantly
+        window.location.reload(); 
       } else {
         alert(data.message);
       }
@@ -96,9 +84,7 @@ function Profile() {
       });
       const data = await response.json();
       if (data.success) {
-        // Update local state
         setUser({ ...user, name: newName });
-        // Update local storage so Navbar doesn't revert
         localStorage.setItem("rezzilli_user", JSON.stringify({ ...user, name: newName }));
         setIsEditingName(false);
       } else {
@@ -226,7 +212,9 @@ function Profile() {
               </div>
 
               {/* Dynamic Addresses Map */}
-              {addresses.length === 0 ? (
+              {isLoading ? (
+                <p className="text-gray-500 text-[15px]">Loading addresses...</p>
+              ) : addresses.length === 0 ? (
                 <p className="text-gray-500 italic text-[15px]">No addresses saved yet.</p>
               ) : (
                 addresses.map((address, index) => (
@@ -255,56 +243,68 @@ function Profile() {
             </div>
           </div>
         ) : (
-          /* ORDERS VIEW */
           <div className="w-full flex flex-col gap-6">
-            {orders.map((order, orderIndex) => (
-              <div key={orderIndex} className="border border-gray-200 rounded-xl overflow-hidden shadow-sm mb-6">
-                <div className="bg-gray-50 p-4 md:p-6 border-b border-gray-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                  <div className="flex flex-col gap-1">
-                    <span className="text-[12px] text-gray-500 font-bold uppercase tracking-wide">Order Placed</span>
-                    <span className="text-[15px] font-semibold text-black">{order.date}</span>
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <span className="text-[12px] text-gray-500 font-bold uppercase tracking-wide">Total</span>
-                    <span className="text-[15px] font-semibold text-black">{order.total}</span>
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <span className="text-[12px] text-gray-500 font-bold uppercase tracking-wide">Order ID</span>
-                    <span className="text-[15px] font-semibold text-black">{order.id}</span>
-                  </div>
-                  <div className="mt-2 md:mt-0 text-right">
-                    <span className="inline-block px-3 py-1 bg-blue-100 text-[#0a36af] text-[12px] font-bold uppercase rounded-full">
-                      {order.status}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="p-4 md:p-6 bg-white">
-                  {order.items.map((item, idx) => (
-                    <div key={idx} className="flex items-center gap-6 mb-4 last:mb-0">
-                      <div className="w-20 h-24 bg-gray-50 rounded-lg border border-gray-200 flex items-center justify-center p-2 flex-shrink-0">
-                        <img src={item.image} alt={item.name} className="w-full h-full object-contain" />
-                      </div>
-                      <div className="flex flex-col">
-                        <h3 className="text-[15px] font-bold text-black uppercase leading-snug" style={{ color: "#0a36af" }}>{item.name}</h3>
-                        <p className="text-[14px] text-gray-600 mt-2">
-                          Quantity: <span className="font-semibold text-black">{item.quantity}</span>
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-
-                  <div className="mt-6 flex gap-4">
-                    <button className="px-5 py-2 border-2 rounded-lg font-bold text-[14px] transition-colors" style={{ borderColor: "#0a36af", color: "#0a36af" }}>
-                      Track Package
-                    </button>
-                    <button className="px-5 py-2 bg-gray-100 text-gray-700 rounded-lg font-bold text-[14px] hover:bg-gray-200 transition-colors">
-                      View Invoice
-                    </button>
-                  </div>
-                </div>
+            {isLoading ? (
+              <p className="text-gray-500 text-[15px]">Loading your orders...</p>
+            ) : orders.length === 0 ? (
+              <div className="bg-gray-50 rounded-xl p-10 text-center border border-gray-200">
+                <p className="text-[16px] font-bold text-black mb-2">You haven't placed any orders yet.</p>
+                <p className="text-[15px] text-gray-500 mb-6">When you do, they will appear here.</p>
+                <button onClick={() => navigate('/spritz')} className="px-6 py-3 font-bold text-[14px] uppercase tracking-widest text-white rounded-lg transition-opacity hover:opacity-90" style={{ backgroundColor: "#0a36af" }}>
+                  Start Shopping
+                </button>
               </div>
-            ))}
+            ) : (
+              orders.map((order, orderIndex) => (
+                <div key={orderIndex} className="border border-gray-200 rounded-xl overflow-hidden shadow-sm mb-6">
+                  <div className="bg-gray-50 p-4 md:p-6 border-b border-gray-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div className="flex flex-col gap-1">
+                      <span className="text-[12px] text-gray-500 font-bold uppercase tracking-wide">Order Placed</span>
+                      <span className="text-[15px] font-semibold text-black">{order.date}</span>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <span className="text-[12px] text-gray-500 font-bold uppercase tracking-wide">Total</span>
+                      <span className="text-[15px] font-semibold text-black">{order.total}</span>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <span className="text-[12px] text-gray-500 font-bold uppercase tracking-wide">Order ID</span>
+                      <span className="text-[15px] font-semibold text-black">{order.id}</span>
+                    </div>
+                    <div className="mt-2 md:mt-0 text-right">
+                      <span className="inline-block px-3 py-1 bg-blue-100 text-[#0a36af] text-[12px] font-bold uppercase rounded-full">
+                        {order.status}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="p-4 md:p-6 bg-white">
+                    {order.items.map((item: any, idx: number) => (
+                      <div key={idx} className="flex items-center gap-6 mb-4 last:mb-0">
+                        <div className="w-20 h-24 bg-gray-50 rounded-lg border border-gray-200 flex items-center justify-center p-2 flex-shrink-0">
+                          <img src={item.image} alt={item.name} className="w-full h-full object-contain" />
+                        </div>
+                        <div className="flex flex-col">
+                          <h3 className="text-[15px] font-bold text-black uppercase leading-snug" style={{ color: "#0a36af" }}>{item.name}</h3>
+                          <p className="text-[14px] text-gray-600 mt-2">
+                            {item.variant && <span className="mr-3">{item.variant}</span>}
+                            Quantity: <span className="font-semibold text-black">{item.quantity}</span>
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+
+                    <div className="mt-6 flex gap-4">
+                      <button className="px-5 py-2 border-2 rounded-lg font-bold text-[14px] transition-colors" style={{ borderColor: "#0a36af", color: "#0a36af" }}>
+                        Track Package
+                      </button>
+                      <button className="px-5 py-2 bg-gray-100 text-gray-700 rounded-lg font-bold text-[14px] hover:bg-gray-200 transition-colors">
+                        View Invoice
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         )}
       </main>

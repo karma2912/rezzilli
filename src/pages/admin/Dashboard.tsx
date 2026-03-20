@@ -7,7 +7,6 @@ import {
   ArrowUpRight,
   Package,
   Download,
-  MoreVertical
 } from "lucide-react";
 import { 
   AreaChart, 
@@ -84,9 +83,11 @@ function Dashboard() {
             className="border border-slate-200 bg-white rounded-lg px-4 py-2 text-sm font-medium text-slate-700 hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 cursor-pointer transition-all"
           >
             <option>Today</option>
-            <option>7 Days</option>
-            <option>30 Days</option>
-            <option>12 Months</option>
+            <option>1 Week</option>
+            <option>1 Month</option>
+            <option>3 Months</option>
+            <option>6 Months</option>
+            <option>1 Year</option>
           </select>
           <button className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors shadow-sm">
             <Download size={16} />
@@ -155,7 +156,6 @@ function Dashboard() {
           <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm lg:col-span-2">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-base font-semibold text-slate-900">Store Traffic</h3>
-              <button className="text-slate-400 hover:text-slate-600"><MoreVertical size={18} /></button>
             </div>
             <div className="h-[300px] w-full">
               <ResponsiveContainer width="100%" height="100%">
@@ -183,7 +183,6 @@ function Dashboard() {
           <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex flex-col">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-base font-semibold text-slate-900">Sessions by Device</h3>
-              <button className="text-slate-400 hover:text-slate-600"><MoreVertical size={18} /></button>
             </div>
             <div className="h-[200px] w-full relative flex-grow flex items-center justify-center">
               <ResponsiveContainer width="100%" height="100%">

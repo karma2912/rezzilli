@@ -20,6 +20,7 @@ import Customers from "./pages/admin/Customers";
 import Content from "./pages/admin/Content";
 import Settings from "./pages/admin/Settings";
 import Promotions from "./pages/admin/Promotions";
+import ContactEnquiries from "./pages/admin/ContactEnquiries";
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
           <Route path="customers" element={<Customers/>} />
           <Route path="content" element={<Content/>} />
           <Route path="promotions" element={<Promotions/>} />
+          <Route path="contact" element={<ContactEnquiries/>} />
           <Route path="settings" element={<Settings/>} />
         </Route>
       </Routes>

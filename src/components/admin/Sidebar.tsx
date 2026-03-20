@@ -4,11 +4,12 @@ import {
   ShoppingBag, 
   Package, 
   Users, 
-  CalendarDays, 
   Settings, 
   Store,
   LogOut,
-  Gift
+  Gift,
+  Home,
+  Contact
 } from "lucide-react";
 
 function Sidebar() {
@@ -16,11 +17,12 @@ function Sidebar() {
 
   const navItems = [
     { name: "Dashboard", path: "/admin", icon: LayoutDashboard },
-    { name: "Orders", path: "/admin/orders", icon: ShoppingBag },
+    { name: "Home Page", path: "/admin/content", icon: Home },
     { name: "Products", path: "/admin/products", icon: Package },
-    { name: "Customers", path: "/admin/customers", icon: Users },
-    { name: "Events & Content", path: "/admin/content", icon: CalendarDays },
     { name: "Promotions", path: "/admin/promotions", icon: Gift },
+    { name: "Orders", path: "/admin/orders", icon: ShoppingBag },
+    { name: "Customers", path: "/admin/customers", icon: Users },
+    { name: "Contact Us Enquiries", path: "/admin/contact", icon: Contact },
     { name: "Settings", path: "/admin/settings", icon: Settings },
   ];
 

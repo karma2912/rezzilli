@@ -10,7 +10,7 @@ import {
   Save
 } from "lucide-react";
 
-// --- DUMMY DATA (Structured to match your get-products.php schema) ---
+// --- DUMMY DATA (Structured to match your get-products.php schema & ProductDetail) ---
 const mockProducts = [
   {
     id: 1,
@@ -24,6 +24,37 @@ const mockProducts = [
     status: "Active",
     stock: 145,
     image: "/image4.png",
+    // Adding the rich data so you can see it populate when you click "Edit"
+    description: [
+      "Experience the true taste of Italy with our signature Lemon Spritz.",
+      "Ingredients: Sparkling water, Sicilian lemon juice (12%), sugar, natural flavorings.",
+      "Tasting note: Bright, zesty, and perfectly balanced with a bittersweet finish."
+    ],
+    delivery: {
+      standard: [
+        "Delivered within 3-5 working days.",
+        "Fully tracked service."
+      ],
+      nextDay: [
+        "Order before 2pm for next working day delivery.",
+        "Signature required upon delivery."
+      ]
+    },
+    nutrition: {
+      typicalValues: "Typical values per 100ml:",
+      table: [
+        { label: "Energy", value: "185kJ / 44kcal" },
+        { label: "Fat", value: "0g" },
+        { label: "Carbohydrates", value: "10.5g" },
+        { label: "Sugars", value: "10.5g" },
+        { label: "Protein", value: "0g" },
+        { label: "Salt", value: "0.01g" }
+      ],
+      additionalInfo: [
+        "Suitable for vegans and vegetarians.",
+        "Gluten-free."
+      ]
+    }
   },
   {
     id: 2,
@@ -49,7 +80,7 @@ const mockProducts = [
     size: "275ml",
     status: "Out of Stock",
     stock: 0,
-    image: "/image4.png", // Reusing image for mock
+    image: "/image4.png", 
   },
   {
     id: 4,
@@ -96,12 +127,12 @@ function Products() {
   };
 
   const openAddDrawer = () => {
-    setEditingProduct(null); // Null means we are creating a NEW product
+    setEditingProduct(null); 
     setIsDrawerOpen(true);
   };
 
   const openEditDrawer = (product: any) => {
-    setEditingProduct(product); // Pass the existing product to edit
+    setEditingProduct(product); 
     setIsDrawerOpen(true);
   };
 
@@ -112,7 +143,7 @@ function Products() {
       <div className="bg-white border-b border-slate-200 px-8 py-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 sticky top-0 z-10">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Products & Inventory</h1>
-          <p className="text-slate-500 text-sm mt-1">Manage your catalog, pricing, and stock levels.</p>
+          <p className="text-slate-500 text-sm mt-1">Manage your catalog, pricing, stock levels, and product details.</p>
         </div>
         <button 
           onClick={openAddDrawer}
@@ -234,7 +265,7 @@ function Products() {
           />
 
           {/* Drawer */}
-          <div className="fixed top-0 right-0 h-full w-full max-w-[550px] bg-white z-50 shadow-2xl flex flex-col transform transition-transform duration-300 overflow-hidden">
+          <div className="fixed top-0 right-0 h-full w-full max-w-[600px] bg-white z-50 shadow-2xl flex flex-col transform transition-transform duration-300 overflow-hidden">
             
             {/* Drawer Header */}
             <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-white shrink-0">
@@ -258,7 +289,7 @@ function Products() {
             <div className="flex-1 overflow-y-auto bg-slate-50/50 p-6">
               <form className="space-y-6">
                 
-                {/* Basic Info Section */}
+                {/* 1. Basic Info Section */}
                 <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
                   <h3 className="text-sm font-bold text-slate-900 border-b border-slate-100 pb-2">Basic Details</h3>
                   
@@ -298,13 +329,30 @@ function Products() {
                   </div>
                 </div>
 
-                {/* Inventory & Pricing */}
+                {/* 2. Rich Description Section */}
+                <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                  <h3 className="text-sm font-bold text-slate-900 border-b border-slate-100 pb-2">Rich Description</h3>
+                  <div>
+                    <label className=" text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
+                      Description Paragraphs
+                      <span className="text-[10px] text-slate-400 font-normal">Put each paragraph on a new line</span>
+                    </label>
+                    <textarea 
+                      rows={5} 
+                      defaultValue={editingProduct?.description ? editingProduct.description.join('\n') : ""}
+                      placeholder="Experience the true taste of Italy...&#10;Ingredients: Sparkling water...&#10;Tasting note: Bright and zesty..."
+                      className="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-y"
+                    />
+                  </div>
+                </div>
+
+                {/* 3. Inventory & Pricing */}
                 <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
                   <h3 className="text-sm font-bold text-slate-900 border-b border-slate-100 pb-2">Inventory & Pricing</h3>
                   
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1">Price (£)</label>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">Discounted Price (£)</label>
                       <input 
                         type="number" 
                         step="0.01"
@@ -314,7 +362,7 @@ function Products() {
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1">Compare at Price (£)</label>
+                      <label className="block text-xs font-bold text-slate-700 mb-1"> Price (£)</label>
                       <input 
                         type="number" 
                         step="0.01"
@@ -348,8 +396,8 @@ function Products() {
                   </div>
                 </div>
 
-                {/* Specifications */}
-                <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4 mb-6">
+                {/* 4. Specifications */}
+                <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
                   <h3 className="text-sm font-bold text-slate-900 border-b border-slate-100 pb-2">Specifications</h3>
                   
                   <div className="grid grid-cols-3 gap-4">
@@ -382,6 +430,80 @@ function Products() {
                     </div>
                   </div>
                 </div>
+
+                {/* 5. Delivery Information */}
+                <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                  <h3 className="text-sm font-bold text-slate-900 border-b border-slate-100 pb-2">Delivery Information</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className=" text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
+                        Standard UK Delivery
+                        <span className="text-[10px] text-slate-400 font-normal">One bullet per line</span>
+                      </label>
+                      <textarea 
+                        rows={4} 
+                        defaultValue={editingProduct?.delivery?.standard ? editingProduct.delivery.standard.join('\n') : ""}
+                        placeholder="Delivered within 3-5 working days.&#10;Fully tracked service."
+                        className="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-y"
+                      />
+                    </div>
+                    <div>
+                      <label className=" text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
+                        Next Day Delivery
+                        <span className="text-[10px] text-slate-400 font-normal">One bullet per line</span>
+                      </label>
+                      <textarea 
+                        rows={4} 
+                        defaultValue={editingProduct?.delivery?.nextDay ? editingProduct.delivery.nextDay.join('\n') : ""}
+                        placeholder="Order before 2pm...&#10;Signature required."
+                        className="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-y"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* 6. Nutritional Information */}
+                <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4 mb-6">
+                  <h3 className="text-sm font-bold text-slate-900 border-b border-slate-100 pb-2">Nutritional Information</h3>
+                  
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">Typical Values Heading</label>
+                    <input 
+                      type="text" 
+                      defaultValue={editingProduct?.nutrition?.typicalValues || ""}
+                      placeholder="e.g., Typical values per 100ml:"
+                      className="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className=" text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
+                        Nutrition Table
+                        <span className="text-[10px] text-slate-400 font-normal">Format: Nutrient: Value</span>
+                      </label>
+                      <textarea 
+                        rows={6} 
+                        defaultValue={editingProduct?.nutrition?.table ? editingProduct.nutrition.table.map((t: any) => `${t.label}: ${t.value}`).join('\n') : ""}
+                        placeholder="Energy: 185kJ / 44kcal&#10;Fat: 0g&#10;Carbohydrates: 10.5g"
+                        className="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-y font-mono"
+                      />
+                    </div>
+                    <div>
+                      <label className=" text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
+                        Additional Info
+                        <span className="text-[10px] text-slate-400 font-normal">One bullet per line</span>
+                      </label>
+                      <textarea 
+                        rows={6} 
+                        defaultValue={editingProduct?.nutrition?.additionalInfo ? editingProduct.nutrition.additionalInfo.join('\n') : ""}
+                        placeholder="Suitable for vegans.&#10;Gluten-free."
+                        className="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-y"
+                      />
+                    </div>
+                  </div>
+                </div>
+
               </form>
             </div>
 

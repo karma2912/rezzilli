@@ -9,7 +9,9 @@ import {
   MoveDown,
   LayoutTemplate,
   CalendarDays,
-  Target
+  Target,
+  BookOpen,
+  MessageSquare
 } from "lucide-react";
 
 // --- DUMMY DATA (Matching your Home.tsx structure) ---
@@ -38,7 +40,28 @@ const mockEvents = {
     { id: 1, date: "April 15, 2026", type: "Event", title: "Official Launch Night", description: "Join us for the official Rezzilli launch night at Isabel’s...", image: "/gemini_generated_image_yoid3hyoid3hyoidd copy.webp" },
     { id: 2, date: "May 2026", type: "Festival", title: "Foodies Festival", description: "Catch the Rezzilli team across the UK at Foodies Festivals!", image: "/image1.webp" },
     { id: 3, date: "Summer 2026", type: "Event", title: "Great British Food Festival", description: "Our tour continues at the Great British Food Festival...", image: "/image2.webp" },
-  ]
+  ],
+  modal: {
+    title: "FOODIES FESTIVAL 2026",
+    intro: "We’ll be at the Rezzilli stand with tastings, chats and bottle sales.",
+    locations: "Brighton – Preston Park, May 2026\nSyon Park – London, May 2026\nTatton Park | Summer 2026\nEdinburgh | Summer 2026",
+    footer: "Also planned: Glasgow, Oxford and Bath (dates TBC). Our team will be in full Rezzilli merchandise, so you can’t miss us.",
+    image: "/image1.webp"
+  }
+};
+
+const mockStory = {
+  title: "From Mamma's Kitchen",
+  text: "Rezzilli was born from a cherished memory - the homemade tradition that many an Italian Mamma had in their kitchen in Italy making homemade Limoncello. Inspired by those authentic flavours, we have taken the family recipe and created our unique drinks that honours that heritage but speaks to today's lifestyle. We have reimagined the classic Italian digestivo as a spritz summer drink - refreshing, light, and made with Italian ingredients for the true lovers of aperitivo culture.",
+  image: "/gemini_generated_image_yoid3hyoid3hyoidd copy.webp"
+};
+
+const mockContact = {
+  title: "CONTACT US",
+  paragraph1: "Have a question, special request, or want to stock our drinks? Fill out the form and our team will get back to you as soon as possible.",
+  paragraph2: "Whether you’re a customer, partner, or retailer, we’d love to hear from you and help with anything you need.",
+  email: "hello@rezzillidrinks.com",
+  phone: "+447832198470"
 };
 
 function Content() {
@@ -59,7 +82,7 @@ function Content() {
       {/* Header */}
       <div className="bg-white border-b border-slate-200 px-8 py-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 sticky top-0 z-20">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Content Manager</h1>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Home Page Manager</h1>
           <p className="text-slate-500 text-sm mt-1">Control exactly what appears on your storefront homepage.</p>
         </div>
         <button 
@@ -74,19 +97,27 @@ function Content() {
 
       <div className="p-8 max-w-5xl mx-auto">
         
-        {/* Navigation Tabs */}
-        <div className="flex space-x-1 bg-slate-200/50 p-1 rounded-xl mb-8 w-max">
+        {/* Navigation Tabs (Scrollable on small screens) */}
+        <div className="flex overflow-x-auto space-x-1 bg-slate-200/50 p-1 rounded-xl mb-8 w-max max-w-full">
           <button
             onClick={() => setActiveTab("carousel")}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${
+            className={`flex items-center whitespace-nowrap gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${
               activeTab === "carousel" ? "bg-white text-indigo-600 shadow-sm" : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
             }`}
           >
             <LayoutTemplate size={16} /> Hero Carousel
           </button>
           <button
+            onClick={() => setActiveTab("story")}
+            className={`flex items-center whitespace-nowrap gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${
+              activeTab === "story" ? "bg-white text-indigo-600 shadow-sm" : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
+            }`}
+          >
+            <BookOpen size={16} /> Our Story
+          </button>
+          <button
             onClick={() => setActiveTab("values")}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${
+            className={`flex items-center whitespace-nowrap gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${
               activeTab === "values" ? "bg-white text-indigo-600 shadow-sm" : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
             }`}
           >
@@ -94,11 +125,19 @@ function Content() {
           </button>
           <button
             onClick={() => setActiveTab("events")}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${
+            className={`flex items-center whitespace-nowrap gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${
               activeTab === "events" ? "bg-white text-indigo-600 shadow-sm" : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
             }`}
           >
-            <CalendarDays size={16} /> Events & Updates
+            <CalendarDays size={16} /> Events
+          </button>
+          <button
+            onClick={() => setActiveTab("contact")}
+            className={`flex items-center whitespace-nowrap gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${
+              activeTab === "contact" ? "bg-white text-indigo-600 shadow-sm" : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
+            }`}
+          >
+            <MessageSquare size={16} /> Contact Info
           </button>
         </div>
 
@@ -146,6 +185,40 @@ function Content() {
           </div>
         )}
 
+        {/* --- OUR STORY TAB --- */}
+        {activeTab === "story" && (
+          <div className="space-y-6 animate-in fade-in duration-300">
+            <div>
+              <h2 className="text-lg font-bold text-slate-900">Origins Section</h2>
+              <p className="text-sm text-slate-500">Edit the "From Mamma's Kitchen" block on the homepage.</p>
+            </div>
+
+            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Section Title</label>
+                  <input type="text" defaultValue={mockStory.title} className="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Story Paragraph</label>
+                  <textarea rows={10} defaultValue={mockStory.text} className="w-full border border-slate-300 rounded-lg p-2.5 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none" />
+                </div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <label className="block text-xs font-bold text-slate-700">Side Image</label>
+                <div className="w-full h-64 bg-slate-50 border-2 border-dashed border-slate-300 rounded-xl flex flex-col items-center justify-center relative overflow-hidden group cursor-pointer hover:border-indigo-400">
+                  <img src={mockStory.image} alt="Story" className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-30 transition-opacity" />
+                  <div className="z-10 flex flex-col items-center text-slate-700 group-hover:text-indigo-600 transition-colors">
+                    <ImageIcon size={32} className="mb-2" />
+                    <span className="text-sm font-semibold">Change Image</span>
+                  </div>
+                </div>
+                <input type="text" defaultValue={mockStory.image} className="w-full border border-slate-300 rounded-lg p-2 mt-2 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" placeholder="Image URL" />
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* --- CORE VALUES TAB --- */}
         {activeTab === "values" && (
           <div className="space-y-6 animate-in fade-in duration-300">
@@ -157,9 +230,12 @@ function Content() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {mockValues.map((val) => (
                 <div key={val.id} className="bg-white border border-slate-200 rounded-xl shadow-sm p-5 space-y-4">
-                  <div className="w-full h-32 bg-slate-50 rounded-lg border border-slate-100 flex flex-col items-center justify-center gap-2 text-slate-400 cursor-pointer hover:bg-slate-100 transition-colors">
-                    <ImageIcon size={24} />
-                    <span className="text-xs font-medium">Change Image</span>
+                  <div className="w-full h-32 bg-slate-50 rounded-lg border border-slate-100 flex flex-col items-center justify-center gap-2 text-slate-400 cursor-pointer hover:bg-slate-100 transition-colors relative overflow-hidden">
+                    <img src={val.image} alt="icon" className="h-16 object-contain opacity-50" />
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/80 opacity-0 hover:opacity-100 transition-opacity text-indigo-600">
+                      <ImageIcon size={20} />
+                      <span className="text-xs font-bold mt-1">Update</span>
+                    </div>
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-700 mb-1">Title</label>
@@ -167,7 +243,7 @@ function Content() {
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-700 mb-1">Description</label>
-                    <textarea rows={4} defaultValue={val.text} className="w-full border border-slate-300 rounded-lg p-2 text-sm text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none" />
+                    <textarea rows={5} defaultValue={val.text} className="w-full border border-slate-300 rounded-lg p-2 text-sm text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none" />
                   </div>
                 </div>
               ))}
@@ -207,9 +283,10 @@ function Content() {
                 </div>
                 <div className="flex flex-col gap-2">
                   <label className="block text-xs font-bold text-slate-700">Side Image</label>
-                  <div className="flex-1 bg-slate-50 border-2 border-dashed border-slate-300 rounded-xl flex flex-col items-center justify-center text-slate-400 hover:bg-slate-100 hover:border-indigo-400 hover:text-indigo-500 cursor-pointer transition-colors">
-                    <ImageIcon size={32} className="mb-2" />
-                    <span className="text-sm font-semibold">Click to update image</span>
+                  <div className="flex-1 bg-slate-50 border-2 border-dashed border-slate-300 rounded-xl flex flex-col items-center justify-center text-slate-400 hover:bg-slate-100 hover:border-indigo-400 hover:text-indigo-500 cursor-pointer transition-colors relative overflow-hidden">
+                     <img src={mockEvents.featured.image} className="absolute inset-0 w-full h-full object-cover opacity-30" alt="" />
+                    <ImageIcon size={32} className="mb-2 z-10" />
+                    <span className="text-sm font-semibold z-10">Update image</span>
                   </div>
                 </div>
               </div>
@@ -221,15 +298,14 @@ function Content() {
                 <h3 className="font-bold text-slate-900">Event Cards Grid</h3>
                 <span className="text-xs font-semibold text-slate-500 bg-slate-200 px-2 py-1 rounded">3 Cards Visible</span>
               </div>
-              
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {mockEvents.cards.map((card) => (
                   <div key={card.id} className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
                     <div className="h-32 bg-slate-100 flex items-center justify-center relative group">
+                      <img src={card.image} className="w-full h-full object-cover" alt="" />
                       <div className="absolute inset-0 bg-slate-900/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
                         <span className="text-white text-xs font-bold flex items-center gap-2"><Edit size={14}/> Change Image</span>
                       </div>
-                      <ImageIcon size={24} className="text-slate-300" />
                     </div>
                     <div className="p-4 flex-1 flex flex-col gap-3">
                       <div className="flex gap-2">
@@ -244,6 +320,73 @@ function Content() {
               </div>
             </div>
 
+            {/* Event Details Modal Content */}
+            <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+              <div className="bg-slate-50 px-6 py-4 border-b border-slate-200">
+                <h3 className="font-bold text-slate-900">Pop-up Modal Content (Read More)</h3>
+                <p className="text-xs text-slate-500 mt-1">This is the content that appears when a user clicks "Read More" on an event card.</p>
+              </div>
+              <div className="p-6 space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Modal Title</label>
+                  <input type="text" defaultValue={mockEvents.modal.title} className="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Intro Paragraph</label>
+                  <textarea rows={2} defaultValue={mockEvents.modal.intro} className="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none" />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
+                    Locations and Dates (List)
+                    <span className="text-[10px] text-slate-400 font-normal">Put each location on a new line</span>
+                  </label>
+                  <textarea rows={5} defaultValue={mockEvents.modal.locations} className="w-full border border-slate-300 rounded-lg p-2.5 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Footer Notes</label>
+                  <textarea rows={2} defaultValue={mockEvents.modal.footer} className="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none" />
+                </div>
+              </div>
+            </div>
+
+          </div>
+        )}
+
+        {/* --- CONTACT INFO TAB --- */}
+        {activeTab === "contact" && (
+          <div className="space-y-6 animate-in fade-in duration-300">
+            <div>
+              <h2 className="text-lg font-bold text-slate-900">Contact Us Section</h2>
+              <p className="text-sm text-slate-500">Edit the intro text displayed next to the contact form.</p>
+            </div>
+
+            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 max-w-2xl space-y-5">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">Main Heading</label>
+                <input type="text" defaultValue={mockContact.title} className="w-full border border-slate-300 rounded-lg p-2.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" />
+              </div>
+              
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">First Paragraph</label>
+                <textarea rows={3} defaultValue={mockContact.paragraph1} className="w-full border border-slate-300 rounded-lg p-2.5 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none" />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">Second Paragraph</label>
+                <textarea rows={3} defaultValue={mockContact.paragraph2} className="w-full border border-slate-300 rounded-lg p-2.5 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none" />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-100">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Displayed Email</label>
+                  <input type="email" defaultValue={mockContact.email} className="w-full border border-slate-300 rounded-lg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Displayed Phone</label>
+                  <input type="text" defaultValue={mockContact.phone} className="w-full border border-slate-300 rounded-lg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" />
+                </div>
+              </div>
+            </div>
           </div>
         )}
 

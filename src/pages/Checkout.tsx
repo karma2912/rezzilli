@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, HelpCircle, Lock, ChevronLeft } from "lucide-react";
+import { Search, HelpCircle, Lock, ChevronLeft, Mail, KeyRound } from "lucide-react";
 import { useCart } from "../context/CartContext";
 
 function Checkout() {
@@ -13,7 +13,17 @@ function Checkout() {
     }
   }, [cart, navigate]);
 
+  const getInitialEmail = () => {
+    const userStr = localStorage.getItem("rezzilli_user");
+    if (userStr) {
+      try { return JSON.parse(userStr).email || ""; } catch (e) {}
+    }
+    return "";
+  };
+
   const [formData, setFormData] = useState({
+    email: getInitialEmail(),
+    password: "", 
     country: "United Kingdom",
     firstName: "",
     lastName: "",
@@ -26,7 +36,11 @@ function Checkout() {
     giftMessage: "",
   });
 
-  // --- DISCOUNT STATES ---
+  // --- ERROR TRACKING STATE ---
+  const [missingFields, setMissingFields] = useState<string[]>([]);
+  const [isEmailRegistered, setIsEmailRegistered] = useState(false);
+  const [isValidatingEmail, setIsValidatingEmail] = useState(false);
+
   const [discountCodeInput, setDiscountCodeInput] = useState("");
   const [appliedDiscount, setAppliedDiscount] = useState<{
     code: string;
@@ -45,9 +59,42 @@ function Checkout() {
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    // Clear red border when user starts typing in that field
+    if (missingFields.includes(name)) {
+      setMissingFields(prev => prev.filter(f => f !== name));
+    }
   };
 
-  // --- DISCOUNT APPLY LOGIC ---
+  // --- LIVE EMAIL CHECKING LOGIC ---
+  useEffect(() => {
+    const checkEmail = async () => {
+      const isValidEmail = formData.email.includes('@') && formData.email.includes('.');
+      if (!isValidEmail) {
+        setIsEmailRegistered(false);
+        return;
+      }
+      
+      setIsValidatingEmail(true);
+      try {
+        const response = await fetch(`https://rezzillidrinks.com/api/check-email.php?email=${encodeURIComponent(formData.email)}`);
+        const data = await response.json();
+        setIsEmailRegistered(data.exists);
+      } catch (err) {
+        console.error("Email check failed", err);
+      } finally {
+        setIsValidatingEmail(false);
+      }
+    };
+
+    const timeoutId = setTimeout(() => {
+      if (!localStorage.getItem("rezzilli_user")) {
+        checkEmail();
+      }
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [formData.email]);
+
   const handleApplyDiscount = async () => {
     if (!discountCodeInput.trim()) return;
     setDiscountError("");
@@ -84,7 +131,6 @@ function Checkout() {
   const FREE_DELIVERY_THRESHOLD = 50;
   const deliveryFee = cartTotal >= FREE_DELIVERY_THRESHOLD ? 0 : 5.0;
 
-  // Calculate Discount Value
   const discountValue = appliedDiscount
     ? appliedDiscount.type === "percentage"
       ? cartTotal * (appliedDiscount.value / 100)
@@ -95,14 +141,19 @@ function Checkout() {
   const vatAmount = finalTotal - finalTotal / 1.2;
 
   const handlePayNow = async () => {
-    if (
-      !formData.firstName ||
-      !formData.lastName ||
-      !formData.address ||
-      !formData.city ||
-      !formData.postcode
-    ) {
-      setError("Please fill in all required shipping fields.");
+    const isGuestCheckout = !localStorage.getItem("rezzilli_user");
+    const needsPassword = isGuestCheckout && !isEmailRegistered && !isValidatingEmail;
+
+    // 1. Identify which mandatory fields are empty
+    const requiredFields = ["email", "firstName", "lastName", "address", "city", "postcode", "phone"];
+    if (needsPassword) requiredFields.push("password");
+
+    const missing = requiredFields.filter(field => !formData[field as keyof typeof formData]);
+
+    // 2. If any are missing, highlight them red and stop
+    if (missing.length > 0) {
+      setMissingFields(missing);
+      setError("Please fill in the highlighted fields.");
       return;
     }
 
@@ -110,14 +161,12 @@ function Checkout() {
     setError("");
 
     const userString = localStorage.getItem("rezzilli_user");
-    if (!userString) {
-      navigate("/login");
-      return;
-    }
-    const user = JSON.parse(userString);
+    const user = userString ? JSON.parse(userString) : null;
 
     const orderPayload = {
-      user_id: user.id,
+      user_id: user ? user.id : null, 
+      email: formData.email, 
+      password: !isEmailRegistered ? formData.password : "", 
       cartItems: cart,
       total_amount: finalTotal,
       shipping_fee: deliveryFee,
@@ -155,6 +204,7 @@ function Checkout() {
         alert("Order placed successfully!");
         navigate("/profile");
       } else {
+        // This is where "Missing required order details" is being set!
         setError(data.message || "Failed to place order.");
       }
     } catch (err) {
@@ -162,6 +212,16 @@ function Checkout() {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  // Helper to dynamically assign red border if field is missing
+  const getInputClass = (fieldName: string) => {
+    const isMissing = missingFields.includes(fieldName);
+    return `w-full rounded-lg p-3 focus:outline-none focus:ring-1 text-[15px] transition-colors border ${
+      isMissing 
+        ? "border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50" 
+        : "border-gray-300 focus:border-[#0a36af] focus:ring-[#0a36af] bg-white"
+    }`;
   };
 
   return (
@@ -198,8 +258,48 @@ function Checkout() {
           </section>
 
           <section className="mb-10">
-            <h2 className="text-[20px] font-bold text-black mb-4">Delivery</h2>
+            <h2 className="text-[20px] font-bold text-black mb-4">Contact & Delivery</h2>
+            
             <div className="space-y-3">
+              
+              <div className="relative">
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  placeholder="Email address *"
+                  className={`${getInputClass('email')} pr-10`}
+                />
+                <Mail size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              </div>
+
+              {!localStorage.getItem("rezzilli_user") && (
+                <>
+                  {formData.email.includes('@') && formData.email.includes('.') && !isEmailRegistered && !isValidatingEmail && (
+                    <div className="relative pb-3 transition-all duration-300">
+                      <input
+                        type="password"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleInputChange}
+                        placeholder="Create a password for your new account *"
+                        className={`${getInputClass('password')} pr-10`}
+                      />
+                      <KeyRound size={18} className="absolute right-3 top-1/2 -translate-y-[calc(50%+6px)] text-gray-400" />
+                    </div>
+                  )}
+
+                  {isEmailRegistered && (
+                    <div className="pb-3 px-1">
+                      <p className="text-[13px] font-semibold" style={{ color: "#0a36af" }}>
+                        Account found. You can complete your purchase as a guest, or <Link to="/login" className="underline font-bold hover:text-blue-800">log in</Link>.
+                      </p>
+                    </div>
+                  )}
+                </>
+              )}
+
               <div className="relative">
                 <label className="absolute top-1 left-3 text-[15px] text-gray-500 scale-75 origin-top-left">
                   Country/Region
@@ -215,19 +315,7 @@ function Checkout() {
                   <option>Europe</option>
                 </select>
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="12"
-                    height="12"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="m6 9 6 6 6-6" />
-                  </svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6" /></svg>
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -236,16 +324,16 @@ function Checkout() {
                   name="firstName"
                   value={formData.firstName}
                   onChange={handleInputChange}
-                  placeholder="First name"
-                  className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] text-[15px]"
+                  placeholder="First name *"
+                  className={getInputClass('firstName')}
                 />
                 <input
                   type="text"
                   name="lastName"
                   value={formData.lastName}
                   onChange={handleInputChange}
-                  placeholder="Last name"
-                  className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] text-[15px]"
+                  placeholder="Last name *"
+                  className={getInputClass('lastName')}
                 />
               </div>
               <input
@@ -262,13 +350,10 @@ function Checkout() {
                   name="address"
                   value={formData.address}
                   onChange={handleInputChange}
-                  placeholder="Address"
-                  className="w-full border border-gray-300 rounded-lg p-3 pr-10 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] text-[15px]"
+                  placeholder="Address *"
+                  className={`${getInputClass('address')} pr-10`}
                 />
-                <Search
-                  size={18}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
-                />
+                <Search size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
               </div>
               <input
                 type="text"
@@ -284,16 +369,16 @@ function Checkout() {
                   name="city"
                   value={formData.city}
                   onChange={handleInputChange}
-                  placeholder="City"
-                  className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] text-[15px]"
+                  placeholder="City *"
+                  className={getInputClass('city')}
                 />
                 <input
                   type="text"
                   name="postcode"
                   value={formData.postcode}
                   onChange={handleInputChange}
-                  placeholder="Postcode"
-                  className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] text-[15px]"
+                  placeholder="Postcode *"
+                  className={getInputClass('postcode')}
                 />
               </div>
               <div className="relative">
@@ -302,13 +387,10 @@ function Checkout() {
                   name="phone"
                   value={formData.phone}
                   onChange={handleInputChange}
-                  placeholder="Phone"
-                  className="w-full border border-gray-300 rounded-lg p-3 pr-10 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] text-[15px]"
+                  placeholder="Phone *"
+                  className={`${getInputClass('phone')} pr-10`}
                 />
-                <HelpCircle
-                  size={18}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer hover:text-gray-600"
-                />
+                <HelpCircle size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer hover:text-gray-600" />
               </div>
             </div>
           </section>
@@ -341,23 +423,17 @@ function Checkout() {
                   <div className="w-4 h-4 rounded-full border-4 border-[#0a36af] bg-white flex items-center justify-center">
                     <div className="w-1.5 h-1.5 bg-[#0a36af] rounded-full"></div>
                   </div>
-                  <span className="font-bold text-black text-[15px]">
-                    Credit card
-                  </span>
+                  <span className="font-bold text-black text-[15px]">Credit card</span>
                 </div>
                 <div className="flex gap-1">
-                  <div className="w-10 h-7 bg-white border border-gray-200 rounded flex items-center justify-center text-[15px] font-bold text-blue-900 scale-75 origin-right">
-                    VISA
-                  </div>
+                  <div className="w-10 h-7 bg-white border border-gray-200 rounded flex items-center justify-center text-[15px] font-bold text-blue-900 scale-75 origin-right">VISA</div>
                   <div className="w-10 h-7 bg-white border border-gray-200 rounded flex items-center justify-center scale-75 origin-right">
                     <div className="flex">
                       <div className="w-3.5 h-3.5 bg-red-500 rounded-full mix-blend-multiply"></div>
                       <div className="w-3.5 h-3.5 bg-yellow-500 rounded-full -ml-1 mix-blend-multiply"></div>
                     </div>
                   </div>
-                  <div className="w-10 h-7 bg-white border border-gray-200 rounded flex items-center justify-center text-[15px] font-bold text-gray-600 scale-75 origin-right">
-                    +5
-                  </div>
+                  <div className="w-10 h-7 bg-white border border-gray-200 rounded flex items-center justify-center text-[15px] font-bold text-gray-600 scale-75 origin-right">+5</div>
                 </div>
               </div>
               <div className="bg-gray-50 p-4 space-y-3">
@@ -367,10 +443,7 @@ function Checkout() {
                     placeholder="Card number"
                     className="w-full border border-gray-300 rounded-md p-3 pr-10 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] bg-white text-[15px]"
                   />
-                  <Lock
-                    size={16}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
-                  />
+                  <Lock size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <input
@@ -384,10 +457,7 @@ function Checkout() {
                       placeholder="Security code"
                       className="w-full border border-gray-300 rounded-md p-3 pr-10 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] bg-white text-[15px]"
                     />
-                    <HelpCircle
-                      size={16}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer"
-                    />
+                    <HelpCircle size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer" />
                   </div>
                 </div>
                 <input
@@ -403,10 +473,7 @@ function Checkout() {
                     className="w-4 h-4 text-[#0a36af] rounded border-gray-300 focus:ring-[#0a36af]"
                     defaultChecked
                   />
-                  <label
-                    htmlFor="billing"
-                    className="text-[15px] text-gray-700"
-                  >
+                  <label htmlFor="billing" className="text-[15px] text-gray-700">
                     Use shipping address as billing address
                   </label>
                 </div>

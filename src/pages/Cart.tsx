@@ -16,17 +16,13 @@ function Cart() {
     const user = localStorage.getItem("rezzilli_user");
     setIsLoggedIn(!!user);
   }, []);
-
+ console.log(isLoggedIn);
   const FREE_DELIVERY_THRESHOLD = 50;
   const isFreeDelivery = cartTotal >= FREE_DELIVERY_THRESHOLD;
 
-  const handleCheckout = () => {
-    if (!isLoggedIn) {
-      navigate('/login'); 
-    } else {
-      navigate('/checkout'); 
-    }
-  };
+const handleCheckout = () => {
+  navigate('/checkout');
+};
 
   return (
     <div 

@@ -112,8 +112,6 @@ try {
             ':image' => $item['image'] ?? null
         ]);
     }
-
-    // Commit the transaction!
     $conn->commit();
 
     http_response_code(201);

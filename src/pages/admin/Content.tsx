@@ -43,9 +43,7 @@ const mockEvents = {
   ],
   modal: {
     title: "FOODIES FESTIVAL 2026",
-    intro: "We’ll be at the Rezzilli stand with tastings, chats and bottle sales.",
-    locations: "Brighton – Preston Park, May 2026\nSyon Park – London, May 2026\nTatton Park | Summer 2026\nEdinburgh | Summer 2026",
-    footer: "Also planned: Glasgow, Oxford and Bath (dates TBC). Our team will be in full Rezzilli merchandise, so you can’t miss us.",
+    description: "We’ll be at the Rezzilli stand with tastings, chats and bottle sales.\n\nLocations and Dates:\nBrighton – Preston Park, May 2026\nSyon Park – London, May 2026\nTatton Park | Summer 2026\nEdinburgh | Summer 2026\n\nAlso planned: Glasgow, Oxford and Bath (dates TBC). Our team will be in full Rezzilli merchandise, so you can’t miss us.",
     image: "/image1.webp"
   }
 };
@@ -58,10 +56,7 @@ const mockStory = {
 
 const mockContact = {
   title: "CONTACT US",
-  paragraph1: "Have a question, special request, or want to stock our drinks? Fill out the form and our team will get back to you as soon as possible.",
-  paragraph2: "Whether you’re a customer, partner, or retailer, we’d love to hear from you and help with anything you need.",
-  email: "hello@rezzillidrinks.com",
-  phone: "+447832198470"
+  description: "Have a question, special request, or want to stock our drinks? Fill out the form and our team will get back to you as soon as possible.\n\nWhether you’re a customer, partner, or retailer, we’d love to hear from you and help with anything you need.\n\nEmail: hello@rezzillidrinks.com\nPhone: +447832198470"
 };
 
 function Content() {
@@ -328,23 +323,15 @@ function Content() {
               </div>
               <div className="p-6 space-y-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Modal Title</label>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Event Title</label>
                   <input type="text" defaultValue={mockEvents.modal.title} className="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Intro Paragraph</label>
-                  <textarea rows={2} defaultValue={mockEvents.modal.intro} className="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none" />
-                </div>
-                <div>
-                  <label className="text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
-                    Locations and Dates (List)
-                    <span className="text-[10px] text-slate-400 font-normal">Put each location on a new line</span>
+                  <label className=" text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
+                    Event Description
+                    <span className="text-[10px] text-slate-400 font-normal">Supports multiple paragraphs and spacing</span>
                   </label>
-                  <textarea rows={5} defaultValue={mockEvents.modal.locations} className="w-full border border-slate-300 rounded-lg p-2.5 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none" />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Footer Notes</label>
-                  <textarea rows={2} defaultValue={mockEvents.modal.footer} className="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none" />
+                  <textarea rows={10} defaultValue={mockEvents.modal.description} className="w-full border border-slate-300 rounded-lg p-2.5 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none whitespace-pre-wrap" />
                 </div>
               </div>
             </div>
@@ -367,24 +354,11 @@ function Content() {
               </div>
               
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">First Paragraph</label>
-                <textarea rows={3} defaultValue={mockContact.paragraph1} className="w-full border border-slate-300 rounded-lg p-2.5 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none" />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Second Paragraph</label>
-                <textarea rows={3} defaultValue={mockContact.paragraph2} className="w-full border border-slate-300 rounded-lg p-2.5 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none" />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-100">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Displayed Email</label>
-                  <input type="email" defaultValue={mockContact.email} className="w-full border border-slate-300 rounded-lg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Displayed Phone</label>
-                  <input type="text" defaultValue={mockContact.phone} className="w-full border border-slate-300 rounded-lg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" />
-                </div>
+                <label className=" text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
+                  Description
+                  <span className="text-[10px] text-slate-400 font-normal">Supports multiple paragraphs and spacing</span>
+                </label>
+                <textarea rows={10} defaultValue={mockContact.description} className="w-full border border-slate-300 rounded-lg p-2.5 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none whitespace-pre-wrap" />
               </div>
             </div>
           </div>

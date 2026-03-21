@@ -24,13 +24,13 @@ const mockProducts = [
     status: "Active",
     stock: 145,
     image: "/image4.png",
-    // Adding the rich data so you can see it populate when you click "Edit"
     description: [
       "Experience the true taste of Italy with our signature Lemon Spritz.",
       "Ingredients: Sparkling water, Sicilian lemon juice (12%), sugar, natural flavorings.",
       "Tasting note: Bright, zesty, and perfectly balanced with a bittersweet finish."
     ],
     delivery: {
+      banner: "Free Standard UK Delivery on orders over £50", // NEW FIELD DATA
       standard: [
         "Delivered within 3-5 working days.",
         "Fully tracked service."
@@ -434,6 +434,21 @@ function Products() {
                 {/* 5. Delivery Information */}
                 <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
                   <h3 className="text-sm font-bold text-slate-900 border-b border-slate-100 pb-2">Delivery Information</h3>
+                  
+                  {/* NEW FREE DELIVERY BANNER FIELD */}
+                  <div className="mb-4">
+                    <label className=" text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
+                      Free Delivery Highlight Banner
+                      <span className="text-[10px] text-slate-400 font-normal">Leave blank to hide on product page</span>
+                    </label>
+                    <input 
+                      type="text" 
+                      defaultValue={editingProduct?.delivery?.banner || "Free Standard UK Delivery on orders over £50"}
+                      placeholder="e.g., Free Standard UK Delivery on orders over £50"
+                      className="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                    />
+                  </div>
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className=" text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">

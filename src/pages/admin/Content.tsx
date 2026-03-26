@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   Image as ImageIcon, 
   Plus, 
@@ -14,62 +14,140 @@ import {
   MessageSquare
 } from "lucide-react";
 
-// --- DUMMY DATA (Matching your Home.tsx structure) ---
-const mockCarousel = [
-  { id: 1, src: "/image1.webp", link: null, order: 1 },
-  { id: 2, src: "/image2.webp", link: "/product/2", order: 2 },
-  { id: 3, src: "/image3.webp", link: null, order: 3 },
-  { id: 4, src: "/image4.webp", link: "/spritz", order: 4 },
-];
-
-const mockValues = [
-  { id: 1, title: "Real Sicilian Lemon", text: "Made with sun-ripened Sicilian lemon, with no artificial colourings...", image: "/image10.png" },
-  { id: 2, title: "No Added Sugar", text: "There are no added sugars or artificial sweeteners in our range...", image: "/image8.png" },
-  { id: 3, title: "Bottles and Packaging", text: "Our bottles and packaging are designed with the planet in mind...", image: "/image9.png" },
-];
-
-const mockEvents = {
-  featured: {
-    title: "OFFICIAL LAUNCH NIGHT",
-    venue: "Isabel’s Restaurant & Bar, Burton-upon-Trent",
-    date: "April 2026",
-    description: "Join us for the official Rezzilli launch night at Isabel’s. An evening of tastings, pizza, cocktails and DJ sets.",
-    image: "/featured-event.jpg"
-  },
-  cards: [
-    { id: 1, date: "April 15, 2026", type: "Event", title: "Official Launch Night", description: "Join us for the official Rezzilli launch night at Isabel’s...", image: "/gemini_generated_image_yoid3hyoid3hyoidd copy.webp" },
-    { id: 2, date: "May 2026", type: "Festival", title: "Foodies Festival", description: "Catch the Rezzilli team across the UK at Foodies Festivals!", image: "/image1.webp" },
-    { id: 3, date: "Summer 2026", type: "Event", title: "Great British Food Festival", description: "Our tour continues at the Great British Food Festival...", image: "/image2.webp" },
+// --- DEFAULT TEMPLATE (Used only if the database is completely empty) ---
+const defaultTemplate = {
+  carousel: [
+    { id: 1, src: "/image1.webp", link: null, order: 1 },
+    { id: 2, src: "/image2.webp", link: "/product/2", order: 2 },
+    { id: 3, src: "/image3.webp", link: null, order: 3 },
+    { id: 4, src: "/image4.webp", link: "/spritz", order: 4 },
   ],
-  modal: {
-    title: "FOODIES FESTIVAL 2026",
-    description: "We’ll be at the Rezzilli stand with tastings, chats and bottle sales.\n\nLocations and Dates:\nBrighton – Preston Park, May 2026\nSyon Park – London, May 2026\nTatton Park | Summer 2026\nEdinburgh | Summer 2026\n\nAlso planned: Glasgow, Oxford and Bath (dates TBC). Our team will be in full Rezzilli merchandise, so you can’t miss us.",
-    image: "/image1.webp"
+  values: [
+    { id: 1, title: "Real Sicilian Lemon", text: "Made with sun-ripened Sicilian lemon...", image: "/image10.png" },
+    { id: 2, title: "No Added Sugar", text: "There are no added sugars...", image: "/image8.png" },
+    { id: 3, title: "Bottles and Packaging", text: "Our bottles and packaging are designed...", image: "/image9.png" },
+  ],
+  events: {
+    featured: {
+      title: "OFFICIAL LAUNCH NIGHT",
+      venue: "Isabel’s Restaurant & Bar, Burton-upon-Trent",
+      date: "April 2026",
+      description: "Join us for the official Rezzilli launch night at Isabel’s...",
+      image: "/featured-event.jpg"
+    },
+    cards: [
+      { id: 1, date: "April 15, 2026", type: "Event", title: "Official Launch Night", description: "Join us...", image: "/gemini_generated_image_yoid3hyoid3hyoidd copy.webp" },
+      { id: 2, date: "May 2026", type: "Festival", title: "Foodies Festival", description: "Catch the Rezzilli team...", image: "/image1.webp" },
+      { id: 3, date: "Summer 2026", type: "Event", title: "Great British Food Festival", description: "Our tour continues...", image: "/image2.webp" },
+    ],
+    modal: {
+      title: "FOODIES FESTIVAL 2026",
+      description: "We’ll be at the Rezzilli stand with tastings, chats and bottle sales...",
+      image: "/image1.webp"
+    }
+  },
+  story: {
+    title: "From Mamma's Kitchen",
+    text: "Rezzilli was born from a cherished memory...",
+    image: "/gemini_generated_image_yoid3hyoid3hyoidd copy.webp"
+  },
+  contact: {
+    title: "CONTACT US",
+    description: "Have a question, special request, or want to stock our drinks?..."
   }
-};
-
-const mockStory = {
-  title: "From Mamma's Kitchen",
-  text: "Rezzilli was born from a cherished memory - the homemade tradition that many an Italian Mamma had in their kitchen in Italy making homemade Limoncello. Inspired by those authentic flavours, we have taken the family recipe and created our unique drinks that honours that heritage but speaks to today's lifestyle. We have reimagined the classic Italian digestivo as a spritz summer drink - refreshing, light, and made with Italian ingredients for the true lovers of aperitivo culture.",
-  image: "/gemini_generated_image_yoid3hyoid3hyoidd copy.webp"
-};
-
-const mockContact = {
-  title: "CONTACT US",
-  description: "Have a question, special request, or want to stock our drinks? Fill out the form and our team will get back to you as soon as possible.\n\nWhether you’re a customer, partner, or retailer, we’d love to hear from you and help with anything you need.\n\nEmail: hello@rezzillidrinks.com\nPhone: +447832198470"
 };
 
 function Content() {
   const [activeTab, setActiveTab] = useState("carousel");
   const [isSaving, setIsSaving] = useState(false);
+  
+  // --- DYNAMIC DATA STATE ---
+  const [homeData, setHomeData] = useState<any>(null);
 
-  const handleSave = () => {
+  // --- FETCH DATA ON LOAD ---
+  useEffect(() => {
+    fetch("https://rezzillidrinks.com/api/get-home.php")
+      .then(res => res.json())
+      .then(data => {
+        if (!data.error && data.story) {
+          setHomeData(data); // Load live DB data
+        } else {
+          setHomeData(defaultTemplate); // Fallback if DB is empty
+        }
+      })
+      .catch(err => {
+        console.error("Error loading CMS data:", err);
+        setHomeData(defaultTemplate);
+      });
+  }, []);
+
+  // --- SAVE DATA TO BACKEND ---
+  const handleSave = async () => {
     setIsSaving(true);
-    setTimeout(() => {
+    try {
+      const response = await fetch("https://rezzillidrinks.com/api/update-home.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(homeData)
+      });
+      const result = await response.json();
+      
+      if (result.success) {
+        alert("Content saved successfully! Changes will appear on the Home page immediately.");
+      } else {
+        alert("Failed to save changes. Please try again.");
+      }
+    } catch (err) {
+      alert("Network error. Could not connect to the server.");
+    } finally {
       setIsSaving(false);
-      alert("Content saved successfully! Changes will appear on the Home page immediately.");
-    }, 800);
+    }
   };
+
+  // --- STATE UPDATER HELPERS ---
+  const updateStory = (key: string, value: string) => {
+    setHomeData({ ...homeData, story: { ...homeData.story, [key]: value } });
+  };
+
+  const updateContact = (key: string, value: string) => {
+    setHomeData({ ...homeData, contact: { ...homeData.contact, [key]: value } });
+  };
+
+  const updateCarousel = (index: number, key: string, value: string) => {
+    const newCarousel = [...homeData.carousel];
+    newCarousel[index][key] = value;
+    setHomeData({ ...homeData, carousel: newCarousel });
+  };
+
+  const updateValue = (index: number, key: string, value: string) => {
+    const newValues = [...homeData.values];
+    newValues[index][key] = value;
+    setHomeData({ ...homeData, values: newValues });
+  };
+
+  const updateFeaturedEvent = (key: string, value: string) => {
+    setHomeData({ ...homeData, events: { ...homeData.events, featured: { ...homeData.events.featured, [key]: value } } });
+  };
+
+  const updateEventCard = (index: number, key: string, value: string) => {
+    const newCards = [...homeData.events.cards];
+    newCards[index][key] = value;
+    setHomeData({ ...homeData, events: { ...homeData.events, cards: newCards } });
+  };
+
+  const updateEventModal = (key: string, value: string) => {
+    setHomeData({ ...homeData, events: { ...homeData.events, modal: { ...homeData.events.modal, [key]: value } } });
+  };
+
+  // --- SHOW LOADER IF DB HASN'T RESPONDED YET ---
+  if (!homeData) {
+    return (
+      <div className="w-full min-h-screen bg-slate-50 flex flex-col items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mb-4"></div>
+        <p className="text-slate-500 font-medium">Loading Editor...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full min-h-screen bg-slate-50 font-sans text-slate-900 pb-20">
@@ -151,7 +229,7 @@ function Content() {
 
             <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
               <div className="divide-y divide-slate-100">
-                {mockCarousel.map((slide, i) => (
+                {homeData.carousel.map((slide: any, i: number) => (
                   <div key={slide.id} className="p-4 flex items-center gap-6 hover:bg-slate-50/50 transition-colors group">
                     <div className="flex flex-col gap-1 text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button className="hover:text-indigo-600"><MoveUp size={16} /></button>
@@ -163,11 +241,22 @@ function Content() {
                     <div className="flex-1 space-y-3">
                       <div>
                         <label className="block text-xs font-bold text-slate-700 mb-1">Image URL</label>
-                        <input type="text" defaultValue={slide.src} className="w-full max-w-md border border-slate-300 rounded-lg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" />
+                        <input 
+                          type="text" 
+                          value={slide.src} 
+                          onChange={(e) => updateCarousel(i, 'src', e.target.value)}
+                          className="w-full max-w-md border border-slate-300 rounded-lg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" 
+                        />
                       </div>
                       <div>
                         <label className="block text-xs font-bold text-slate-700 mb-1">Click Link (Optional)</label>
-                        <input type="text" defaultValue={slide.link || ""} placeholder="/spritz or /product/2" className="w-full max-w-md border border-slate-300 rounded-lg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" />
+                        <input 
+                          type="text" 
+                          value={slide.link || ""} 
+                          onChange={(e) => updateCarousel(i, 'link', e.target.value)}
+                          placeholder="/spritz or /product/2" 
+                          className="w-full max-w-md border border-slate-300 rounded-lg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" 
+                        />
                       </div>
                     </div>
                     <button className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition-colors self-start mt-2">
@@ -192,23 +281,39 @@ function Content() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">Section Title</label>
-                  <input type="text" defaultValue={mockStory.title} className="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" />
+                  <input 
+                    type="text" 
+                    value={homeData.story.title} 
+                    onChange={(e) => updateStory('title', e.target.value)}
+                    className="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" 
+                  />
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">Story Paragraph</label>
-                  <textarea rows={10} defaultValue={mockStory.text} className="w-full border border-slate-300 rounded-lg p-2.5 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none" />
+                  <textarea 
+                    rows={10} 
+                    value={homeData.story.text} 
+                    onChange={(e) => updateStory('text', e.target.value)}
+                    className="w-full border border-slate-300 rounded-lg p-2.5 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none" 
+                  />
                 </div>
               </div>
               <div className="flex flex-col gap-2">
                 <label className="block text-xs font-bold text-slate-700">Side Image</label>
                 <div className="w-full h-64 bg-slate-50 border-2 border-dashed border-slate-300 rounded-xl flex flex-col items-center justify-center relative overflow-hidden group cursor-pointer hover:border-indigo-400">
-                  <img src={mockStory.image} alt="Story" className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-30 transition-opacity" />
+                  <img src={homeData.story.image} alt="Story" className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-30 transition-opacity" />
                   <div className="z-10 flex flex-col items-center text-slate-700 group-hover:text-indigo-600 transition-colors">
                     <ImageIcon size={32} className="mb-2" />
                     <span className="text-sm font-semibold">Change Image</span>
                   </div>
                 </div>
-                <input type="text" defaultValue={mockStory.image} className="w-full border border-slate-300 rounded-lg p-2 mt-2 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" placeholder="Image URL" />
+                <input 
+                  type="text" 
+                  value={homeData.story.image} 
+                  onChange={(e) => updateStory('image', e.target.value)}
+                  className="w-full border border-slate-300 rounded-lg p-2 mt-2 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" 
+                  placeholder="Image URL" 
+                />
               </div>
             </div>
           </div>
@@ -223,7 +328,7 @@ function Content() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {mockValues.map((val) => (
+              {homeData.values.map((val: any, idx: number) => (
                 <div key={val.id} className="bg-white border border-slate-200 rounded-xl shadow-sm p-5 space-y-4">
                   <div className="w-full h-32 bg-slate-50 rounded-lg border border-slate-100 flex flex-col items-center justify-center gap-2 text-slate-400 cursor-pointer hover:bg-slate-100 transition-colors relative overflow-hidden">
                     <img src={val.image} alt="icon" className="h-16 object-contain opacity-50" />
@@ -234,11 +339,21 @@ function Content() {
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-700 mb-1">Title</label>
-                    <input type="text" defaultValue={val.title} className="w-full border border-slate-300 rounded-lg p-2 text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" />
+                    <input 
+                      type="text" 
+                      value={val.title} 
+                      onChange={(e) => updateValue(idx, 'title', e.target.value)}
+                      className="w-full border border-slate-300 rounded-lg p-2 text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" 
+                    />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-700 mb-1">Description</label>
-                    <textarea rows={5} defaultValue={val.text} className="w-full border border-slate-300 rounded-lg p-2 text-sm text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none" />
+                    <textarea 
+                      rows={5} 
+                      value={val.text} 
+                      onChange={(e) => updateValue(idx, 'text', e.target.value)}
+                      className="w-full border border-slate-300 rounded-lg p-2 text-sm text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none" 
+                    />
                   </div>
                 </div>
               ))}
@@ -259,27 +374,48 @@ function Content() {
                 <div className="space-y-4">
                   <div>
                     <label className="block text-xs font-bold text-slate-700 mb-1">Main Title</label>
-                    <input type="text" defaultValue={mockEvents.featured.title} className="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" />
+                    <input 
+                      type="text" 
+                      value={homeData.events.featured.title} 
+                      onChange={(e) => updateFeaturedEvent('title', e.target.value)}
+                      className="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" 
+                    />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-xs font-bold text-slate-700 mb-1">Venue/Location</label>
-                      <input type="text" defaultValue={mockEvents.featured.venue} className="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" />
+                      <input 
+                        type="text" 
+                        value={homeData.events.featured.venue} 
+                        onChange={(e) => updateFeaturedEvent('venue', e.target.value)}
+                        className="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" 
+                      />
                     </div>
                     <div>
                       <label className="block text-xs font-bold text-slate-700 mb-1">Date String</label>
-                      <input type="text" defaultValue={mockEvents.featured.date} placeholder="e.g., April 2026" className="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" />
+                      <input 
+                        type="text" 
+                        value={homeData.events.featured.date} 
+                        onChange={(e) => updateFeaturedEvent('date', e.target.value)}
+                        placeholder="e.g., April 2026" 
+                        className="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" 
+                      />
                     </div>
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-700 mb-1">Description Paragraph</label>
-                    <textarea rows={4} defaultValue={mockEvents.featured.description} className="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none" />
+                    <textarea 
+                      rows={4} 
+                      value={homeData.events.featured.description} 
+                      onChange={(e) => updateFeaturedEvent('description', e.target.value)}
+                      className="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none" 
+                    />
                   </div>
                 </div>
                 <div className="flex flex-col gap-2">
                   <label className="block text-xs font-bold text-slate-700">Side Image</label>
                   <div className="flex-1 bg-slate-50 border-2 border-dashed border-slate-300 rounded-xl flex flex-col items-center justify-center text-slate-400 hover:bg-slate-100 hover:border-indigo-400 hover:text-indigo-500 cursor-pointer transition-colors relative overflow-hidden">
-                     <img src={mockEvents.featured.image} className="absolute inset-0 w-full h-full object-cover opacity-30" alt="" />
+                     <img src={homeData.events.featured.image} className="absolute inset-0 w-full h-full object-cover opacity-30" alt="" />
                     <ImageIcon size={32} className="mb-2 z-10" />
                     <span className="text-sm font-semibold z-10">Update image</span>
                   </div>
@@ -294,7 +430,7 @@ function Content() {
                 <span className="text-xs font-semibold text-slate-500 bg-slate-200 px-2 py-1 rounded">3 Cards Visible</span>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {mockEvents.cards.map((card) => (
+                {homeData.events.cards.map((card: any, idx: number) => (
                   <div key={card.id} className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
                     <div className="h-32 bg-slate-100 flex items-center justify-center relative group">
                       <img src={card.image} className="w-full h-full object-cover" alt="" />
@@ -304,11 +440,35 @@ function Content() {
                     </div>
                     <div className="p-4 flex-1 flex flex-col gap-3">
                       <div className="flex gap-2">
-                        <input type="text" defaultValue={card.date} className="w-1/2 border border-slate-300 rounded-md p-1.5 text-xs text-slate-500 focus:outline-none focus:border-indigo-500" placeholder="Date" />
-                        <input type="text" defaultValue={card.type} className="w-1/2 border border-slate-300 rounded-md p-1.5 text-xs text-slate-500 focus:outline-none focus:border-indigo-500" placeholder="Type (e.g. Event)" />
+                        <input 
+                          type="text" 
+                          value={card.date} 
+                          onChange={(e) => updateEventCard(idx, 'date', e.target.value)}
+                          className="w-1/2 border border-slate-300 rounded-md p-1.5 text-xs text-slate-500 focus:outline-none focus:border-indigo-500" 
+                          placeholder="Date" 
+                        />
+                        <input 
+                          type="text" 
+                          value={card.type} 
+                          onChange={(e) => updateEventCard(idx, 'type', e.target.value)}
+                          className="w-1/2 border border-slate-300 rounded-md p-1.5 text-xs text-slate-500 focus:outline-none focus:border-indigo-500" 
+                          placeholder="Type (e.g. Event)" 
+                        />
                       </div>
-                      <input type="text" defaultValue={card.title} className="w-full border border-slate-300 rounded-md p-2 text-sm font-bold text-slate-900 focus:outline-none focus:border-indigo-500" placeholder="Card Title" />
-                      <textarea rows={3} defaultValue={card.description} className="w-full border border-slate-300 rounded-md p-2 text-xs text-slate-600 focus:outline-none focus:border-indigo-500 resize-none flex-1" placeholder="Card Description..." />
+                      <input 
+                        type="text" 
+                        value={card.title} 
+                        onChange={(e) => updateEventCard(idx, 'title', e.target.value)}
+                        className="w-full border border-slate-300 rounded-md p-2 text-sm font-bold text-slate-900 focus:outline-none focus:border-indigo-500" 
+                        placeholder="Card Title" 
+                      />
+                      <textarea 
+                        rows={3} 
+                        value={card.description} 
+                        onChange={(e) => updateEventCard(idx, 'description', e.target.value)}
+                        className="w-full border border-slate-300 rounded-md p-2 text-xs text-slate-600 focus:outline-none focus:border-indigo-500 resize-none flex-1" 
+                        placeholder="Card Description..." 
+                      />
                     </div>
                   </div>
                 ))}
@@ -324,14 +484,24 @@ function Content() {
               <div className="p-6 space-y-4">
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">Event Title</label>
-                  <input type="text" defaultValue={mockEvents.modal.title} className="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" />
+                  <input 
+                    type="text" 
+                    value={homeData.events.modal.title} 
+                    onChange={(e) => updateEventModal('title', e.target.value)}
+                    className="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" 
+                  />
                 </div>
                 <div>
                   <label className=" text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
                     Event Description
                     <span className="text-[10px] text-slate-400 font-normal">Supports multiple paragraphs and spacing</span>
                   </label>
-                  <textarea rows={10} defaultValue={mockEvents.modal.description} className="w-full border border-slate-300 rounded-lg p-2.5 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none whitespace-pre-wrap" />
+                  <textarea 
+                    rows={10} 
+                    value={homeData.events.modal.description} 
+                    onChange={(e) => updateEventModal('description', e.target.value)}
+                    className="w-full border border-slate-300 rounded-lg p-2.5 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none whitespace-pre-wrap" 
+                  />
                 </div>
               </div>
             </div>
@@ -350,7 +520,12 @@ function Content() {
             <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 max-w-2xl space-y-5">
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">Main Heading</label>
-                <input type="text" defaultValue={mockContact.title} className="w-full border border-slate-300 rounded-lg p-2.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" />
+                <input 
+                  type="text" 
+                  value={homeData.contact.title} 
+                  onChange={(e) => updateContact('title', e.target.value)}
+                  className="w-full border border-slate-300 rounded-lg p-2.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" 
+                />
               </div>
               
               <div>
@@ -358,7 +533,12 @@ function Content() {
                   Description
                   <span className="text-[10px] text-slate-400 font-normal">Supports multiple paragraphs and spacing</span>
                 </label>
-                <textarea rows={10} defaultValue={mockContact.description} className="w-full border border-slate-300 rounded-lg p-2.5 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none whitespace-pre-wrap" />
+                <textarea 
+                  rows={10} 
+                  value={homeData.contact.description} 
+                  onChange={(e) => updateContact('description', e.target.value)}
+                  className="w-full border border-slate-300 rounded-lg p-2.5 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none whitespace-pre-wrap" 
+                />
               </div>
             </div>
           </div>

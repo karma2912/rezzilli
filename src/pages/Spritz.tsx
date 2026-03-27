@@ -8,6 +8,9 @@ import { useCart } from "../context/CartContext";
 function Spritz() {
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [selectedSort, setSelectedSort] = useState("Date, new to old");
+  
+  // Add a loading state to prevent the page from looking empty while fetching
+  const [isLoading, setIsLoading] = useState(true);
 
   const sortOptions = [
     "Price, low to high",
@@ -19,23 +22,30 @@ function Spritz() {
   ];
 
   // --- CONTEXT & STATES ---
-  const { cart, addToCart, removeFromCart, updateQuantity, cartTotal } =
-    useCart();
+  const { cart, addToCart, removeFromCart, updateQuantity, cartTotal } = useCart();
+  
+  // Products will start completely empty, just like you wanted!
   const [products, setProducts] = useState<any[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
   const FREE_DELIVERY_THRESHOLD = 50;
   const isFreeDelivery = cartTotal >= FREE_DELIVERY_THRESHOLD;
 
+  // --- FETCH DYNAMIC PRODUCTS ON MOUNT ---
   useEffect(() => {
+    // Note: Adjust this path if you need the absolute URL like "https://rezzillidrinks.com/api/get-products.php"
     fetch("https://rezzillidrinks.com/api/get-products.php")
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error("Network response was not ok");
+        return res.json();
+      })
       .then((data) => {
         if (data.success && data.products) {
           setProducts(data.products);
         }
       })
-      .catch((err) => console.error("Error fetching products:", err));
+      .catch((err) => console.error("Error fetching products:", err))
+      .finally(() => setIsLoading(false)); // Turn off loader whether it succeeds or fails
   }, []);
 
   const sortedProducts = [...products].sort((a, b) => {
@@ -48,13 +58,9 @@ function Spritz() {
     if (selectedSort === "Alphabetically, Z to A")
       return b.name.localeCompare(a.name);
     if (selectedSort === "Date, new to old")
-      return (
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      );
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     if (selectedSort === "Date, old to new")
-      return (
-        new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-      );
+      return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
     return 0;
   });
 
@@ -189,72 +195,83 @@ function Spritz() {
           </div>
         </div>
 
-        {/* Products Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
-          {sortedProducts.map((product) => {
-            const btnText = getButtonText(product.status);
-            const priceDisplay = `£${parseFloat(product.price)}`;
-            const oldPriceDisplay =
-              product.old_price && parseFloat(product.old_price) > 0
-                ? `£${parseFloat(product.old_price)}`
-                : null;
+        {/* Products Grid / Loading State */}
+        {isLoading ? (
+           <div className="w-full py-20 flex items-center justify-center">
+             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0a36af]"></div>
+           </div>
+        ) : products.length === 0 ? (
+           <div className="w-full py-20 flex flex-col items-center justify-center text-center">
+             <h3 className="text-xl font-bold mb-2" style={{ color: "#0a36af" }}>No products available</h3>
+             <p className="text-gray-500">Check back soon for new arrivals!</p>
+           </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
+            {sortedProducts.map((product) => {
+              const btnText = getButtonText(product.status);
+              const priceDisplay = `£${parseFloat(product.price).toFixed(2)}`; // Ensure price format like 24.00
+              const oldPriceDisplay =
+                product.old_price && parseFloat(product.old_price) > 0
+                  ? `£${parseFloat(product.old_price).toFixed(2)}`
+                  : null;
 
-            return (
-              <div
-                key={product.id}
-                className="flex flex-col items-center w-full"
-              >
-                <Link
-                  to={`/product/${product.id}`}
-                  className="block h-[300px] md:h-[380px] w-full mb-6 group cursor-pointer"
+              return (
+                <div
+                  key={product.id}
+                  className="flex flex-col items-center w-full"
                 >
-                  <div className="w-full h-full flex items-center justify-center">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="h-full w-auto object-contain group-hover:scale-105 transition-transform duration-500"
-                    />
-                  </div>
-                </Link>
-
-                <button
-                  onClick={() => handleAddToCart(product, btnText)}
-                  className={`w-full py-3 font-bold text-[18px] md:text-[20px] uppercase transition-opacity shadow-sm ${
-                    btnText === "ADD TO CART"
-                      ? "hover:opacity-90 cursor-pointer"
-                      : "opacity-70 cursor-not-allowed"
-                  }`}
-                  style={{ backgroundColor: "#0a36af", color: "#ffc85b" }}
-                  disabled={btnText !== "ADD TO CART"}
-                >
-                  {btnText}
-                </button>
-
-                <div className="mt-5 w-full flex flex-col items-center text-center">
-                  <p
-                    className="text-[15px] font-semibold leading-snug px-2 min-h-[40px]"
-                    style={{ color: "#0a36af" }}
+                  <Link
+                    to={`/product/${product.id}`}
+                    className="block h-[300px] md:h-[380px] w-full mb-6 group cursor-pointer"
                   >
-                    {product.name}
-                  </p>
-                  <div className="mt-3 flex items-center justify-center gap-3">
-                    <span
-                      className="text-[15px] font-bold"
+                    <div className="w-full h-full flex items-center justify-center">
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="h-full w-auto object-contain group-hover:scale-105 transition-transform duration-500"
+                      />
+                    </div>
+                  </Link>
+
+                  <button
+                    onClick={() => handleAddToCart(product, btnText)}
+                    className={`w-full py-3 font-bold text-[18px] md:text-[20px] uppercase transition-opacity shadow-sm ${
+                      btnText === "ADD TO CART"
+                        ? "hover:opacity-90 cursor-pointer"
+                        : "opacity-70 cursor-not-allowed"
+                    }`}
+                    style={{ backgroundColor: "#0a36af", color: "#ffc85b" }}
+                    disabled={btnText !== "ADD TO CART"}
+                  >
+                    {btnText}
+                  </button>
+
+                  <div className="mt-5 w-full flex flex-col items-center text-center">
+                    <p
+                      className="text-[15px] font-semibold leading-snug px-2 min-h-[40px]"
                       style={{ color: "#0a36af" }}
                     >
-                      {priceDisplay}
-                    </span>
-                    {oldPriceDisplay && (
-                      <span className="text-[15px] text-gray-500 line-through decoration-gray-500">
-                        {oldPriceDisplay}
+                      {product.name}
+                    </p>
+                    <div className="mt-3 flex items-center justify-center gap-3">
+                      <span
+                        className="text-[15px] font-bold"
+                        style={{ color: "#0a36af" }}
+                      >
+                        {priceDisplay}
                       </span>
-                    )}
+                      {oldPriceDisplay && (
+                        <span className="text-[15px] text-gray-500 line-through decoration-gray-500">
+                          {oldPriceDisplay}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </main>
 
       {/* --- CART DRAWER START --- */}

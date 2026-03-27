@@ -9,8 +9,7 @@ function ProductDetail() {
   const { id } = useParams<{ id: string }>();
 
   // --- CONTEXT & STATES ---
-  const { cart, addToCart, removeFromCart, updateQuantity, cartTotal } =
-    useCart();
+  const { cart, addToCart, removeFromCart, updateQuantity, cartTotal } = useCart();
   const [product, setProduct] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -27,7 +26,10 @@ function ProductDetail() {
     setIsLoading(true);
 
     fetch(`https://rezzillidrinks.com/api/get-products.php?id=${id}`)
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error("Network response was not ok");
+        return res.json();
+      })
       .then((data) => {
         if (data.success && data.product) {
           setProduct(data.product);
@@ -44,16 +46,19 @@ function ProductDetail() {
       });
   }, [id]);
 
-  // --- DYNAMIC ADD TO CART ---
+  // --- DYNAMIC ADD TO CART (With Auto-Stock Check) ---
   const handleAddToCart = () => {
-    if (product && product.status === "Active") {
+    const stockCount = Number(product?.stock) || 0;
+    
+    // Only allow adding to cart if Active AND Stock is greater than 0
+    if (product && product.status === "Active" && stockCount > 0) {
       addToCart({
         id: product.id,
         name: product.name,
         price: parseFloat(product.price),
         originalPrice:
           product.old_price && parseFloat(product.old_price) > 0
-            ? `£${parseFloat(product.old_price)}`
+            ? `£${parseFloat(product.old_price).toFixed(2)}`
             : null,
         image: product.image,
         variant: product.variant || "Standard",
@@ -95,8 +100,18 @@ function ProductDetail() {
   }
 
   const priceValue = parseFloat(product.price);
-  const isAvailable = product.status === "Active";
-  const btnText = isAvailable ? "ADD TO CART" : product.status || "Coming Soon";
+  
+  // --- AUTOMATIC STOCK & STATUS LOGIC ---
+  const stockCount = Number(product.stock) || 0;
+  const isActive = product.status === "Active";
+  const isAvailable = isActive && stockCount > 0;
+
+  let btnText = "ADD TO CART";
+  if (!isActive) {
+    btnText = product.status || "Coming Soon";
+  } else if (stockCount <= 0) {
+    btnText = "OUT OF STOCK";
+  }
 
   return (
     <div className="min-h-screen w-full flex flex-col font-['Libre_Baskerville',_serif] bg-white">
@@ -225,21 +240,23 @@ function ProductDetail() {
               </button>
             </div>
 
-            <div className="flex items-center gap-3 p-4 rounded-xl bg-[#faf9f6] border border-gray-100">
-              <span className="text-xl">📦</span>
-              <p
-                className="text-[15px] font-medium"
-                style={{ color: "#0a36af" }}
-              >
-                Free Standard UK Delivery on orders over £
-                {FREE_DELIVERY_THRESHOLD}
-              </p>
-            </div>
+            {/* --- FIXED: Hide entire box if Admin explicitly left the banner blank --- */}
+            {product.delivery?.banner !== "" && (
+              <div className="flex items-center gap-3 p-4 rounded-xl bg-[#faf9f6] border border-gray-100">
+                <span className="text-xl">📦</span>
+                <p
+                  className="text-[15px] font-medium"
+                  style={{ color: "#0a36af" }}
+                >
+                  {product.delivery?.banner || `Free Standard UK Delivery on orders over £${FREE_DELIVERY_THRESHOLD}`}
+                </p>
+              </div>
+            )}
           </div>
         </div>
 
         <div className="w-full max-w-5xl mx-auto flex flex-col gap-16 pt-4">
-          {product.description && product.description.length > 0 && (
+          {product.description && Array.isArray(product.description) && product.description.length > 0 && (
             <div>
               <h2
                 className="font-extrabold text-[30px] uppercase tracking-wide mb-6"
@@ -288,7 +305,7 @@ function ProductDetail() {
                 className="text-[15px] leading-relaxed grid grid-cols-1 md:grid-cols-2 gap-8 bg-[#faf9f6] p-8 rounded-xl border border-gray-100"
                 style={{ color: "#0a36af" }}
               >
-                {product.delivery.standard && (
+                {product.delivery.standard && Array.isArray(product.delivery.standard) && (
                   <div>
                     <h4 className="font-bold mb-3 text-[16px] underline underline-offset-4 decoration-[#ffc85b]">
                       Standard UK Delivery:
@@ -304,7 +321,7 @@ function ProductDetail() {
                     </ul>
                   </div>
                 )}
-                {product.delivery.nextDay && (
+                {product.delivery.nextDay && Array.isArray(product.delivery.nextDay) && (
                   <div>
                     <h4 className="font-bold mb-3 text-[16px] underline underline-offset-4 decoration-[#ffc85b]">
                       Next Day Delivery:
@@ -324,7 +341,7 @@ function ProductDetail() {
             </div>
           )}
 
-          {product.nutrition && product.nutrition.table && (
+          {product.nutrition && product.nutrition.table && Array.isArray(product.nutrition.table) && (
             <div>
               <h2
                 className="font-extrabold text-[30px] uppercase tracking-wide mb-6"
@@ -375,6 +392,7 @@ function ProductDetail() {
                 </div>
 
                 {product.nutrition.additionalInfo &&
+                  Array.isArray(product.nutrition.additionalInfo) &&
                   product.nutrition.additionalInfo.length > 0 && (
                     <div className="mt-8">
                       <p className="font-bold mb-4 text-[15px] uppercase tracking-wide">

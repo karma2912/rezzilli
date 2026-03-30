@@ -59,7 +59,7 @@ function ContactEnquiries() {
     setSelectedEnquiry(enquiry);
     setReplyMessage(""); 
     if (enquiry.status === "New") {
-      updateStatus(enquiry.raw_id, "Read"); // Automatically mark as read!
+      updateStatus(enquiry.raw_id, "Read"); 
     }
   };
 

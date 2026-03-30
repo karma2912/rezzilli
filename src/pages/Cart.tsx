@@ -20,8 +20,49 @@ function Cart() {
   const FREE_DELIVERY_THRESHOLD = 50;
   const isFreeDelivery = cartTotal >= FREE_DELIVERY_THRESHOLD;
 
+  const [discountCodeInput, setDiscountCodeInput] = useState("");
+  const [appliedDiscount, setAppliedDiscount] = useState<{ code: string; type: string; value: number; } | null>(null);
+  const [discountError, setDiscountError] = useState("");
+  const [isApplying, setIsApplying] = useState(false);
+
+  const handleApplyDiscount = async () => {
+    if (!discountCodeInput.trim()) return;
+    setIsApplying(true);
+    setDiscountError("");
+
+    try {
+      const response = await fetch("https://rezzillidrinks.com/api/validate-discount.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: discountCodeInput, cartTotal: cartTotal }),
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        setAppliedDiscount({ code: discountCodeInput.toUpperCase(), type: data.type, value: data.value });
+        setDiscountCodeInput("");
+      } else {
+        setDiscountError(data.message || "Invalid code");
+      }
+    } catch (err) {
+      setDiscountError("Network error validating code.");
+    } finally {
+      setIsApplying(false);
+    }
+  };
+
+  // --- CALCULATE NEW TOTALS ---
+  const discountValue = appliedDiscount
+    ? appliedDiscount.type === "percentage"
+      ? cartTotal * (appliedDiscount.value / 100)
+      : appliedDiscount.value
+    : 0;
+
+  const finalTotal = Math.max(0, cartTotal - discountValue);
+
+
 const handleCheckout = () => {
-  navigate('/checkout');
+  navigate('/checkout', { state: { preAppliedDiscount: appliedDiscount } });
 };
 
   return (
@@ -161,20 +202,24 @@ const handleCheckout = () => {
                 
                 <div className="flex justify-between text-[15px]">
                   <span className="font-medium">Subtotal</span>
-                  {/* Dynamic Subtotal */}
                   <span className="font-medium">£{cartTotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-[15px]">
                   <span className="font-medium">Delivery</span>
-                  {/* Dynamic Delivery Text */}
                   <span className="font-medium">
                     {isFreeDelivery ? 'Free' : 'Calculated at Checkout'}
                   </span>
                 </div>
+                {appliedDiscount && (
+                  <div className="flex justify-between text-[15px] text-green-600 font-bold">
+                    <span>Discount ({appliedDiscount.code})</span>
+                    <span>-£{discountValue.toFixed(2)}</span>
+                  </div>
+                )}
+
                 <div className="flex justify-between text-[20px] mt-2 pt-4 border-t border-[#0a36af]/20">
                   <span className="font-extrabold">Total</span>
-                  {/* Dynamic Grand Total */}
-                  <span className="font-extrabold">£{cartTotal.toFixed(2)}</span>
+                  <span className="font-extrabold">£{finalTotal.toFixed(2)}</span>
                 </div>
 
                 <div className="bg-blue-50/50 p-6 rounded-lg mt-4  text-center">
@@ -188,15 +233,21 @@ const handleCheckout = () => {
                     <input
                       type="text"
                       placeholder="Enter discount code"
-                      className="w-full px-4 py-3 border border-[#0a36af]/30 rounded text-[15px] focus:outline-none focus:border-[#0a36af]"
+                      value={discountCodeInput}
+                      onChange={(e) => setDiscountCodeInput(e.target.value)}
+                      className="w-full px-4 py-3 border border-[#0a36af]/30 rounded text-[15px] focus:outline-none focus:border-[#0a36af] uppercase"
                       style={{ color: "#0a36af" }}
                     />
                     <button
-                      className="w-full py-3 rounded font-bold uppercase tracking-wider text-[15px] transition-opacity hover:opacity-90"
+                      onClick={handleApplyDiscount}
+                      disabled={isApplying || !discountCodeInput.trim()}
+                      className="w-full py-3 rounded font-bold uppercase tracking-wider text-[15px] transition-opacity hover:opacity-90 disabled:opacity-50"
                       style={{ backgroundColor: "#0a36af", color: "#ffc85b" }}
                     >
-                      Apply
+                      {isApplying ? "Validating..." : "Apply"}
                     </button>
+                    {discountError && <p className="text-red-500 text-sm font-semibold">{discountError}</p>}
+                    {appliedDiscount && <p className="text-green-600 text-sm font-semibold">Code applied successfully!</p>}
                   </div>
                 </div>
                 

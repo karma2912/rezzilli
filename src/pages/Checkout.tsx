@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Search, HelpCircle, Lock, ChevronLeft, Mail, KeyRound } from "lucide-react";
 import { useCart } from "../context/CartContext";
 
@@ -42,11 +42,13 @@ function Checkout() {
   const [isValidatingEmail, setIsValidatingEmail] = useState(false);
 
   const [discountCodeInput, setDiscountCodeInput] = useState("");
+  const location = useLocation();
+  
   const [appliedDiscount, setAppliedDiscount] = useState<{
     code: string;
     type: string;
     value: number;
-  } | null>(null);
+  } | null>(location.state?.preAppliedDiscount || null);
   const [discountError, setDiscountError] = useState("");
 
   const [isSubmitting, setIsSubmitting] = useState(false);

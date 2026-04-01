@@ -119,6 +119,64 @@ function Content() {
     setHomeData({ ...homeData, carousel: newCarousel });
   };
 
+  // --- CAROUSEL CONTROLS ---
+  const addSlide = () => {
+    const newSlide = { id: Date.now(), src: "/placeholder.png", link: "", order: homeData.carousel.length + 1 };
+    setHomeData({ ...homeData, carousel: [...homeData.carousel, newSlide] });
+  };
+
+  const removeSlide = (index: number) => {
+    const newCarousel = homeData.carousel.filter((_: any, i: number) => i !== index);
+    setHomeData({ ...homeData, carousel: newCarousel });
+  };
+
+  const moveSlideUp = (index: number) => {
+    if (index === 0) return; // Already at the top
+    const newCarousel = [...homeData.carousel];
+    const temp = newCarousel[index - 1];
+    newCarousel[index - 1] = newCarousel[index];
+    newCarousel[index] = temp;
+    setHomeData({ ...homeData, carousel: newCarousel });
+  };
+
+  const moveSlideDown = (index: number) => {
+    if (index === homeData.carousel.length - 1) return; // Already at the bottom
+    const newCarousel = [...homeData.carousel];
+    const temp = newCarousel[index + 1];
+    newCarousel[index + 1] = newCarousel[index];
+    newCarousel[index] = temp;
+    setHomeData({ ...homeData, carousel: newCarousel });
+  };
+
+  const [isUploading, setIsUploading] = useState<number | null>(null);
+
+  const handleImageUpload = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(index);
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      const response = await fetch("https://rezzillidrinks.com/api/upload-image.php", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        updateCarousel(index, 'src', data.url);
+      } else {
+        alert(data.message || "Upload failed");
+      }
+    } catch (err) {
+      alert("Network error during upload.");
+    } finally {
+      setIsUploading(null);
+    }
+  };
+
   const updateValue = (index: number, key: string, value: string) => {
     const newValues = [...homeData.values];
     newValues[index][key] = value;
@@ -222,8 +280,11 @@ function Content() {
                 <h2 className="text-lg font-bold text-slate-900">Hero Images</h2>
                 <p className="text-sm text-slate-500">These images scroll automatically at the very top of the homepage.</p>
               </div>
-              <button className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-300 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors shadow-sm">
-                <Plus size={16} /> Add Image
+              <button 
+                onClick={addSlide}
+                className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-300 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors shadow-sm"
+              >
+                <Plus size={16} /> Add Slide
               </button>
             </div>
 
@@ -232,20 +293,38 @@ function Content() {
                 {homeData.carousel.map((slide: any, i: number) => (
                   <div key={slide.id} className="p-4 flex items-center gap-6 hover:bg-slate-50/50 transition-colors group">
                     <div className="flex flex-col gap-1 text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button className="hover:text-indigo-600"><MoveUp size={16} /></button>
-                      <button className="hover:text-indigo-600"><MoveDown size={16} /></button>
+                      <button onClick={() => moveSlideUp(i)} disabled={i === 0} className="hover:text-indigo-600 disabled:opacity-30 disabled:hover:text-slate-300"><MoveUp size={16} /></button>
+                      <button onClick={() => moveSlideDown(i)} disabled={i === homeData.carousel.length - 1} className="hover:text-indigo-600 disabled:opacity-30 disabled:hover:text-slate-300"><MoveDown size={16} /></button>
                     </div>
-                    <div className="w-32 h-20 bg-slate-100 rounded-lg border border-slate-200 flex items-center justify-center overflow-hidden shrink-0">
-                      <img src={slide.src} alt={`Slide ${i + 1}`} className="w-full h-full object-cover opacity-50" />
+                    
+                    {/* The Upload Area */}
+                    <div className="relative w-32 h-20 bg-slate-100 rounded-lg border border-slate-200 flex items-center justify-center overflow-hidden shrink-0 group/upload cursor-pointer hover:border-indigo-400">
+                      {isUploading === i ? (
+                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-indigo-600 z-10"></div>
+                      ) : (
+                        <>
+                          <img src={slide.src} alt={`Slide ${i + 1}`} className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover/upload:opacity-30 transition-opacity" />
+                          <ImageIcon size={24} className="text-indigo-600 z-10 opacity-0 group-hover/upload:opacity-100 transition-opacity" />
+                        </>
+                      )}
+                      {/* Invisible File Input overlaying the image box */}
+                      <input 
+                        type="file" 
+                        accept="image/png, image/jpeg, image/webp, image/gif"
+                        onChange={(e) => handleImageUpload(i, e)}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
+                        title="Upload new image"
+                      />
                     </div>
+
                     <div className="flex-1 space-y-3">
                       <div>
-                        <label className="block text-xs font-bold text-slate-700 mb-1">Image URL</label>
+                        <label className="block text-xs font-bold text-slate-700 mb-1">Image URL (Auto-fills on upload)</label>
                         <input 
                           type="text" 
                           value={slide.src} 
                           onChange={(e) => updateCarousel(i, 'src', e.target.value)}
-                          className="w-full max-w-md border border-slate-300 rounded-lg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" 
+                          className="w-full max-w-md border border-slate-300 rounded-lg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-slate-500" 
                         />
                       </div>
                       <div>
@@ -259,11 +338,14 @@ function Content() {
                         />
                       </div>
                     </div>
-                    <button className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition-colors self-start mt-2">
+                    <button onClick={() => removeSlide(i)} className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition-colors self-start mt-2">
                       <Trash2 size={18} />
                     </button>
                   </div>
                 ))}
+                {homeData.carousel.length === 0 && (
+                  <p className="p-8 text-center text-slate-500">No slides added yet. Click "Add Slide" to begin.</p>
+                )}
               </div>
             </div>
           </div>

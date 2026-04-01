@@ -95,6 +95,12 @@ try {
     // Get the ID of the order we just created
     $orderId = $conn->lastInsertId();
 
+    // --- NEW: INCREMENT PROMO USAGE TRACKER ---
+    if (!empty($data['discount_code'])) {
+        $updatePromoStmt = $conn->prepare("UPDATE discount_codes SET used_count = used_count + 1 WHERE code = :code");
+        $updatePromoStmt->execute([':code' => $data['discount_code']]);
+    }
+
     // 4. Loop through the cart and insert each item
     $stmtItem = $conn->prepare("
         INSERT INTO order_items (order_id, product_id, product_name, variant, quantity, price, image)
@@ -112,6 +118,8 @@ try {
             ':image' => $item['image'] ?? null
         ]);
     }
+
+    // Commit the transaction!
     $conn->commit();
 
     http_response_code(201);

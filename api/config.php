@@ -2,8 +2,8 @@
 // Database configuration
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'rezzilli_db');
-define('DB_USER', 'your_db_username');
-define('DB_PASS', 'your_db_password');
+define('DB_USER', 'rezzilli_ad'); 
+define('DB_PASS', 'Rezzilli@2026');
 
 // CORS headers
 header('Access-Control-Allow-Origin: *');

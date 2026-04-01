@@ -41,14 +41,11 @@ function Checkout() {
   const [isEmailRegistered, setIsEmailRegistered] = useState(false);
   const [isValidatingEmail, setIsValidatingEmail] = useState(false);
 
-  const [discountCodeInput, setDiscountCodeInput] = useState("");
-  const location = useLocation();
-  
-  const [appliedDiscount, setAppliedDiscount] = useState<{
-    code: string;
-    type: string;
-    value: number;
-  } | null>(location.state?.preAppliedDiscount || null);
+ const location = useLocation();
+  const passedDiscount = location.state?.preAppliedDiscount || null;
+  const [discountCodeInput, setDiscountCodeInput] = useState(passedDiscount?.code || "");
+  const [appliedDiscount, setAppliedDiscount] = useState<{ code: string; type: string; value: number; } | null>(passedDiscount);
+  const [isApplying, setIsApplying] = useState(false); // Adding this for the loading state
   const [discountError, setDiscountError] = useState("");
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -99,6 +96,8 @@ function Checkout() {
 
   const handleApplyDiscount = async () => {
     if (!discountCodeInput.trim()) return;
+    
+    setIsApplying(true); // <-- Added loading state here
     setDiscountError("");
 
     try {
@@ -121,12 +120,13 @@ function Checkout() {
           type: data.type,
           value: data.value,
         });
-        setDiscountCodeInput("");
       } else {
         setDiscountError(data.message || "Invalid code");
       }
     } catch (err) {
       setDiscountError("Network error validating code.");
+    } finally {
+      setIsApplying(false); 
     }
   };
 
@@ -538,15 +538,17 @@ function Checkout() {
                   type="text"
                   placeholder="Discount code"
                   value={discountCodeInput}
-                  onChange={(e) => setDiscountCodeInput(e.target.value)}
-                  className="flex-1 border border-gray-300 rounded-md p-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] bg-white text-[15px] text-[#0a36af] placeholder-[#0a36af]"
+                  onChange={(e) => setDiscountCodeInput(e.target.value.toUpperCase())}
+                  disabled={!!appliedDiscount}
+                  className="flex-1 border border-gray-300 rounded-md p-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] text-[15px] text-[#0a36af] placeholder-[#0a36af] disabled:bg-gray-100 disabled:text-gray-500 uppercase"
                 />
                 <button
                   onClick={handleApplyDiscount}
-                  className="px-5 py-3 bg-gray-200 font-semibold rounded-md transition-colors hover:bg-gray-300 text-[15px]"
+                  disabled={!!appliedDiscount || isApplying || !discountCodeInput.trim()}
+                  className="px-5 py-3 bg-gray-200 font-semibold rounded-md transition-colors hover:bg-gray-300 text-[15px] disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{ color: "#0a36af" }}
                 >
-                  Apply
+                  {isApplying ? "..." : appliedDiscount ? "Applied" : "Apply"}
                 </button>
               </div>
               {discountError && (

@@ -17,9 +17,23 @@ function Profile() {
   const [isSavingName, setIsSavingName] = useState(false);
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [isSubmittingAddress, setIsSubmittingAddress] = useState(false);
-  const [addressForm, setAddressForm] = useState({
-    company: "", line1: "", line2: "", city: "", region: "", zip: "", phone: ""
+  const [addressForm, setAddressForm] = useState<any>({
+    id: null, company: "", line1: "", line2: "", city: "", region: "", zip: "", phone: ""
   });
+
+  const handleEditAddress = (address: any) => {
+    setAddressForm({
+      id: address.id,
+      company: address.company || "",
+      line1: address.line1 || "",
+      line2: address.line2 || "",
+      city: address.city || "",
+      region: address.region || "",
+      zip: address.zip || "",
+      phone: address.phone || ""
+    });
+    setShowAddressModal(true);
+  };
 
   useEffect(() => {
     const storedUser = localStorage.getItem("rezzilli_user");
@@ -47,16 +61,21 @@ function Profile() {
   const handleAddressSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmittingAddress(true);
+    const endpoint = addressForm.id 
+      ? "https://rezzillidrinks.com/api/update-address.php" 
+      : "https://rezzillidrinks.com/api/add-address.php";
+
     try {
-      const response = await fetch("https://rezzillidrinks.com/api/add-address.php", {
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...addressForm, user_id: user.id }),
       });
       const data = await response.json();
+      
       if (data.success) {
         setShowAddressModal(false);
-        setAddressForm({ company: "", line1: "", line2: "", city: "", region: "", zip: "", phone: "" });
+        setAddressForm({ id: null, company: "", line1: "", line2: "", city: "", region: "", zip: "", phone: "" });
         window.location.reload(); 
       } else {
         alert(data.message);
@@ -203,7 +222,10 @@ function Profile() {
                   Addresses
                 </h2>
                 <button
-                  onClick={() => setShowAddressModal(true)}
+                  onClick={() => {
+                    setAddressForm({ id: null, company: "", line1: "", line2: "", city: "", region: "", zip: "", phone: "" });
+                    setShowAddressModal(true);
+                  }}
                   className="flex items-center gap-1 font-bold text-[12px] uppercase tracking-wide transition-opacity hover:opacity-70"
                   style={{ color: "#0a36af" }}
                 >
@@ -223,7 +245,11 @@ function Profile() {
                       <span className="text-gray-500 text-[12px] font-bold uppercase tracking-wide">
                         {address.is_default ? "Default address" : "Address"}
                       </span>
-                      <button className="text-gray-400 hover:text-[#0a36af] transition-colors" aria-label="Edit Address">
+                      <button 
+                        onClick={() => handleEditAddress(address)}
+                        className="text-gray-400 hover:text-[#0a36af] transition-colors" 
+                        aria-label="Edit Address"
+                      >
                         <Pencil size={16} strokeWidth={2.5} />
                       </button>
                     </div>
@@ -314,7 +340,9 @@ function Profile() {
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4">
           <div className="bg-[#faf9f6] w-full max-w-lg rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
             <div className="p-5 flex justify-between items-center" style={{ backgroundColor: "#0a36af" }}>
-              <h2 className="text-lg font-extrabold text-white uppercase tracking-widest">Add New Address</h2>
+             <h2 className="text-lg font-extrabold text-white uppercase tracking-widest">
+                {addressForm.id ? "Edit Address" : "Add New Address"}
+              </h2>
               <button onClick={() => setShowAddressModal(false)} className="text-white hover:text-[#ffc85b] text-2xl leading-none">&times;</button>
             </div>
             
@@ -349,7 +377,7 @@ function Profile() {
                   </div>
                 </div>
                 <button type="submit" disabled={isSubmittingAddress} className="mt-4 w-full py-3 rounded-lg font-bold text-[14px] uppercase tracking-widest hover:opacity-90 transition-opacity disabled:opacity-50" style={{ backgroundColor: "#0a36af", color: "#ffc85b" }}>
-                  {isSubmittingAddress ? "Saving..." : "Save Address"}
+                  {isSubmittingAddress ? "Saving..." : (addressForm.id ? "Update Address" : "Save Address")}
                 </button>
               </form>
             </div>

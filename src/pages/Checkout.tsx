@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Search, HelpCircle, Lock, ChevronLeft, Mail, KeyRound } from "lucide-react";
+import { Search, HelpCircle, Lock, ChevronLeft, Mail, EyeOff, Eye } from "lucide-react";
 import { useCart } from "../context/CartContext";
 
 function Checkout() {
@@ -13,20 +13,31 @@ function Checkout() {
     }
   }, [cart, navigate]);
 
-  const getInitialEmail = () => {
+  const getInitialUserData = () => {
     const userStr = localStorage.getItem("rezzilli_user");
     if (userStr) {
-      try { return JSON.parse(userStr).email || ""; } catch (e) {}
+      try { 
+        const user = JSON.parse(userStr);
+        // Split the full name "Yash Rajak" into "Yash" and "Rajak"
+        const nameParts = (user.name || "").trim().split(" ");
+        return {
+          email: user.email || "",
+          firstName: nameParts[0] || "",
+          lastName: nameParts.length > 1 ? nameParts.slice(1).join(" ") : ""
+        };
+      } catch (e) {}
     }
-    return "";
+    return { email: "", firstName: "", lastName: "" };
   };
 
+  const initialUser = getInitialUserData();
+
   const [formData, setFormData] = useState({
-    email: getInitialEmail(),
+    email: initialUser.email,
     password: "", 
     country: "United Kingdom",
-    firstName: "",
-    lastName: "",
+    firstName: initialUser.firstName, 
+    lastName: initialUser.lastName,   
     company: "",
     address: "",
     apartment: "",
@@ -36,10 +47,12 @@ function Checkout() {
     giftMessage: "",
   });
 
+  const [savedAddresses, setSavedAddresses] = useState<any[]>([]);
   // --- ERROR TRACKING STATE ---
   const [missingFields, setMissingFields] = useState<string[]>([]);
   const [isEmailRegistered, setIsEmailRegistered] = useState(false);
   const [isValidatingEmail, setIsValidatingEmail] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
  const location = useLocation();
   const passedDiscount = location.state?.preAppliedDiscount || null;
@@ -94,6 +107,37 @@ function Checkout() {
     return () => clearTimeout(timeoutId);
   }, [formData.email]);
 
+  // --- FETCH SAVED ADDRESSES FOR LOGGED IN USERS ---
+  useEffect(() => {
+    const userStr = localStorage.getItem("rezzilli_user");
+    if (userStr) {
+      const user = JSON.parse(userStr);
+      // Call your profile API to get their saved data
+      fetch(`https://rezzillidrinks.com/api/get-profile.php?user_id=${user.id}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.success && data.addresses && data.addresses.length > 0) {
+            setSavedAddresses(data.addresses);
+            
+            // Auto-fill the form with their default/first address
+            const defaultAddr = data.addresses[0];
+            setFormData(prev => ({
+              ...prev,
+              firstName: defaultAddr.first_name || prev.firstName,
+              lastName: defaultAddr.last_name || prev.lastName,
+              address: defaultAddr.line1 || "",       
+              apartment: defaultAddr.line2 || "",    
+              city: defaultAddr.city || "",
+              postcode: defaultAddr.zip || "",       
+              country: defaultAddr.country || "United Kingdom",
+              phone: defaultAddr.phone || prev.phone
+            }));
+          }
+        })
+        .catch(err => console.error("Failed to fetch addresses:", err));
+    }
+  }, []);
+
   const handleApplyDiscount = async () => {
     if (!discountCodeInput.trim()) return;
     
@@ -141,6 +185,33 @@ function Checkout() {
 
   const finalTotal = cartTotal + deliveryFee - discountValue;
   const vatAmount = finalTotal - finalTotal / 1.2;
+
+  const handleAddressSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    
+    if (value === "new") {
+      // Clear the address fields so they can type a new one
+      setFormData(prev => ({
+        ...prev, address: "", apartment: "", city: "", postcode: ""
+      }));
+    } else {
+      // Find the selected address from our array and populate the form
+      const selected = savedAddresses.find(a => a.id.toString() === value);
+      if (selected) {
+        setFormData(prev => ({
+          ...prev,
+          firstName: selected.first_name || prev.firstName,
+          lastName: selected.last_name || prev.lastName,
+          address: selected.line1 || "",     
+          apartment: selected.line2 || "",    
+          city: selected.city || "",
+          postcode: selected.zip || "",         
+          country: selected.country || "United Kingdom",
+          phone: selected.phone || prev.phone
+        }));
+      }
+    }
+  };
 
   const handlePayNow = async () => {
     const isGuestCheckout = !localStorage.getItem("rezzilli_user");
@@ -263,7 +334,24 @@ function Checkout() {
             <h2 className="text-[20px] font-bold text-black mb-4">Contact & Delivery</h2>
             
             <div className="space-y-3">
-              
+              {savedAddresses.length > 0 && (
+                  <div className="mb-6 p-4 border border-[#0a36af]/20 bg-blue-50/30 rounded-lg">
+                    <label className="block text-[15px] font-bold text-[#0a36af] mb-2">
+                      Saved Addresses
+                    </label>
+                    <select 
+                      onChange={handleAddressSelect}
+                      className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-[#0a36af] focus:ring-1 focus:ring-[#0a36af] bg-white text-[15px]"
+                    >
+                      {savedAddresses.map((addr) => (
+    <option key={addr.id} value={addr.id}>
+      {addr.line1}, {addr.city} {addr.zip}
+    </option>
+  ))}
+                      <option value="new">+ Enter a new address</option>
+                    </select>
+                  </div>
+                )}
               <div className="relative">
                 <input
                   type="email"
@@ -281,14 +369,21 @@ function Checkout() {
                   {formData.email.includes('@') && formData.email.includes('.') && !isEmailRegistered && !isValidatingEmail && (
                     <div className="relative pb-3 transition-all duration-300">
                       <input
-                        type="password"
+                        type={showPassword ? "text" : "password"} // <-- DYNAMIC TYPE
                         name="password"
                         value={formData.password}
                         onChange={handleInputChange}
                         placeholder="Create a password for your new account *"
                         className={`${getInputClass('password')} pr-10`}
                       />
-                      <KeyRound size={18} className="absolute right-3 top-1/2 -translate-y-[calc(50%+6px)] text-gray-400" />
+                      {/* --- NEW EYE TOGGLE BUTTON --- */}
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-[calc(50%+6px)] text-gray-400 hover:text-[#0a36af] transition-colors focus:outline-none"
+                      >
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
                     </div>
                   )}
 

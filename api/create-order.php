@@ -41,11 +41,14 @@ try {
         } else if (!empty($password)) {
             // NEW ACCOUNT CREATION: They are a guest, email is new, AND they gave us a password!
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-            $stmt = $conn->prepare("INSERT INTO users (name, email, password) VALUES (:name, :email, :password)");
+            
+            // FIX: Changed 'password' to 'password_hash' in the INSERT statement
+            $stmt = $conn->prepare("INSERT INTO users (name, email, password_hash) VALUES (:name, :email, :password)");
+            
             $stmt->execute([
                 ':name' => $data['shipping']['name'],
                 ':email' => $email,
-                ':password' => $hashedPassword
+                ':password' => $hashedPassword // The :password variable name here is fine!
             ]);
             // Grab their shiny new User ID to link to this order
             $user_id = $conn->lastInsertId();

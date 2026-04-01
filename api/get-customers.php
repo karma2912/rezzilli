@@ -15,11 +15,13 @@ try {
     $conn = getDBConnection();
     
     // 1. Fetch all users who are customers
-    // Note: Adjusting query to fetch the newly added 'status' column
     $stmt = $conn->query("SELECT id, name, email, created_at, status FROM users WHERE role = 'customer' ORDER BY created_at DESC");
     $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
     $formattedCustomers = [];
+
+    // --- NEW: Prepare the items statement ONCE for performance ---
+    $itemStmt = $conn->prepare("SELECT product_name, variant, quantity, price, image FROM order_items WHERE order_id = :order_id");
 
     foreach ($users as $user) {
         $userId = $user['id'];
@@ -34,9 +36,10 @@ try {
         $lifetimeValue = 0.00;
         $recentOrders = [];
 
-        // 3. Safely fetch their orders (Wrapped in a try/catch just in case your orders table is empty/missing columns)
+        // 3. Safely fetch their orders
         try {
-            $orderStmt = $conn->prepare("SELECT id, total_amount, status, created_at FROM orders WHERE user_id = :uid ORDER BY created_at DESC");
+            // --- UPDATED: Added shipping_fee, discount_amount, and gift_message to the query ---
+            $orderStmt = $conn->prepare("SELECT id, total_amount, shipping_fee, discount_amount, gift_message, status, created_at FROM orders WHERE user_id = :uid ORDER BY created_at DESC");
             $orderStmt->execute([':uid' => $userId]);
             $orders = $orderStmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -44,25 +47,46 @@ try {
             
             foreach ($orders as $order) {
                 $orderTotal = floatval($order['total_amount']);
+                $shippingFee = floatval($order['shipping_fee'] ?? 0);
+                $discountAmt = floatval($order['discount_amount'] ?? 0);
                 $lifetimeValue += $orderTotal;
+                
+                // --- NEW: Fetch the specific items for this order ---
+                $itemStmt->execute([':order_id' => $order['id']]);
+                $itemsRaw = $itemStmt->fetchAll(PDO::FETCH_ASSOC);
+                
+                $items = [];
+                $subtotal = 0;
+                foreach ($itemsRaw as $it) {
+                    $itemPrice = floatval($it['price']);
+                    $itemQty = intval($it['quantity']);
+                    
+                    $items[] = [
+                        "name" => $it['product_name'],
+                        "variant" => $it['variant'],
+                        "price" => $itemPrice,
+                        "quantity" => $itemQty,
+                        "image" => $it['image']
+                    ];
+                    $subtotal += ($itemPrice * $itemQty);
+                }
                 
                 // Format the order to match the React UI exactly
                 $recentOrders[] = [
                     "id" => "ORD-" . str_pad($order['id'], 4, "0", STR_PAD_LEFT),
                     "date" => date("M d, Y", strtotime($order['created_at'])),
                     "total" => "£" . number_format($orderTotal, 2),
-                    "status" => $order['status'], // e.g., 'Delivered', 'Processing'
+                    "status" => $order['status'] ?: 'Processing',
                     
-                    // Note: If you want specific items later, you'll join the order_items table here.
-                    // For now, we pass an empty array so the UI doesn't crash when clicking "View Order"
-                    "items" => [], 
+                    // --- FIXED: Pass the real items and dynamic math ---
+                    "items" => $items, 
                     "financials" => [
-                        "subtotal" => $orderTotal, 
-                        "shipping" => 0, 
-                        "discount" => 0, 
+                        "subtotal" => $subtotal, 
+                        "shipping" => $shippingFee, 
+                        "discount" => $discountAmt, 
                         "total" => $orderTotal
                     ],
-                    "gift_message" => null,
+                    "gift_message" => $order['gift_message'],
                     "payment_method" => "Card"
                 ];
             }

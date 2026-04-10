@@ -29,14 +29,12 @@ function Login() {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        // Save the user data (which now includes their role!) to localStorage
         localStorage.setItem("rezzilli_user", JSON.stringify(data.user));
         
-        // Redirect based on the user's role
         if (data.user.role === 'admin') {
-          navigate("/admin"); // Send the boss to the dashboard!
+          navigate("/admin");
         } else {
-          navigate("/profile"); // Send normal customers to their profile
+          navigate("/profile"); 
         }
       } else {
         setError(data.message || "Invalid credentials.");
@@ -50,18 +48,14 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col font-['Libre_Baskerville',_serif] bg-[#faf9f6]">
+    <div className="min-h-screen w-full flex flex-col font-['Libre_Baskerville',_serif] bg-[#faf9f6] overflow-x-hidden">
       
       <Navbar/>
-      <main className="flex-grow w-full flex flex-col items-center justify-start pt-16 md:pt-24 px-6 md:px-12 pb-20">
-        
-        {/* Inner Container */}
+      <main className="flex-grow w-full flex flex-col items-center justify-center pt-8 px-4 sm:px-6 md:px-12 pb-20">
         <div className="w-full max-w-2xl flex flex-col">
-          
-          {/* Header & Underline */}
-          <div className="flex flex-col items-center mb-16">
+          <div className="flex flex-col items-center mb-10">
             <h1 
-              className="text-[32px] font-extrabold uppercase tracking-widest mb-4"
+              className="text-[30px] font-extrabold uppercase tracking-widest mb-4 text-center"
               style={{ color: "#0a36af" }}
             >
               Login
@@ -72,17 +66,14 @@ function Login() {
             ></div>
           </div>
 
-          {/* Error Message Display */}
           {error && (
             <div className="mb-6 text-center font-bold text-[15px] text-red-500">
               {error}
             </div>
           )}
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="w-full flex flex-col gap-8">
+          <form onSubmit={handleSubmit} className="w-full flex flex-col gap-6">
             
-            {/* Email Input */}
             <div>
               <label 
                 className="block text-[16px] font-bold mb-3 tracking-wide"
@@ -100,7 +91,6 @@ function Login() {
               />
             </div>
 
-            {/* Password Input */}
             <div>
               <label 
                 className="block text-[16px] font-bold mb-3 tracking-wide"
@@ -117,7 +107,6 @@ function Login() {
                 style={{ borderColor: "rgba(10, 54, 175, 0.25)", color: "#0a36af" }}
               />
               
-              {/* Forgot Password Link */}
               <div className="text-right mt-3">
                 <Link 
                   to="/forgot-password" 
@@ -128,13 +117,11 @@ function Login() {
                 </Link>
               </div>
             </div>
-
-            {/* Action Buttons (Side by Side) */}
-            <div className="flex flex-row items-center gap-6 mt-4">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6 mt-4">
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-8 md:px-10 py-3.5 rounded-xl font-bold text-[15px] uppercase tracking-widest hover:opacity-90 transition-opacity shadow-sm disabled:opacity-50"
+                className="w-full sm:w-auto px-8 md:px-10 py-3.5 rounded-xl font-bold text-[15px] uppercase tracking-widest hover:opacity-90 transition-opacity shadow-sm disabled:opacity-50 text-center"
                 style={{ backgroundColor: "#0a36af", color: "#ffc85b" }} 
               >
                 {isSubmitting ? "Signing in..." : "Sign In"}
@@ -142,7 +129,7 @@ function Login() {
 
               <Link 
                 to="/register"
-                className="font-bold text-[15px] uppercase tracking-widest hover:opacity-70 transition-opacity"
+                className="font-bold text-[15px] uppercase tracking-widest hover:opacity-70 transition-opacity text-center mt-2 sm:mt-0"
                 style={{ color: "#0a36af" }} 
               >
                 Create Account

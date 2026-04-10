@@ -102,7 +102,7 @@ function App() {
     <div
       className="min-h-screen w-full"
       style={{
-        backgroundColor: "#ffffff",
+        backgroundColor: "#f8f9fa",
         fontFamily: "'Libre Baskerville', serif",
       }}
     >
@@ -115,7 +115,6 @@ function App() {
       <section
         id="origins"
         className="w-full py-12 md:py-16"
-        style={{ backgroundColor: "#ffffff" }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
           <div className="grid md:grid-cols-2 gap-8 md:gap-16 lg:gap-20 items-center">

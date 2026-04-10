@@ -51,13 +51,14 @@ function Register() {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col font-['Libre_Baskerville',_serif] bg-[#faf9f6]">
+    <div className="min-h-screen w-full flex flex-col font-['Libre_Baskerville',_serif] bg-[#faf9f6] overflow-x-hidden">
       <Navbar />
-      <main className="flex-grow w-full flex flex-col items-center justify-start pt-16 md:pt-24 px-6 md:px-12 pb-20">
-        <div className="w-full max-w-[800px] flex flex-col">
-          <div className="flex flex-col items-center mb-12">
+      <main className="flex-grow w-full flex flex-col items-center justify-center pt-8 px-4 sm:px-6 md:px-12 pb-20">
+        <div className="w-full max-w-2xl flex flex-col">
+          
+          <div className="flex flex-col items-center mb-10">
             <h1 
-              className="text-[28px] font-extrabold uppercase tracking-tighter mb-4"
+              className="text-[30px] font-extrabold uppercase tracking-tighter mb-4 text-center"
               style={{ color: "#0a36af" }}
             >
               Create Account
@@ -68,7 +69,6 @@ function Register() {
             ></div>
           </div>
 
-          {/* Success/Error Message Display */}
           {message.text && (
             <div 
               className="mb-8 text-center font-bold text-[15px]" 
@@ -78,10 +78,7 @@ function Register() {
             </div>
           )}
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="w-full flex flex-col gap-6 md:gap-8">
-            
-            {/* First Name & Last Name Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
               <div>
                 <label 
@@ -116,8 +113,6 @@ function Register() {
                 />
               </div>
             </div>
-
-            {/* Email Input */}
             <div>
               <label 
                 className="block text-[15px] font-bold mb-2 tracking-wide"
@@ -134,8 +129,6 @@ function Register() {
                 style={{ borderColor: "rgba(10, 54, 175, 0.25)", color: "#0a36af" }}
               />
             </div>
-
-            {/* Password Input */}
             <div>
               <label 
                 className="block text-[15px] font-bold mb-2 tracking-wide"
@@ -153,23 +146,22 @@ function Register() {
               />
             </div>
 
-            {/* Action Buttons (CREATE + RETURN TO STORE) */}
-            <div className="flex flex-row items-center gap-8 mt-2">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6 mt-4">
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-10 py-3.5 rounded-xl font-bold text-[15px] uppercase tracking-widest hover:opacity-90 transition-opacity shadow-sm disabled:opacity-50"
+                className="w-full sm:w-auto px-8 md:px-10 py-3.5 rounded-xl font-bold text-[15px] uppercase tracking-widest hover:opacity-90 transition-opacity shadow-sm disabled:opacity-50 text-center"
                 style={{ backgroundColor: "#0a36af", color: "#ffc85b" }} 
               >
                 {isSubmitting ? "Creating..." : "Create"}
               </button>
 
               <Link 
-                to="/"
-                className="font-bold text-[15px] uppercase tracking-widest hover:opacity-70 transition-opacity"
+                to="/login"
+                className="font-bold text-[15px] uppercase tracking-widest hover:opacity-70 transition-opacity text-center mt-2 sm:mt-0"
                 style={{ color: "#0a36af" }} 
               >
-                Return to store
+                Login
               </Link>
             </div>
 

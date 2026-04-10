@@ -159,6 +159,7 @@ function Navbar() {
                   style={{ backgroundColor: "#0a36af" }}
                 >
                   {!isLoggedIn ? (
+                    <div>
                     <Link
                       to="/login"
                       className="block px-5 py-2.5 text-center text-[15px] font-semibold hover:bg-white/10 transition-colors whitespace-nowrap"
@@ -166,6 +167,14 @@ function Navbar() {
                     >
                       Login
                     </Link>
+                    <Link
+                      to="/register"
+                      className="block px-5 py-2.5 text-center text-[15px] font-semibold hover:bg-white/10 transition-colors whitespace-nowrap"
+                      style={{ color: "#ffc85b" }}
+                    >
+                      Sign Up
+                    </Link>
+                    </div>
                   ) : (
                     <>
                       <Link

@@ -5,6 +5,8 @@ import { X } from "lucide-react";
 function Footer() {
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [showAlcoholPolicy, setShowAlcoholPolicy] = useState(false);
+  const [showRefundPolicy, setShowRefundPolicy] = useState(false);
+  const [showTermsOfService, setShowTermsOfService] = useState(false);
 
   return (
     <>
@@ -78,6 +80,18 @@ function Footer() {
               className="text-white underline font-medium transition-opacity hover:opacity-80 text-[15px]"
             >
               Alcohol and Safe Use
+            </button>
+            <button
+              onClick={() => setShowRefundPolicy(true)}
+              className="text-white underline font-medium transition-opacity hover:opacity-80 text-[15px]"
+            >
+              Refund Policy
+            </button>
+            <button
+              onClick={() => setShowTermsOfService(true)}
+              className="text-white underline font-medium transition-opacity hover:opacity-80 text-[15px]"
+            >
+              Terms of Service
             </button>
           </div>
           <p className="text-[15px]" style={{ color: "#ffffff" }}>
@@ -579,6 +593,282 @@ function Footer() {
                 className="px-4 py-2 md:px-6 md:py-2 rounded-lg font-semibold text-sm md:text-base transition-all hover:opacity-90"
                 style={{ backgroundColor: "#0a36af", color: "#ffffff" }}
               >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showRefundPolicy && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 md:p-4 bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-white border-b border-gray-200 px-4 py-3 md:px-6 md:py-4 flex items-center justify-between">
+              <h2 className="text-xl md:text-2xl font-bold" style={{ color: "#0a36af" }}>
+                Cancellations, Returns & Refunds
+              </h2>
+              <button onClick={() => setShowRefundPolicy(false)} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                <X size={20} className="md:w-6 md:h-6" style={{ color: "#0a36af" }} />
+              </button>
+            </div>
+            <div className="px-4 py-4 md:px-6 md:py-6 space-y-4 md:space-y-6 text-gray-800">
+              <p className="text-sm md:text-base leading-relaxed">This policy explains how you can cancel an order, return products, and receive refunds for purchases made on the Rezzilli Drinks website.</p>
+              
+              <div>
+                <h3 className="text-lg md:text-xl font-bold mb-2 md:mb-3" style={{ color: "#0a36af" }}>1. Order Cancellations</h3>
+                <p className="text-sm md:text-base leading-relaxed">You may request a cancellation only before your order has been processed or dispatched.</p>
+                <ul className="list-disc pl-5 mt-2 space-y-1 text-sm md:text-base leading-relaxed">
+                  <li>Orders are processed shortly after placement.</li>
+                  <li>Orders placed before daily cut-off times (e.g. for next-day delivery) may be processed immediately and may not be eligible for cancellation.</li>
+                  <li>Once your order has been processed or dispatched, it cannot be cancelled.</li>
+                </ul>
+                <p className="text-sm md:text-base leading-relaxed mt-2">If your order has already been dispatched, it will need to be handled as a return (see Section 2).</p>
+              </div>
+
+              <div>
+                <h3 className="text-lg md:text-xl font-bold mb-2 md:mb-3" style={{ color: "#0a36af" }}>2. Returns Eligibility</h3>
+                <p className="text-sm md:text-base leading-relaxed">You may return products for a refund within 14 days of delivery, provided that:</p>
+                <ul className="list-disc pl-5 mt-2 space-y-1 text-sm md:text-base leading-relaxed">
+                  <li>The product is unused, unopened, and in its original condition and packaging</li>
+                  <li>The product is not damaged due to improper handling after delivery</li>
+                </ul>
+                <p className="text-sm md:text-base leading-relaxed mt-2">We reserve the right to refuse or reduce a refund if the returned product does not meet these conditions.</p>
+              </div>
+
+              <div>
+                <h3 className="text-lg md:text-xl font-bold mb-2 md:mb-3" style={{ color: "#0a36af" }}>3. How to Request a Return</h3>
+                <p className="text-sm md:text-base leading-relaxed">To initiate a return, you must contact us with:</p>
+                <ul className="list-disc pl-5 mt-2 space-y-1 text-sm md:text-base leading-relaxed">
+                  <li>Your name</li>
+                  <li>Order reference number</li>
+                  <li>Product(s) you wish to return</li>
+                </ul>
+                <p className="text-sm md:text-base leading-relaxed mt-2">Once approved, we will provide return instructions. Products must be returned in accordance with these instructions.</p>
+              </div>
+
+              <div>
+                <h3 className="text-lg md:text-xl font-bold mb-2 md:mb-3" style={{ color: "#0a36af" }}>4. Return Shipping Responsibility</h3>
+                <ul className="list-disc pl-5 mt-2 space-y-1 text-sm md:text-base leading-relaxed">
+                  <li>You are responsible for the cost of returning the product, unless the item is faulty, incorrect, or misdescribed.</li>
+                  <li>Returned goods remain your responsibility until they are received by us.</li>
+                  <li>You must ensure that items are securely packaged to prevent damage in transit.</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="text-lg md:text-xl font-bold mb-2 md:mb-3" style={{ color: "#0a36af" }}>5. Damaged or Used Returns</h3>
+                <p className="text-sm md:text-base leading-relaxed">If returned products show signs of use, damage, or mishandling:</p>
+                <ul className="list-disc pl-5 mt-2 space-y-1 text-sm md:text-base leading-relaxed">
+                  <li>We may reduce the refund amount to reflect the loss in value, or</li>
+                  <li>Refuse the return if the product is no longer in a resellable condition</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="text-lg md:text-xl font-bold mb-2 md:mb-3" style={{ color: "#0a36af" }}>6. Refunds</h3>
+                <p className="text-sm md:text-base leading-relaxed">Once your return is received and inspected:</p>
+                <ul className="list-disc pl-5 mt-2 space-y-1 text-sm md:text-base leading-relaxed">
+                  <li>Refunds will be processed to your original payment method</li>
+                  <li>Refunds are typically issued within a reasonable timeframe after approval</li>
+                </ul>
+                <p className="text-sm md:text-base leading-relaxed mt-2">Delivery charges may not be refunded unless the return is due to our error.</p>
+              </div>
+
+              <div>
+                <h3 className="text-lg md:text-xl font-bold mb-2 md:mb-3" style={{ color: "#0a36af" }}>7. Faulty, Incorrect, or Misdescribed Products</h3>
+                <p className="text-sm md:text-base leading-relaxed">If you receive a product that is faulty, damaged in transit, incorrect, or not as described:</p>
+                <ul className="list-disc pl-5 mt-2 space-y-1 text-sm md:text-base leading-relaxed">
+                  <li>Please contact us promptly with details and supporting evidence (e.g. photos)</li>
+                  <li>We will arrange a replacement, refund, or other appropriate resolution in line with your legal rights</li>
+                </ul>
+                <p className="text-sm md:text-base leading-relaxed mt-2">In such cases, we will cover any reasonable return shipping costs.</p>
+              </div>
+
+              <div>
+                <h3 className="text-lg md:text-xl font-bold mb-2 md:mb-3" style={{ color: "#0a36af" }}>8. Refused Deliveries & Failed Deliveries</h3>
+                <p className="text-sm md:text-base leading-relaxed">If you refuse delivery or fail to accept delivery:</p>
+                <ul className="list-disc pl-5 mt-2 space-y-1 text-sm md:text-base leading-relaxed">
+                  <li>We may deduct shipping costs, return charges, and any other costs incurred before processing a refund</li>
+                  <li>Any applicable customs duties or charges will also be deducted where relevant</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="text-lg md:text-xl font-bold mb-2 md:mb-3" style={{ color: "#0a36af" }}>9. Important Notes</h3>
+                <ul className="list-disc pl-5 mt-2 space-y-1 text-sm md:text-base leading-relaxed">
+                  <li>Orders placed outside stated delivery conditions or eligibility criteria may not qualify for cancellation or refund</li>
+                  <li>Minimum order value requirements and delivery restrictions must be met at the time of purchase</li>
+                  <li>This policy does not affect your statutory rights under applicable consumer laws</li>
+                </ul>
+              </div>
+            </div>
+            <div className="sticky bottom-0 bg-white border-t border-gray-200 px-4 py-3 md:px-6 md:py-4 flex justify-end">
+              <button onClick={() => setShowRefundPolicy(false)} className="px-4 py-2 md:px-6 md:py-2 rounded-lg font-semibold text-sm md:text-base transition-all hover:opacity-90" style={{ backgroundColor: "#0a36af", color: "#ffffff" }}>
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Terms of Service Modal */}
+      {showTermsOfService && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 md:p-4 bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-white border-b border-gray-200 px-4 py-3 md:px-6 md:py-4 flex items-center justify-between">
+              <h2 className="text-xl md:text-2xl font-bold" style={{ color: "#0a36af" }}>
+                Terms of Service
+              </h2>
+              <button onClick={() => setShowTermsOfService(false)} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                <X size={20} className="md:w-6 md:h-6" style={{ color: "#0a36af" }} />
+              </button>
+            </div>
+            <div className="px-4 py-4 md:px-6 md:py-6 space-y-4 md:space-y-6 text-gray-800">
+              
+              <div>
+                <h3 className="text-lg md:text-xl font-bold mb-2 md:mb-3" style={{ color: "#0a36af" }}>1. THESE TERMS</h3>
+                <p className="text-sm md:text-base leading-relaxed font-bold">1.1 What these terms cover</p>
+                <p className="text-sm md:text-base leading-relaxed mb-3">These terms and conditions apply when you buy products from Rezzilli Drinks through our website.</p>
+                <p className="text-sm md:text-base leading-relaxed font-bold">1.2 Why you should read them</p>
+                <p className="text-sm md:text-base leading-relaxed">Please read these terms carefully before placing an order. They explain who we are, how we supply products, how orders are accepted, how changes and cancellations work, and what to do if something goes wrong.</p>
+              </div>
+
+              <div>
+                <h3 className="text-lg md:text-xl font-bold mb-2 md:mb-3" style={{ color: "#0a36af" }}>2. INFORMATION ABOUT US AND HOW TO CONTACT US</h3>
+                <p className="text-sm md:text-base leading-relaxed font-bold">2.1 Who we are</p>
+                <p className="text-sm md:text-base leading-relaxed mb-3">We are Rezzilli Drinks.<br/>Insert your full legal entity name, company number, VAT number, and registered office here.</p>
+                <p className="text-sm md:text-base leading-relaxed font-bold">2.2 How to contact us</p>
+                <p className="text-sm md:text-base leading-relaxed mb-3">You can contact us by phone at +44 7832 198470 or by post at 31, West Street, Burton upon Trent, DE11 9DN. You may also add your customer support email address here.</p>
+                <p className="text-sm md:text-base leading-relaxed font-bold">2.3 How we may contact you</p>
+                <p className="text-sm md:text-base leading-relaxed mb-3">If we need to contact you, we may do so by telephone, email, or post using the details you gave us when placing your order.</p>
+                <p className="text-sm md:text-base leading-relaxed font-bold">2.4 "Writing" includes emails</p>
+                <p className="text-sm md:text-base leading-relaxed">When we use the words "writing" or "written" in these terms, this includes emails.</p>
+              </div>
+
+              <div>
+                <h3 className="text-lg md:text-xl font-bold mb-2 md:mb-3" style={{ color: "#0a36af" }}>3. OUR CONTRACT WITH YOU</h3>
+                <p className="text-sm md:text-base leading-relaxed font-bold">3.1 How we accept your order</p>
+                <p className="text-sm md:text-base leading-relaxed mb-3">Your order is accepted when we email you to confirm it. At that point, a contract comes into existence between you and us.</p>
+                <p className="text-sm md:text-base leading-relaxed font-bold">3.2 If we cannot accept your order</p>
+                <p className="text-sm md:text-base leading-relaxed mb-3">If we are unable to accept your order, or part of it, we will let you know and refund any amount already paid. This may happen if a product is out of stock, if there is an error in the price or description, or if we cannot meet a requested delivery date.</p>
+                <p className="text-sm md:text-base leading-relaxed font-bold">3.3 Your order number</p>
+                <p className="text-sm md:text-base leading-relaxed mb-3">We will assign an order number to your purchase and share it with you when your order is accepted.</p>
+                <p className="text-sm md:text-base leading-relaxed font-bold">3.4 Where we sell</p>
+                <p className="text-sm md:text-base leading-relaxed mb-3">Our website is intended for customers in the United Kingdom unless we say otherwise on the site.</p>
+                <p className="text-sm md:text-base leading-relaxed font-bold">3.5 Alcohol products</p>
+                <p className="text-sm md:text-base leading-relaxed mb-3">If a product contains alcohol, we will only supply it where it is lawful to do so and only to customers who meet the applicable legal age requirement.</p>
+                <p className="text-sm md:text-base leading-relaxed font-bold">3.6 Age confirmation</p>
+                <p className="text-sm md:text-base leading-relaxed mb-3">By using our website to purchase alcohol, you confirm that you are of legal age to buy alcohol in your jurisdiction and that you will not purchase age-restricted products unlawfully.</p>
+                <p className="text-sm md:text-base leading-relaxed font-bold">3.7 International delivery</p>
+                <p className="text-sm md:text-base leading-relaxed mb-3">If we offer delivery outside the United Kingdom, your order may be subject to local duties, taxes, and import rules. You are responsible for checking and paying any such charges unless we state otherwise.</p>
+                <p className="text-sm md:text-base leading-relaxed font-bold">3.8 Local laws</p>
+                <p className="text-sm md:text-base leading-relaxed">You must comply with all laws and regulations that apply in the country where the products are delivered.</p>
+              </div>
+
+              <div>
+                <h3 className="text-lg md:text-xl font-bold mb-2 md:mb-3" style={{ color: "#0a36af" }}>4. OUR PRODUCTS</h3>
+                <p className="text-sm md:text-base leading-relaxed font-bold">4.1 Product images</p>
+                <p className="text-sm md:text-base leading-relaxed mb-3">Product images on our website are for illustration only. Colours, appearance, and presentation may vary slightly from the images shown.</p>
+                <p className="text-sm md:text-base leading-relaxed font-bold">4.2 Packaging</p>
+                <p className="text-sm md:text-base leading-relaxed mb-3">Packaging may vary from the images shown on our website.</p>
+                <p className="text-sm md:text-base leading-relaxed font-bold">4.3 Product nature</p>
+                <p className="text-sm md:text-base leading-relaxed">Our products are drinks and may include alcoholic and non-alcoholic beverages, depending on the product listing.</p>
+              </div>
+
+              <div>
+                <h3 className="text-lg md:text-xl font-bold mb-2 md:mb-3" style={{ color: "#0a36af" }}>5. YOUR RIGHTS TO MAKE CHANGES</h3>
+                <p className="text-sm md:text-base leading-relaxed">If you want to change an order you have placed, please contact us as soon as possible. We will let you know whether the change is possible. If it is, we will tell you about any change in price, delivery time, or other details and ask you to confirm whether you want to proceed.</p>
+              </div>
+
+              <div>
+                <h3 className="text-lg md:text-xl font-bold mb-2 md:mb-3" style={{ color: "#0a36af" }}>6. OUR RIGHTS TO MAKE CHANGES</h3>
+                <p className="text-sm md:text-base leading-relaxed font-bold">6.1 Minor changes</p>
+                <p className="text-sm md:text-base leading-relaxed mb-3">We may make minor changes to products to reflect changes in law, regulatory requirements, or technical improvements.</p>
+                <p className="text-sm md:text-base leading-relaxed font-bold">6.2 Significant changes</p>
+                <p className="text-sm md:text-base leading-relaxed">If we make a significant change to a product or to these terms, we will notify you. If the change affects an order you have already placed, you may contact us before the change takes effect to end the contract and receive a refund for any undelivered products.</p>
+              </div>
+
+              <div>
+                <h3 className="text-lg md:text-xl font-bold mb-2 md:mb-3" style={{ color: "#0a36af" }}>7. PROVIDING THE PRODUCTS</h3>
+                <p className="text-sm md:text-base leading-relaxed font-bold">7.1 Delivery costs</p>
+                <p className="text-sm md:text-base leading-relaxed mb-3">Delivery charges will be shown on our website at checkout.</p>
+                <p className="text-sm md:text-base leading-relaxed font-bold">7.2 When we will provide the products</p>
+                <p className="text-sm md:text-base leading-relaxed mb-3">We will tell you during checkout when we expect to deliver the products.</p>
+                <p className="text-sm md:text-base leading-relaxed font-bold">7.3 Delays outside our control</p>
+                <p className="text-sm md:text-base leading-relaxed mb-3">If delivery is delayed by an event outside our control, we will let you know as soon as reasonably possible. If the delay is substantial, you may contact us to end the contract and receive a refund for undelivered products.</p>
+                <p className="text-sm md:text-base leading-relaxed font-bold">7.4 Delivery responsibility</p>
+                <p className="text-sm md:text-base leading-relaxed mb-3">Once products are delivered to the address you provide, responsibility for the goods passes to you.</p>
+                <p className="text-sm md:text-base leading-relaxed font-bold">7.5 Information we need from you</p>
+                <p className="text-sm md:text-base leading-relaxed">We may need information such as your name, address, phone number, email address, age confirmation, and payment details. If you do not provide the information we need in a reasonable time, we may delay or cancel the order.</p>
+              </div>
+
+              <div>
+                <h3 className="text-lg md:text-xl font-bold mb-2 md:mb-3" style={{ color: "#0a36af" }}>8. YOUR RIGHTS TO END THE CONTRACT</h3>
+                <p className="text-sm md:text-base leading-relaxed font-bold">8.1 General</p>
+                <p className="text-sm md:text-base leading-relaxed mb-3">Your right to end the contract depends on what you bought, whether there is a problem with the product, and when you choose to cancel.</p>
+                <p className="text-sm md:text-base leading-relaxed font-bold">8.2 Ending because of something we did</p>
+                <p className="text-sm md:text-base leading-relaxed mb-2">You may end the contract and receive a refund if:</p>
+                <ul className="list-disc pl-5 mb-3 space-y-1 text-sm md:text-base leading-relaxed">
+                  <li>we tell you about an upcoming change you do not agree to;</li>
+                  <li>we tell you there was an error in the price or description and you do not want to continue;</li>
+                  <li>there is a risk of significant delay because of events outside our control;</li>
+                  <li>we suspend supply for more than 14 days for technical reasons;</li>
+                  <li>or you have a legal right to end the contract because of something we did wrong.</li>
+                </ul>
+                <p className="text-sm md:text-base leading-relaxed font-bold">8.3 Change of mind</p>
+                <p className="text-sm md:text-base leading-relaxed mb-3">For many online purchases, you may have the legal right to change your mind within 14 days.</p>
+                <p className="text-sm md:text-base leading-relaxed font-bold">8.4 Products where change of mind does not apply</p>
+                <p className="text-sm md:text-base leading-relaxed mb-2">This right does not usually apply to:</p>
+                <ul className="list-disc pl-5 space-y-1 text-sm md:text-base leading-relaxed">
+                  <li>perishable goods;</li>
+                  <li>sealed items that are unsealed after delivery where health or hygiene is relevant;</li>
+                  <li>digital content once download or streaming has begun;</li>
+                  <li>or products that become inseparably mixed with other items after delivery.</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="text-lg md:text-xl font-bold mb-2 md:mb-3" style={{ color: "#0a36af" }}>9. HOW TO END THE CONTRACT</h3>
+                <p className="text-sm md:text-base leading-relaxed">To cancel or return an order, contact us using the details on our website or the contact details in section 2. Please include your name, order number, and the email address used to place the order.</p>
+                <p className="text-sm md:text-base leading-relaxed mt-2">If you return goods, they must be sent back in accordance with the return instructions we give you. Unless we agree otherwise, products should be returned in a reasonably safe and saleable condition.</p>
+              </div>
+
+              <div>
+                <h3 className="text-lg md:text-xl font-bold mb-2 md:mb-3" style={{ color: "#0a36af" }}>10. RETURNS, REFUNDS AND CANCELLATIONS</h3>
+                <p className="text-sm md:text-base leading-relaxed">If an item is faulty, damaged, incorrect, or misdescribed, please contact us promptly with your order details and supporting photos if needed. We will review the issue and let you know whether a refund, replacement, or other remedy is available.</p>
+                <p className="text-sm md:text-base leading-relaxed mt-2">For returned products, refunds will be issued to the original payment method once the return has been received and inspected, or once we have sufficient evidence that the product was returned, depending on the circumstances.</p>
+              </div>
+
+              <div>
+                <h3 className="text-lg md:text-xl font-bold mb-2 md:mb-3" style={{ color: "#0a36af" }}>11. IF THERE IS A PROBLEM WITH THE PRODUCT</h3>
+                <p className="text-sm md:text-base leading-relaxed">If you have any questions or complaints about a product, please contact us using the details on our website. Nothing in these terms affects your statutory rights.</p>
+              </div>
+
+              <div>
+                <h3 className="text-lg md:text-xl font-bold mb-2 md:mb-3" style={{ color: "#0a36af" }}>12. PRICE AND PAYMENT</h3>
+                <p className="text-sm md:text-base leading-relaxed">The price of the product will be the price shown at checkout at the time you place your order. We take reasonable care to ensure that prices are correct, but errors may occasionally occur.</p>
+                <p className="text-sm md:text-base leading-relaxed mt-2">Payment must be made using the payment methods shown at checkout. For goods, payment is usually taken before dispatch.</p>
+              </div>
+
+              <div>
+                <h3 className="text-lg md:text-xl font-bold mb-2 md:mb-3" style={{ color: "#0a36af" }}>13. OUR RESPONSIBILITY FOR LOSS OR DAMAGE</h3>
+                <p className="text-sm md:text-base leading-relaxed">We are responsible for foreseeable loss or damage caused by our breach of these terms or by our failure to use reasonable care and skill. We do not exclude or limit liability where it would be unlawful to do so.</p>
+                <p className="text-sm md:text-base leading-relaxed mt-2">We are not responsible for business losses. Our products are intended for personal and domestic use unless we expressly agree otherwise.</p>
+              </div>
+
+              <div>
+                <h3 className="text-lg md:text-xl font-bold mb-2 md:mb-3" style={{ color: "#0a36af" }}>14. HOW WE MAY USE YOUR PERSONAL INFORMATION</h3>
+                <p className="text-sm md:text-base leading-relaxed">We will use your personal information to process your order, deliver your products, take payment, and communicate with you about your purchase. We will handle personal data in accordance with our Privacy Policy.</p>
+              </div>
+
+              <div>
+                <h3 className="text-lg md:text-xl font-bold mb-2 md:mb-3" style={{ color: "#0a36af" }}>15. OTHER IMPORTANT TERMS</h3>
+                <p className="text-sm md:text-base leading-relaxed">We may transfer our rights and obligations under these terms to another organisation, but this will not affect your rights.</p>
+                <p className="text-sm md:text-base leading-relaxed mt-2">If a court finds any part of these terms unenforceable, the rest will continue to apply.</p>
+                <p className="text-sm md:text-base leading-relaxed mt-2">These terms are governed by the laws of England and Wales, and the courts of England and Wales will have jurisdiction, unless mandatory local consumer law applies.</p>
+              </div>
+            </div>
+            <div className="sticky bottom-0 bg-white border-t border-gray-200 px-4 py-3 md:px-6 md:py-4 flex justify-end">
+              <button onClick={() => setShowTermsOfService(false)} className="px-4 py-2 md:px-6 md:py-2 rounded-lg font-semibold text-sm md:text-base transition-all hover:opacity-90" style={{ backgroundColor: "#0a36af", color: "#ffffff" }}>
                 Close
               </button>
             </div>

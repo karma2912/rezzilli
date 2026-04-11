@@ -127,6 +127,7 @@ const handleCheckout = () => {
                       <img
                         src={item.image}
                         alt={item.name}
+                        loading="lazy"
                         className="w-full h-full object-contain drop-shadow-md"
                       />
                     </div>
@@ -171,13 +172,12 @@ const handleCheckout = () => {
 
                       <div className="flex flex-col items-end justify-between">
                         <div className="text-right flex flex-col items-end gap-1">
-                          {/* Dynamic Item Total Price */}
-                          <div className="font-bold text-[15px] leading-none">
+                          <div className="font-bold text-[15px] leading-none text-[#0a36af]">
                             £{(item.price * item.quantity).toFixed(2)}
                           </div>
-                          {item.originalPrice && (
-                            <div className="line-through text-[15px] font-medium leading-none">
-                              {item.originalPrice}
+                          {item.originalPrice && parseFloat(item.originalPrice) > item.price && (
+                            <div className="line-through text-[14px] text-gray-400 font-medium leading-none">
+                              £{(parseFloat(item.originalPrice) * item.quantity).toFixed(2)}
                             </div>
                           )}
                         </div>

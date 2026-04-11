@@ -124,6 +124,7 @@ function ProductDetail() {
             <img
               src={product.image}
               alt={product.name}
+              loading="lazy"
               className="w-full max-w-[300px] lg:max-w-[400px] object-contain hover:scale-105 transition-transform duration-500"
             />
           </div>
@@ -476,6 +477,7 @@ function ProductDetail() {
                   <img
                     src={item.image}
                     alt={item.name}
+                    loading="lazy"
                     className="w-full h-full object-contain drop-shadow-md"
                   />
                 </div>

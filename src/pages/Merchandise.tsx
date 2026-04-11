@@ -205,7 +205,7 @@ function Merchandise() {
           <div className="flex gap-5 py-5 border-b border-gray-200">
             {/* Thumbnail */}
             <div className="w-24 h-24 flex-shrink-0 bg-gray-50 rounded-md flex items-center justify-center p-2 border border-gray-100">
-              <img src="/image4.png" alt="Limoncini" className="w-full h-full object-contain drop-shadow-md" />
+              <img src="/image4.png" loading="lazy" alt="Limoncini" className="w-full h-full object-contain drop-shadow-md" />
             </div>
             
             {/* Details */}

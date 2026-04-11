@@ -121,6 +121,7 @@ function App() {
             <div className="flex justify-center md:justify-start">
               <img
                 src={homeData.story.image}
+                loading="lazy"
                 alt="Rezzilli Limoncini"
                 className="w-full max-w-[450px] rounded-2xl shadow-2xl"
               />
@@ -163,6 +164,7 @@ function App() {
                   <img
                     src={val.image}
                     alt={val.title}
+                    loading="lazy"
                     className="max-h-full object-contain hover:scale-105 transition-transform duration-500"
                   />
                 </div>
@@ -195,7 +197,7 @@ function App() {
         </div>
         <div className="flex flex-col md:flex-row w-full items-stretch min-h-[500px] md:min-h-[800px]">
           <div className="w-full md:w-1/2 flex flex-col items-center justify-center bg-gray-100 overflow-hidden relative">
-             <img src={homeData.events.featured.image} alt="Featured Event" className="absolute inset-0 w-full h-full object-cover" />
+             <img src={homeData.events.featured.image} loading="lazy" alt="Featured Event" className="absolute inset-0 w-full h-full object-cover" />
           </div>
           <div
             className="w-full md:w-1/2 p-10 md:p-16 lg:px-24 flex flex-col items-center justify-center text-center"
@@ -240,6 +242,7 @@ function App() {
                   <img
                     src={card.image}
                     alt={card.title}
+                    loading="lazy"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 </div>
@@ -294,7 +297,7 @@ function App() {
             <div className="overflow-y-auto flex flex-col w-full">
               
               <div className="w-full h-[250px] md:h-[400px] bg-gray-50 flex items-center justify-center relative shrink-0">
-                <img src={homeData.events.modal.image} alt="Event" className="absolute inset-0 w-full h-full object-cover" />
+                <img src={homeData.events.modal.image} loading="lazy" alt="Event" className="absolute inset-0 w-full h-full object-cover" />
               </div>
 
               <div className="w-full bg-white flex justify-center">

@@ -46,22 +46,38 @@ function Spritz() {
         }
       })
       .catch((err) => console.error("Error fetching products:", err))
-      .finally(() => setIsLoading(false)); // Turn off loader whether it succeeds or fails
+      .finally(() => setIsLoading(false)); 
   }, []);
 
   const sortedProducts = [...products].sort((a, b) => {
-    if (selectedSort === "Price, low to high")
-      return Number(a.price) - Number(b.price);
-    if (selectedSort === "Price, high to low")
-      return Number(b.price) - Number(a.price);
-    if (selectedSort === "Alphabetically, A to Z")
-      return a.name.localeCompare(b.name);
-    if (selectedSort === "Alphabetically, Z to A")
-      return b.name.localeCompare(a.name);
-    if (selectedSort === "Date, new to old")
-      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-    if (selectedSort === "Date, old to new")
-      return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+    if (selectedSort === "Price, low to high") {
+      return (parseFloat(a.price) || 0) - (parseFloat(b.price) || 0);
+    }
+    if (selectedSort === "Price, high to low") {
+      return (parseFloat(b.price) || 0) - (parseFloat(a.price) || 0);
+    }
+    if (selectedSort === "Alphabetically, A to Z") {
+      return (a.name || "").localeCompare(b.name || "");
+    }
+    if (selectedSort === "Alphabetically, Z to A") {
+      return (b.name || "").localeCompare(a.name || "");
+    }
+    if (selectedSort === "Date, new to old") {
+      const dateA = new Date(a.created_at).getTime();
+      const dateB = new Date(b.created_at).getTime();
+      if (isNaN(dateA) || isNaN(dateB)) return (b.id || 0) - (a.id || 0);
+      
+      return dateB - dateA;
+    }
+    
+    if (selectedSort === "Date, old to new") {
+      const dateA = new Date(a.created_at).getTime();
+      const dateB = new Date(b.created_at).getTime();
+      if (isNaN(dateA) || isNaN(dateB)) return (a.id || 0) - (b.id || 0);
+      
+      return dateA - dateB;
+    }
+    
     return 0;
   });
 
@@ -81,7 +97,7 @@ function Spritz() {
         price: parseFloat(product.price),
         originalPrice: product.old_price,
         image: product.image,
-        variant: product.variant || "24 BOTTLES",
+        variant: product.variant || "24 Bottles",
         quantity: 1,
       });
       setIsCartOpen(true);
@@ -194,6 +210,7 @@ function Spritz() {
                       <img
                         src={product.image}
                         alt={product.name}
+                        loading="lazy"
                         className="h-full w-auto object-contain group-hover:scale-105 transition-transform duration-500"
                       />
                     </div>
@@ -305,6 +322,7 @@ function Spritz() {
                   <img
                     src={item.image}
                     alt={item.name}
+                    loading="lazy"
                     className="w-full h-full object-contain drop-shadow-md"
                   />
                 </Link>

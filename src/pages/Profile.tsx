@@ -307,7 +307,7 @@ function Profile() {
                     {order.items.map((item: any, idx: number) => (
                       <div key={idx} className="flex items-center gap-6 mb-4 last:mb-0">
                         <div className="w-20 h-24 bg-gray-50 rounded-lg border border-gray-200 flex items-center justify-center p-2 flex-shrink-0">
-                          <img src={item.image} alt={item.name} className="w-full h-full object-contain" />
+                          <img src={item.image} alt={item.name} loading="lazy" className="w-full h-full object-contain" />
                         </div>
                         <div className="flex flex-col">
                           <h3 className="text-[15px] font-bold text-black uppercase leading-snug" style={{ color: "#0a36af" }}>{item.name}</h3>

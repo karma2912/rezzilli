@@ -97,6 +97,7 @@ const AgeVerification = () => {
             <img
               src="/rezzilli.png"
               alt="Rezzilli Logo"
+              loading="lazy"
               className="h-16 md:h-24 mb-8 object-contain"
             />
             <h2
